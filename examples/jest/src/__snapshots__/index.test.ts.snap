@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`can create document can create document 1`] = `
+{
+  "projects": {
+    "test-project": {
+      "databases": {
+        "(default)": {
+          "collections": {
+            "users": {
+              "documents": {
+                "alice": {
+                  "collections": {},
+                  "fields": {
+                    "name": "Alice",
+                  },
+                  "path": "projects/test-project/databases/(default)/users/alice",
+                },
+              },
+              "path": "projects/test-project/databases/(default)/users",
+            },
+          },
+          "path": "projects/test-project/databases/(default)",
+        },
+      },
+      "path": "projects/test-project",
+    },
+  },
+}
+`;
