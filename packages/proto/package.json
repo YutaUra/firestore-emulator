@@ -1,9 +1,12 @@
 {
   "name": "@firestore-emulator/proto",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "license": "MIT",
   "description": "Generated Firestore Protobufs For Firestore Emulator",
   "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "test": "vitest --run",
     "test:watch": "vitest",

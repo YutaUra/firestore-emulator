@@ -1,8 +1,11 @@
 {
   "name": "@firestore-emulator/server",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "license": "MIT",
   "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "dist/cjs/index.js",
   "types": "dist/cjs/index.d.ts",
   "module": "dist/esm/index.js",
