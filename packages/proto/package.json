@@ -3,9 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "description": "Generated Firestore Protobufs For Firestore Emulator",
-  "publishConfig": {
-    "access": "public"
-  },
+  "private": false,
   "scripts": {
     "test": "vitest --run",
     "test:watch": "vitest",

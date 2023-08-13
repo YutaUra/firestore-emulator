@@ -17,9 +17,7 @@
       "types": "./dist/cjs/*"
     }
   },
-  "publishConfig": {
-    "access": "public"
-  },
+  "private": false,
   "scripts": {
     "test": "vitest --run",
     "test:watch": "vitest",

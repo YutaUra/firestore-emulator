@@ -2,13 +2,10 @@
   "name": "example-jest",
   "version": "0.0.0",
   "license": "MIT",
-  "publishConfig": {
-    "access": "restricted"
-  },
+  "private": true,
   "scripts": {
     "test": "jest",
-    "test:watch": "jest --watch",
-    "build": "vite build"
+    "test:watch": "jest --watch"
   },
   "dependencies": {
     "@firestore-emulator/jest": "workspace:*",
