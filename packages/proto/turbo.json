@@ -1,0 +1,18 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "extends": ["//"],
+  "pipeline": {
+    "build": {
+      "outputs": ["dist"],
+      "dependsOn": ["generate"],
+      "inputs": ["generated", "vite.config.ts"]
+    },
+    "generate": {
+      "outputs": ["generated"],
+      "inputs": [
+        "package.json",
+        "node_modules/@google-cloud/firestore/build/protos"
+      ]
+    }
+  }
+}
