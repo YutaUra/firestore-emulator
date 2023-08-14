@@ -7,6 +7,10 @@
   "publishConfig": {
     "access": "public"
   },
+  "files": [
+    "generated",
+    "dist"
+  ],
   "scripts": {
     "test": "vitest --run",
     "test:watch": "vitest",
