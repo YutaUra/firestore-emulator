@@ -1,5 +1,12 @@
 # @firestore-emulator/server
 
+## 0.0.3
+
+### Patch Changes
+
+- 703d9c6: support for FieldValue
+- 3256ed7: transaction support
+
 ## 0.0.2
 
 ### Patch Changes
