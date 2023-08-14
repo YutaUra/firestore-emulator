@@ -1,5 +1,154 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`FieldValue arrayRemove 1`] = `
+{
+  "projects": {
+    "test-project": {
+      "databases": {
+        "(default)": {
+          "collections": {
+            "users": {
+              "documents": {
+                "alice": {
+                  "collections": {},
+                  "fields": {
+                    "favoriteFruits": {
+                      "type": "array_value",
+                      "value": [
+                        {
+                          "type": "string_value",
+                          "value": "apple",
+                        },
+                        {
+                          "type": "map_value",
+                          "value": {
+                            "name": {
+                              "type": "string_value",
+                              "value": "grape",
+                            },
+                          },
+                        },
+                      ],
+                    },
+                    "name": {
+                      "type": "string_value",
+                      "value": "Alice",
+                    },
+                  },
+                  "path": "projects/test-project/databases/(default)/users/alice",
+                },
+              },
+              "path": "projects/test-project/databases/(default)/users",
+            },
+          },
+          "path": "projects/test-project/databases/(default)",
+        },
+      },
+      "path": "projects/test-project",
+    },
+  },
+}
+`;
+
+exports[`FieldValue arrayUnion 1`] = `
+{
+  "projects": {
+    "test-project": {
+      "databases": {
+        "(default)": {
+          "collections": {
+            "users": {
+              "documents": {
+                "alice": {
+                  "collections": {},
+                  "fields": {
+                    "favoriteFruits": {
+                      "type": "array_value",
+                      "value": [
+                        {
+                          "type": "string_value",
+                          "value": "apple",
+                        },
+                        {
+                          "type": "map_value",
+                          "value": {
+                            "name": {
+                              "type": "string_value",
+                              "value": "banana",
+                            },
+                          },
+                        },
+                        {
+                          "type": "string_value",
+                          "value": "orange",
+                        },
+                        {
+                          "type": "map_value",
+                          "value": {
+                            "name": {
+                              "type": "string_value",
+                              "value": "grape",
+                            },
+                          },
+                        },
+                      ],
+                    },
+                    "name": {
+                      "type": "string_value",
+                      "value": "Alice",
+                    },
+                  },
+                  "path": "projects/test-project/databases/(default)/users/alice",
+                },
+              },
+              "path": "projects/test-project/databases/(default)/users",
+            },
+          },
+          "path": "projects/test-project/databases/(default)",
+        },
+      },
+      "path": "projects/test-project",
+    },
+  },
+}
+`;
+
+exports[`FieldValue increment 1`] = `
+{
+  "projects": {
+    "test-project": {
+      "databases": {
+        "(default)": {
+          "collections": {
+            "users": {
+              "documents": {
+                "alice": {
+                  "collections": {},
+                  "fields": {
+                    "age": {
+                      "type": "integer_value",
+                      "value": 21,
+                    },
+                    "name": {
+                      "type": "string_value",
+                      "value": "Alice",
+                    },
+                  },
+                  "path": "projects/test-project/databases/(default)/users/alice",
+                },
+              },
+              "path": "projects/test-project/databases/(default)/users",
+            },
+          },
+          "path": "projects/test-project/databases/(default)",
+        },
+      },
+      "path": "projects/test-project",
+    },
+  },
+}
+`;
+
 exports[`can create document 1`] = `
 {
   "projects": {

@@ -4,6 +4,7 @@ import {
   initializeFirestore,
   Timestamp,
   GeoPoint,
+  FieldValue,
 } from "firebase-admin/firestore";
 import fetch from "node-fetch";
 import { getSeconds } from "date-fns";
@@ -446,6 +447,106 @@ describe("transaction", () => {
           { merge: true }
         );
       });
+      return db.collection("users").doc("alice").get();
+    });
+    assert(realResult.status === "fulfilled");
+    assert(emulatorResult.status === "fulfilled");
+    expect(emulatorResult.value.data()).toEqual(realResult.value.data());
+    expect(emulator.state.toJSON()).toMatchSnapshot();
+  });
+});
+
+describe("FieldValue", () => {
+  it("serverTimestamp", async () => {
+    const [realResult, emulatorResult] = await testCase(async (db) => {
+      await db.collection("users").doc("alice").set({
+        name: "Alice",
+        createdAt: FieldValue.serverTimestamp(),
+      });
+
+      return db.collection("users").doc("alice").get();
+    });
+    assert(realResult.status === "fulfilled");
+    assert(emulatorResult.status === "fulfilled");
+    expect(emulatorResult.value.data()?.["createdAt"]).toBeCloseToTimestamp(
+      realResult.value.data()?.["createdAt"]
+    );
+  });
+
+  it("arrayUnion", async () => {
+    const [realResult, emulatorResult] = await testCase(async (db) => {
+      await db
+        .collection("users")
+        .doc("alice")
+        .set({
+          name: "Alice",
+          favoriteFruits: ["apple", { name: "banana" }],
+        });
+
+      await db
+        .collection("users")
+        .doc("alice")
+        .update({
+          favoriteFruits: FieldValue.arrayUnion(
+            "orange",
+            { name: "grape" },
+            { name: "banana" },
+            "apple"
+          ),
+        });
+
+      return db.collection("users").doc("alice").get();
+    });
+    assert(realResult.status === "fulfilled");
+    assert(emulatorResult.status === "fulfilled");
+    expect(emulatorResult.value.data()).toEqual(realResult.value.data());
+    expect(emulator.state.toJSON()).toMatchSnapshot();
+  });
+
+  it("arrayRemove", async () => {
+    const [realResult, emulatorResult] = await testCase(async (db) => {
+      await db
+        .collection("users")
+        .doc("alice")
+        .set({
+          name: "Alice",
+          favoriteFruits: [
+            "apple",
+            "banana",
+            { name: "orange" },
+            { name: "grape" },
+          ],
+        });
+
+      await db
+        .collection("users")
+        .doc("alice")
+        .update({
+          favoriteFruits: FieldValue.arrayRemove("banana", { name: "orange" }),
+        });
+
+      return db.collection("users").doc("alice").get();
+    });
+    assert(realResult.status === "fulfilled");
+    assert(emulatorResult.status === "fulfilled");
+    expect(emulatorResult.value.data()).toEqual(realResult.value.data());
+    expect(emulator.state.toJSON()).toMatchSnapshot();
+  });
+
+  it("increment", async () => {
+    const [realResult, emulatorResult] = await testCase(async (db) => {
+      await db.collection("users").doc("alice").set({
+        name: "Alice",
+        age: 20,
+      });
+
+      await db
+        .collection("users")
+        .doc("alice")
+        .update({
+          age: FieldValue.increment(1),
+        });
+
       return db.collection("users").doc("alice").get();
     });
     assert(realResult.status === "fulfilled");

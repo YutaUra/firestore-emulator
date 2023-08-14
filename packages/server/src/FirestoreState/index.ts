@@ -6,6 +6,8 @@ import {
   Value as v1Value,
 } from "@firestore-emulator/proto/dist/google/firestore/v1/document";
 import {
+  DocumentTransformFieldTransformServerValue,
+  DocumentTransformFieldTransform as v1DocumentTransformFieldTransform,
   Write as v1Write,
   WriteResult as v1WriteResult,
 } from "@firestore-emulator/proto/dist/google/firestore/v1/write";
@@ -70,6 +72,9 @@ export interface FirestoreStateDocumentField<
   value: FirestoreStateDocumentFieldTypes[V][0];
   toJSON(): FirestoreStateDocumentFieldTypes[V][1];
   toV1ValueObject(): ValueObjectType;
+  equals(
+    other: FirestoreStateDocumentField<FirestoreStateDocumentFieldType>
+  ): boolean;
 }
 
 export class FirestoreStateDocumentStringField
@@ -85,6 +90,15 @@ export class FirestoreStateDocumentStringField
   toV1ValueObject(): ValueObjectType {
     return { string_value: this.value };
   }
+
+  equals(
+    other: FirestoreStateDocumentField<FirestoreStateDocumentFieldType>
+  ): boolean {
+    return (
+      other instanceof FirestoreStateDocumentStringField &&
+      other.value === this.value
+    );
+  }
 }
 
 export class FirestoreStateDocumentNullField
@@ -98,6 +112,12 @@ export class FirestoreStateDocumentNullField
 
   toV1ValueObject(): ValueObjectType {
     return { null_value: NullValue.NULL_VALUE };
+  }
+
+  equals(
+    other: FirestoreStateDocumentField<FirestoreStateDocumentFieldType>
+  ): boolean {
+    return other.type === this.type;
   }
 }
 
@@ -113,6 +133,15 @@ export class FirestoreStateDocumentBooleanField
 
   toV1ValueObject(): ValueObjectType {
     return { boolean_value: this.value };
+  }
+
+  equals(
+    other: FirestoreStateDocumentField<FirestoreStateDocumentFieldType>
+  ): boolean {
+    return (
+      other instanceof FirestoreStateDocumentBooleanField &&
+      other.value === this.value
+    );
   }
 }
 
@@ -133,6 +162,15 @@ export class FirestoreStateDocumentIntegerField
   toV1ValueObject(): ValueObjectType {
     return { integer_value: this.value };
   }
+
+  equals(
+    other: FirestoreStateDocumentField<FirestoreStateDocumentFieldType>
+  ): boolean {
+    return (
+      other instanceof FirestoreStateDocumentIntegerField &&
+      other.value === this.value
+    );
+  }
 }
 
 export class FirestoreStateDocumentDoubleField
@@ -148,6 +186,15 @@ export class FirestoreStateDocumentDoubleField
   toV1ValueObject(): ValueObjectType {
     return { double_value: this.value };
   }
+
+  equals(
+    other: FirestoreStateDocumentField<FirestoreStateDocumentFieldType>
+  ): boolean {
+    return (
+      other instanceof FirestoreStateDocumentDoubleField &&
+      other.value === this.value
+    );
+  }
 }
 
 export class FirestoreStateDocumentTimestampField
@@ -156,12 +203,29 @@ export class FirestoreStateDocumentTimestampField
   type: "timestamp_value" = "timestamp_value";
   constructor(readonly value: { seconds: number; nanos: number }) {}
 
+  static fromDate(date: Date) {
+    return new FirestoreStateDocumentTimestampField({
+      seconds: Math.floor(date.getTime() / 1000),
+      nanos: (date.getTime() % 1000) * 1000000,
+    });
+  }
+
   toJSON() {
     return { type: "timestamp_value", value: this.value } as const;
   }
 
   toV1ValueObject(): ValueObjectType {
     return { timestamp_value: this.value };
+  }
+
+  equals(
+    other: FirestoreStateDocumentField<FirestoreStateDocumentFieldType>
+  ): boolean {
+    return (
+      other instanceof FirestoreStateDocumentTimestampField &&
+      other.value.seconds === this.value.seconds &&
+      other.value.nanos === this.value.nanos
+    );
   }
 }
 
@@ -178,6 +242,15 @@ export class FirestoreStateDocumentBytesField
   toV1ValueObject(): ValueObjectType {
     return { bytes_value: this.value };
   }
+
+  equals(
+    other: FirestoreStateDocumentField<FirestoreStateDocumentFieldType>
+  ): boolean {
+    return (
+      other instanceof FirestoreStateDocumentBytesField &&
+      other.value.toString() === this.value.toString()
+    );
+  }
 }
 
 export class FirestoreStateDocumentReferenceField
@@ -193,6 +266,15 @@ export class FirestoreStateDocumentReferenceField
   toV1ValueObject(): ValueObjectType {
     return { reference_value: this.value };
   }
+
+  equals(
+    other: FirestoreStateDocumentField<FirestoreStateDocumentFieldType>
+  ): boolean {
+    return (
+      other instanceof FirestoreStateDocumentReferenceField &&
+      other.value === this.value
+    );
+  }
 }
 
 export class FirestoreStateDocumentGeoPointField
@@ -207,6 +289,16 @@ export class FirestoreStateDocumentGeoPointField
 
   toV1ValueObject(): ValueObjectType {
     return { geo_point_value: this.value };
+  }
+
+  equals(
+    other: FirestoreStateDocumentField<FirestoreStateDocumentFieldType>
+  ): boolean {
+    return (
+      other instanceof FirestoreStateDocumentGeoPointField &&
+      other.value.latitude === this.value.latitude &&
+      other.value.longitude === this.value.longitude
+    );
   }
 }
 
@@ -229,6 +321,20 @@ export class FirestoreStateDocumentArrayField
     return {
       array_value: { values: this.value.map((v) => v.toV1ValueObject()) },
     };
+  }
+
+  equals(
+    other: FirestoreStateDocumentField<FirestoreStateDocumentFieldType>
+  ): boolean {
+    return (
+      other instanceof FirestoreStateDocumentArrayField &&
+      other.value.length === this.value.length &&
+      other.value.every((v, i) => {
+        const item = this.value[i];
+        if (!item) return false;
+        return item.equals(v);
+      })
+    );
   }
 }
 
@@ -260,6 +366,20 @@ export class FirestoreStateDocumentMapField
         ),
       },
     };
+  }
+
+  equals(
+    other: FirestoreStateDocumentField<FirestoreStateDocumentFieldType>
+  ): boolean {
+    return (
+      other instanceof FirestoreStateDocumentMapField &&
+      Object.keys(other.value).length === Object.keys(this.value).length &&
+      Object.entries(this.value).every(([k, v]) => {
+        const item = other.value[k];
+        if (!item) return false;
+        return item.equals(v);
+      })
+    );
   }
 }
 
@@ -544,6 +664,121 @@ export class FirestoreStateDocument implements HasCollections {
   getPath(): string {
     return `${this.parent.getPath()}/${this.name}`;
   }
+
+  v1Transform(date: Date, transforms: v1DocumentTransformFieldTransform[]) {
+    transforms.forEach((transform) => {
+      const field = this.getField(transform.field_path);
+      if (transform.has_increment) {
+        if (transform.increment.has_integer_value) {
+          if (!field) {
+            return this.set(date, {
+              [transform.field_path]: new FirestoreStateDocumentIntegerField(
+                transform.increment.integer_value
+              ),
+            });
+          } else if (field instanceof FirestoreStateDocumentIntegerField) {
+            return this.set(date, {
+              [transform.field_path]: new FirestoreStateDocumentIntegerField(
+                field.value + transform.increment.integer_value
+              ),
+            });
+          } else if (field instanceof FirestoreStateDocumentDoubleField) {
+            return this.set(date, {
+              [transform.field_path]: new FirestoreStateDocumentDoubleField(
+                field.value + transform.increment.integer_value
+              ),
+            });
+          } else {
+            throw new Error(
+              `Invalid transform: ${transform}. increment transform can only be applied to an integer or a double field`
+            );
+          }
+        } else if (transform.increment.has_double_value) {
+          if (!field) {
+            return this.set(date, {
+              [transform.field_path]: new FirestoreStateDocumentDoubleField(
+                transform.increment.double_value
+              ),
+            });
+          } else if (
+            field instanceof FirestoreStateDocumentIntegerField ||
+            field instanceof FirestoreStateDocumentDoubleField
+          ) {
+            return this.set(date, {
+              [transform.field_path]: new FirestoreStateDocumentDoubleField(
+                field.value + transform.increment.double_value
+              ),
+            });
+          } else {
+            throw new Error(
+              `Invalid transform: ${transform}. increment transform can only be applied to an integer or a double field`
+            );
+          }
+        }
+        throw new Error(
+          `Invalid transform: ${transform}. increment transform can only be applied to an integer or a double field`
+        );
+      }
+      if (transform.has_remove_all_from_array) {
+        const removeFields = transform.remove_all_from_array.values.map(
+          convertV1DocumentField
+        );
+        if (field instanceof FirestoreStateDocumentArrayField) {
+          const removedFields = field.value.filter(
+            (value) =>
+              !removeFields.some((removeField) => removeField.equals(value))
+          );
+          return this.set(date, {
+            [transform.field_path]: new FirestoreStateDocumentArrayField(
+              removedFields
+            ),
+          });
+        }
+      }
+      if (transform.has_append_missing_elements) {
+        const appendFields = transform.append_missing_elements.values.map(
+          convertV1DocumentField
+        );
+        if (field instanceof FirestoreStateDocumentArrayField) {
+          const appendedFields = [
+            ...field.value,
+            ...appendFields.filter(
+              (appendField) =>
+                !field.value.some((value) => value.equals(appendField))
+            ),
+          ];
+          return this.set(date, {
+            [transform.field_path]: new FirestoreStateDocumentArrayField(
+              appendedFields
+            ),
+          });
+        }
+      }
+      if (transform.has_set_to_server_value) {
+        if (
+          transform.set_to_server_value ===
+          DocumentTransformFieldTransformServerValue.REQUEST_TIME
+        ) {
+          return this.set(date, {
+            [transform.field_path]:
+              FirestoreStateDocumentTimestampField.fromDate(date),
+          });
+        }
+        if (
+          transform.set_to_server_value ===
+          DocumentTransformFieldTransformServerValue.SERVER_VALUE_UNSPECIFIED
+        ) {
+          throw new Error(
+            `Invalid transform: ${transform}. set_to_server_value must be a valid value`
+          );
+        }
+      }
+
+      throw new Error(
+        `Invalid transform: ${JSON.stringify(transform.toObject(), null, 4)}`
+      );
+    });
+  }
 }
 
 export class FirestoreStateCollection {
@@ -787,6 +1022,9 @@ export class FirestoreState {
     writeTime: ReturnType<typeof Timestamp.prototype.toObject>,
     write: v1Write
   ): v1WriteResult {
+    const date = new Date(
+      (writeTime.seconds ?? 0) * 1000 + (writeTime.nanos ?? 0) / 1000 / 1000
+    );
     if (write.delete) {
       const document = this.getDocument(write.delete);
       if (!document.metadata.hasExist) {
@@ -797,9 +1035,6 @@ export class FirestoreState {
         update_time: writeTime,
         transform_results: [],
       });
-    }
-    if (write.update_transforms && write.update_transforms.length > 0) {
-      throw new Error("update_transforms is not implemented");
     }
     if (write.update) {
       if (write.update.create_time) {
@@ -819,6 +1054,7 @@ export class FirestoreState {
             "Invalid write: current_document.exists doesn't match"
           );
         }
+
         document.create(
           new Date(
             (writeTime.seconds ?? 0) * 1000 +
@@ -831,6 +1067,7 @@ export class FirestoreState {
             ])
           )
         );
+        document.v1Transform(date, write.update_transforms);
       } else if (write.current_document?.exists === true) {
         if (!document.metadata.hasExist) {
           throw new FirestoreEmulatorError(
@@ -845,6 +1082,7 @@ path <
 `
           );
         }
+
         document.update(
           new Date(
             (writeTime.seconds ?? 0) * 1000 +
@@ -860,13 +1098,10 @@ path <
               .map(([key, field]) => [key, convertV1DocumentField(field)])
           )
         );
+        document.v1Transform(date, write.update_transforms);
       } else {
-        document.set(
-          new Date(
-            (writeTime.seconds ?? 0) * 1000 +
-              (writeTime.nanos ?? 0) / 1000 / 1000
-          ),
-          Object.fromEntries(
+        document.set(date, {
+          ...Object.fromEntries(
             Array.from(fields.entries())
               .filter(([key]) =>
                 write.update_mask?.field_paths
@@ -874,8 +1109,9 @@ path <
                   : true
               )
               .map(([key, field]) => [key, convertV1DocumentField(field)])
-          )
-        );
+          ),
+        });
+        document.v1Transform(date, write.update_transforms);
       }
 
       return v1WriteResult.fromObject({
