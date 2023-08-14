@@ -1,5 +1,11 @@
 # @firestore-emulator/server
 
+## 0.0.2
+
+### Patch Changes
+
+- 113b00b: field type support
+
 ## 0.0.1
 
 ### Patch Changes
