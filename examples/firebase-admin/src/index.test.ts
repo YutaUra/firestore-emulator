@@ -555,3 +555,32 @@ describe("FieldValue", () => {
     expect(emulator.state.toJSON()).toMatchSnapshot();
   });
 });
+
+describe("nested collection", () => {
+  it.only("set", async () => {
+    const [realResult, emulatorResult] = await testCase(async (db) => {
+      await db
+        .collection("users")
+        .doc("alice")
+        .collection("posts")
+        .doc("post1")
+        .set({
+          title: "Hello",
+          body: "World",
+        });
+
+      return db
+        .collection("users")
+        .doc("alice")
+        .collection("posts")
+        .doc("post1")
+        .get();
+    });
+    assert(realResult.status === "fulfilled");
+    if (emulatorResult.status === "rejected") throw emulatorResult.reason;
+    assert(emulatorResult.status === "fulfilled");
+    expect(emulatorResult.value.data()).toEqual(realResult.value.data());
+    expect(emulatorResult.value.ref.path).toEqual(realResult.value.ref.path);
+    expect(emulator.state.toJSON()).toMatchSnapshot();
+  });
+});

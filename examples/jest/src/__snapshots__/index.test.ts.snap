@@ -12,7 +12,10 @@ exports[`can create document can create document 1`] = `
                 "alice": {
                   "collections": {},
                   "fields": {
-                    "name": "Alice",
+                    "name": {
+                      "type": "string_value",
+                      "value": "Alice",
+                    },
                   },
                   "path": "projects/test-project/databases/(default)/users/alice",
                 },

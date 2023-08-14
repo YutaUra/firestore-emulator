@@ -472,7 +472,7 @@ export class FirestoreStateDocument implements HasCollections {
         const collection = new FirestoreStateCollection(
           this.emitter,
           this.database,
-          this.parent.parent,
+          this,
           collectionName,
           {}
         );
@@ -990,7 +990,7 @@ export class FirestoreState {
       .getCollection(collectionName);
     let next = rest;
     while (next.length > 0) {
-      const [collectionName, documentId, ...rest] = next;
+      const [documentId, collectionName, ...rest] = next;
       if (
         typeof collectionName !== "string" ||
         typeof documentId !== "string"
@@ -1005,7 +1005,7 @@ export class FirestoreState {
 
   getDocument(path: string) {
     const [docId, ...rest] = path.split("/").reverse();
-    const collection = this.getCollection(rest.reverse().join("/"));
+    const collection = this.getCollection(rest.slice().reverse().join("/"));
 
     if (typeof docId !== "string") {
       throw new Error(`Invalid path: ${path}`);

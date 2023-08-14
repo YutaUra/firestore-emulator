@@ -753,6 +753,53 @@ exports[`field type timestamp 1`] = `
 }
 `;
 
+exports[`nested collection set 1`] = `
+{
+  "projects": {
+    "test-project": {
+      "databases": {
+        "(default)": {
+          "collections": {
+            "users": {
+              "documents": {
+                "alice": {
+                  "collections": {
+                    "posts": {
+                      "documents": {
+                        "post1": {
+                          "collections": {},
+                          "fields": {
+                            "body": {
+                              "type": "string_value",
+                              "value": "World",
+                            },
+                            "title": {
+                              "type": "string_value",
+                              "value": "Hello",
+                            },
+                          },
+                          "path": "projects/test-project/databases/(default)/users/alice/posts/post1",
+                        },
+                      },
+                      "path": "projects/test-project/databases/(default)/users/alice/posts",
+                    },
+                  },
+                  "fields": {},
+                  "path": "projects/test-project/databases/(default)/users/alice",
+                },
+              },
+              "path": "projects/test-project/databases/(default)/users",
+            },
+          },
+          "path": "projects/test-project/databases/(default)",
+        },
+      },
+      "path": "projects/test-project",
+    },
+  },
+}
+`;
+
 exports[`transaction delete in transaction 1`] = `
 {
   "projects": {
