@@ -6,9 +6,6 @@ describe("can create document", () => {
   const db = new Firestore();
 
   it("can create document", async () => {
-    emulator.state.emitter.on("create-document", ({ document }) => {
-      console.log("create-document", document);
-    });
     await db.collection("users").doc("alice").set({
       name: "Alice",
     });
@@ -19,7 +16,6 @@ describe("can create document", () => {
     expect(doc.data()).toEqual({
       name: "Alice",
     });
-    console.log(emulator.state.toJSON());
     expect(emulator.state.toJSON()).toMatchSnapshot();
 
     emulator.state.emitter.removeAllListeners();

@@ -24,6 +24,7 @@ export default class FirestoreEmulatorEnvironment extends TestEnvironment {
     this.global.emulator = {
       state: this.server.state,
       host: `0.0.0.0:${port}`,
+      port,
     };
   }
 

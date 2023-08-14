@@ -6,5 +6,6 @@ declare global {
   var emulator: {
     state: FirestoreState;
     host: string;
+    port: number;
   };
 }

@@ -38,6 +38,7 @@ import { FirestoreState } from "../../FirestoreState";
 import { Document } from "@firestore-emulator/proto/dist/google/firestore/v1/document";
 import { Empty } from "@firestore-emulator/proto/dist/google/protobuf/empty";
 import { Timestamp } from "@firestore-emulator/proto/dist/google/protobuf/timestamp";
+import { FirestoreEmulatorError } from "../../error/error";
 
 export class FirestoreServiceV1Impl extends UnimplementedFirestoreService {
   #state: FirestoreState;
@@ -110,10 +111,7 @@ export class FirestoreServiceV1Impl extends UnimplementedFirestoreService {
     });
     try {
       const results = call.request.writes.map((write) => {
-        return this.#state.writeV1Document(
-          createTime.toObject(),
-          write.toObject()
-        );
+        return this.#state.writeV1Document(createTime.toObject(), write);
       });
       callback(
         null,
@@ -123,7 +121,20 @@ export class FirestoreServiceV1Impl extends UnimplementedFirestoreService {
         })
       );
     } catch (err) {
-      console.log(err);
+      console.error(err);
+
+      if (err instanceof FirestoreEmulatorError) {
+        callback(
+          {
+            message: err.message,
+            code: err.code,
+            name: "Error",
+            cause: err,
+          },
+          null
+        );
+        return;
+      }
       callback(
         {
           message: "Something went wrong",

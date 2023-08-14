@@ -1,7 +1,10 @@
 import { produce } from "immer";
 import { EventEmitter } from "node:events";
 import { TypeSafeEventEmitter } from "typesafe-event-emitter";
-import { Document as v1Document } from "@firestore-emulator/proto/dist/google/firestore/v1/document";
+import {
+  Document as v1Document,
+  Value as v1Value,
+} from "@firestore-emulator/proto/dist/google/firestore/v1/document";
 import {
   Write as v1Write,
   WriteResult as v1WriteResult,
@@ -12,6 +15,9 @@ import {
 } from "@firestore-emulator/proto/dist/google/firestore/v1/query";
 import { Timestamp } from "@firestore-emulator/proto/dist/google/protobuf/timestamp";
 import { assertNever } from "assert-never";
+import { FirestoreEmulatorError } from "../error/error";
+import { Status } from "@grpc/grpc-js/build/src/constants";
+import { NullValue } from "@firestore-emulator/proto/dist/google/protobuf/struct";
 
 type Events = {
   "add-project": { project: FirestoreStateProject };
@@ -25,17 +31,45 @@ type Events = {
 };
 
 export type FirestoreStateDocumentFieldTypes = {
-  string_value: string;
+  string_value: [string, { type: "string_value"; value: string }];
+  null_value: [null, { type: "null_value"; value: null }];
+  boolean_value: [boolean, { type: "boolean_value"; value: boolean }];
+  integer_value: [number, { type: "integer_value"; value: number }];
+  double_value: [number, { type: "double_value"; value: number }];
+  timestamp_value: [
+    { seconds: number; nanos: number },
+    { type: "timestamp_value"; value: { seconds: number; nanos: number } }
+  ];
+  bytes_value: [Uint8Array, { type: "bytes_value"; value: Uint8Array }];
+  reference_value: [string, { type: "reference_value"; value: string }];
+  geo_point_value: [
+    { latitude: number; longitude: number },
+    { type: "geo_point_value"; value: { latitude: number; longitude: number } }
+  ];
+  array_value: [
+    FirestoreStateDocumentField<FirestoreStateDocumentFieldType>[],
+    { type: "array_value"; value: unknown[] }
+  ];
+  map_value: [
+    Record<
+      string,
+      FirestoreStateDocumentField<FirestoreStateDocumentFieldType>
+    >,
+    { type: "map_value"; value: Record<string, unknown> }
+  ];
 };
 
 export type FirestoreStateDocumentFieldType =
   keyof FirestoreStateDocumentFieldTypes;
 
+export type ValueObjectType = ReturnType<typeof v1Value.prototype.toObject>;
 export interface FirestoreStateDocumentField<
   V extends FirestoreStateDocumentFieldType
 > {
   type: V;
-  toJSON(): FirestoreStateDocumentFieldTypes[V];
+  value: FirestoreStateDocumentFieldTypes[V][0];
+  toJSON(): FirestoreStateDocumentFieldTypes[V][1];
+  toV1ValueObject(): ValueObjectType;
 }
 
 export class FirestoreStateDocumentStringField
@@ -45,9 +79,237 @@ export class FirestoreStateDocumentStringField
   constructor(readonly value: string) {}
 
   toJSON() {
-    return this.value;
+    return { type: "string_value", value: this.value } as const;
+  }
+
+  toV1ValueObject(): ValueObjectType {
+    return { string_value: this.value };
   }
 }
+
+export class FirestoreStateDocumentNullField
+  implements FirestoreStateDocumentField<"null_value">
+{
+  type: "null_value" = "null_value";
+  value = null;
+  toJSON() {
+    return { type: "null_value", value: null } as const;
+  }
+
+  toV1ValueObject(): ValueObjectType {
+    return { null_value: NullValue.NULL_VALUE };
+  }
+}
+
+export class FirestoreStateDocumentBooleanField
+  implements FirestoreStateDocumentField<"boolean_value">
+{
+  type: "boolean_value" = "boolean_value";
+  constructor(readonly value: boolean) {}
+
+  toJSON() {
+    return { type: "boolean_value", value: this.value } as const;
+  }
+
+  toV1ValueObject(): ValueObjectType {
+    return { boolean_value: this.value };
+  }
+}
+
+export class FirestoreStateDocumentIntegerField
+  implements FirestoreStateDocumentField<"integer_value">
+{
+  type: "integer_value" = "integer_value";
+  constructor(readonly value: number) {
+    if (!Number.isInteger(value)) {
+      throw new Error(`value must be integer. value=${value}`);
+    }
+  }
+
+  toJSON() {
+    return { type: "integer_value", value: this.value } as const;
+  }
+
+  toV1ValueObject(): ValueObjectType {
+    return { integer_value: this.value };
+  }
+}
+
+export class FirestoreStateDocumentDoubleField
+  implements FirestoreStateDocumentField<"double_value">
+{
+  type: "double_value" = "double_value";
+  constructor(readonly value: number) {}
+
+  toJSON() {
+    return { type: "double_value", value: this.value } as const;
+  }
+
+  toV1ValueObject(): ValueObjectType {
+    return { double_value: this.value };
+  }
+}
+
+export class FirestoreStateDocumentTimestampField
+  implements FirestoreStateDocumentField<"timestamp_value">
+{
+  type: "timestamp_value" = "timestamp_value";
+  constructor(readonly value: { seconds: number; nanos: number }) {}
+
+  toJSON() {
+    return { type: "timestamp_value", value: this.value } as const;
+  }
+
+  toV1ValueObject(): ValueObjectType {
+    return { timestamp_value: this.value };
+  }
+}
+
+export class FirestoreStateDocumentBytesField
+  implements FirestoreStateDocumentField<"bytes_value">
+{
+  type: "bytes_value" = "bytes_value";
+  constructor(readonly value: Uint8Array) {}
+
+  toJSON() {
+    return { type: "bytes_value", value: this.value } as const;
+  }
+
+  toV1ValueObject(): ValueObjectType {
+    return { bytes_value: this.value };
+  }
+}
+
+export class FirestoreStateDocumentReferenceField
+  implements FirestoreStateDocumentField<"reference_value">
+{
+  type: "reference_value" = "reference_value";
+  constructor(readonly value: string) {}
+
+  toJSON() {
+    return { type: "reference_value", value: this.value } as const;
+  }
+
+  toV1ValueObject(): ValueObjectType {
+    return { reference_value: this.value };
+  }
+}
+
+export class FirestoreStateDocumentGeoPointField
+  implements FirestoreStateDocumentField<"geo_point_value">
+{
+  type: "geo_point_value" = "geo_point_value";
+  constructor(readonly value: { latitude: number; longitude: number }) {}
+
+  toJSON() {
+    return { type: "geo_point_value", value: this.value } as const;
+  }
+
+  toV1ValueObject(): ValueObjectType {
+    return { geo_point_value: this.value };
+  }
+}
+
+export class FirestoreStateDocumentArrayField
+  implements FirestoreStateDocumentField<"array_value">
+{
+  type: "array_value" = "array_value";
+  constructor(
+    readonly value: FirestoreStateDocumentField<FirestoreStateDocumentFieldType>[]
+  ) {}
+
+  toJSON() {
+    return {
+      type: "array_value",
+      value: this.value.map((v) => v.toJSON()),
+    } as const;
+  }
+
+  toV1ValueObject(): ValueObjectType {
+    return {
+      array_value: { values: this.value.map((v) => v.toV1ValueObject()) },
+    };
+  }
+}
+
+export class FirestoreStateDocumentMapField
+  implements FirestoreStateDocumentField<"map_value">
+{
+  type: "map_value" = "map_value";
+  constructor(
+    readonly value: Record<
+      string,
+      FirestoreStateDocumentField<FirestoreStateDocumentFieldType>
+    >
+  ) {}
+
+  toJSON() {
+    return {
+      type: "map_value",
+      value: Object.fromEntries(
+        Object.entries(this.value).map(([k, v]) => [k, v.toJSON()])
+      ),
+    } as const;
+  }
+
+  toV1ValueObject(): ValueObjectType {
+    return {
+      map_value: {
+        fields: Object.fromEntries(
+          Object.entries(this.value).map(([k, v]) => [k, v.toV1ValueObject()])
+        ),
+      },
+    };
+  }
+}
+
+export const convertV1DocumentField = (
+  field: v1Value
+): FirestoreStateDocumentField<FirestoreStateDocumentFieldType> => {
+  if (field.has_string_value)
+    return new FirestoreStateDocumentStringField(field.string_value);
+  if (field.has_null_value) return new FirestoreStateDocumentNullField();
+  if (field.has_boolean_value)
+    return new FirestoreStateDocumentBooleanField(field.boolean_value);
+  if (field.has_integer_value)
+    return new FirestoreStateDocumentIntegerField(field.integer_value);
+  if (field.has_double_value)
+    return new FirestoreStateDocumentDoubleField(field.double_value);
+  if (field.has_timestamp_value)
+    return new FirestoreStateDocumentTimestampField({
+      nanos: field.timestamp_value.nanos ?? 0,
+      seconds: field.timestamp_value.seconds ?? 0,
+    });
+  if (field.has_bytes_value)
+    return new FirestoreStateDocumentBytesField(field.bytes_value);
+  if (field.has_reference_value)
+    return new FirestoreStateDocumentReferenceField(field.reference_value);
+  if (field.has_geo_point_value)
+    return new FirestoreStateDocumentGeoPointField({
+      latitude: field.geo_point_value.latitude ?? 0,
+      longitude: field.geo_point_value.longitude ?? 0,
+    });
+  if (field.has_array_value)
+    return new FirestoreStateDocumentArrayField(
+      (field.array_value.values ?? []).map(convertV1DocumentField)
+    );
+  if (field.has_map_value)
+    return new FirestoreStateDocumentMapField(
+      Object.fromEntries(
+        Array.from(field.map_value.fields.entries() ?? []).map(([k, v]) => [
+          k,
+          convertV1DocumentField(v),
+        ])
+      )
+    );
+  throw new Error(`unknown field type. field=${JSON.stringify(field)}`);
+};
+
+export const convertV1Value = (
+  value: v1Value
+): ReturnType<typeof v1Value.prototype.toObject> => {
+  return convertV1DocumentField(value).toV1ValueObject();
+};
 
 export interface HasCollections {
   getCollection(collectionName: string): FirestoreStateCollection;
@@ -74,6 +336,7 @@ export class FirestoreStateDocument implements HasCollections {
   };
   constructor(
     private emitter: TypeSafeEventEmitter<Events>,
+    readonly database: FirestoreStateDatabase,
     readonly parent: FirestoreStateCollection,
     readonly name: string,
     private fields: Record<
@@ -88,6 +351,7 @@ export class FirestoreStateDocument implements HasCollections {
       if (!(collectionName in draft)) {
         const collection = new FirestoreStateCollection(
           this.emitter,
+          this.database,
           this.parent.parent,
           collectionName,
           {}
@@ -120,23 +384,10 @@ export class FirestoreStateDocument implements HasCollections {
         : undefined,
       name: this.getPath(),
       fields: Object.fromEntries(
-        Object.entries(this.fields).map(([key, field]) => {
-          switch (field.type) {
-            case "string_value": {
-              return [
-                key,
-                // v1document.google.firestore.v1.Value.fromObject({
-                //   string_value: field.toJSON(),
-                // }).toObject(),
-                {
-                  string_value: field.toJSON(),
-                },
-              ];
-            }
-            default:
-              assertNever(field.type);
-          }
-        })
+        Object.entries(this.fields).map(([key, field]) => [
+          key,
+          field.toV1ValueObject(),
+        ])
       ),
     });
   }
@@ -148,12 +399,10 @@ export class FirestoreStateDocument implements HasCollections {
       create_time: document.create_time.toObject(),
       update_time: document.update_time.toObject(),
       fields: Object.fromEntries(
-        Array.from(document.fields).map(([key, value]) => {
-          if (value.has_string_value) {
-            return [key, { string_value: value.string_value }];
-          }
-          throw new Error("Not implemented");
-        })
+        Array.from(document.fields).map(([key, value]) => [
+          key,
+          convertV1Value(value),
+        ])
       ),
     };
   }
@@ -300,6 +549,7 @@ export class FirestoreStateDocument implements HasCollections {
 export class FirestoreStateCollection {
   constructor(
     private emitter: TypeSafeEventEmitter<Events>,
+    readonly database: FirestoreStateDatabase,
     readonly parent: HasCollections,
     readonly name: string,
     private documents: Record<string, FirestoreStateDocument>
@@ -310,6 +560,7 @@ export class FirestoreStateCollection {
       if (!(documentName in draft)) {
         const document = new FirestoreStateDocument(
           this.emitter,
+          this.database,
           this,
           documentName,
           {},
@@ -361,6 +612,7 @@ export class FirestoreStateDatabase implements HasCollections {
       if (!(collectionName in draft)) {
         const collection = new FirestoreStateCollection(
           this.emitter,
+          this,
           this,
           collectionName,
           {}
@@ -533,7 +785,7 @@ export class FirestoreState {
 
   writeV1Document(
     writeTime: ReturnType<typeof Timestamp.prototype.toObject>,
-    write: ReturnType<typeof v1Write.prototype.toObject>
+    write: v1Write
   ): v1WriteResult {
     if (write.delete) {
       const document = this.getDocument(write.delete);
@@ -573,23 +825,24 @@ export class FirestoreState {
               (writeTime.nanos ?? 0) / 1000 / 1000
           ),
           Object.fromEntries(
-            Object.entries(fields).map(([key, field]) => {
-              if (field.string_value) {
-                return [
-                  key,
-                  new FirestoreStateDocumentStringField(field.string_value),
-                ];
-              }
-              throw new Error(
-                `Invalid write: field type is not supported, ${field}`
-              );
-            })
+            Array.from(fields.entries()).map(([key, field]) => [
+              key,
+              convertV1DocumentField(field),
+            ])
           )
         );
       } else if (write.current_document?.exists === true) {
         if (!document.metadata.hasExist) {
-          throw new Error(
-            "Invalid write: current_document.exists doesn't match"
+          throw new FirestoreEmulatorError(
+            Status.NOT_FOUND,
+            `no entity to update: app: "dev~${document.database.project.name}"
+path <
+  Element {
+    type: "${document.parent.name}"
+    name: "${document.name}"
+  }
+>
+`
           );
         }
         document.update(
@@ -598,23 +851,13 @@ export class FirestoreState {
               (writeTime.nanos ?? 0) / 1000 / 1000
           ),
           Object.fromEntries(
-            Object.entries(fields)
+            Array.from(fields.entries())
               .filter(([key]) =>
                 write.update_mask?.field_paths
                   ? write.update_mask.field_paths.includes(key)
                   : true
               )
-              .map(([key, field]) => {
-                if (field.string_value) {
-                  return [
-                    key,
-                    new FirestoreStateDocumentStringField(field.string_value),
-                  ];
-                }
-                throw new Error(
-                  `Invalid write: field type is not supported, ${field}`
-                );
-              })
+              .map(([key, field]) => [key, convertV1DocumentField(field)])
           )
         );
       } else {
@@ -624,23 +867,13 @@ export class FirestoreState {
               (writeTime.nanos ?? 0) / 1000 / 1000
           ),
           Object.fromEntries(
-            Object.entries(fields)
+            Array.from(fields.entries())
               .filter(([key]) =>
                 write.update_mask?.field_paths
                   ? write.update_mask.field_paths.includes(key)
                   : true
               )
-              .map(([key, field]) => {
-                if (field.string_value) {
-                  return [
-                    key,
-                    new FirestoreStateDocumentStringField(field.string_value),
-                  ];
-                }
-                throw new Error(
-                  `Invalid write: field type is not supported, ${field}`
-                );
-              })
+              .map(([key, field]) => [key, convertV1DocumentField(field)])
           )
         );
       }
@@ -684,7 +917,41 @@ export class FirestoreState {
             case v1StructuredQueryFieldFilterOperator.EQUAL: {
               switch (field.type) {
                 case "string_value":
-                  return field.toJSON() === filter.value?.string_value;
+                  return field.value === filter.value?.string_value;
+                case "integer_value":
+                  return field.value === filter.value?.integer_value;
+                case "boolean_value":
+                  return field.value === filter.value?.boolean_value;
+                case "double_value":
+                  return field.value === filter.value?.double_value;
+                case "reference_value":
+                  return field.value === filter.value?.reference_value;
+                case "geo_point_value": {
+                  const { latitude, longitude } =
+                    field.value as FirestoreStateDocumentFieldTypes["geo_point_value"][0];
+                  return (
+                    latitude === filter.value?.geo_point_value?.latitude &&
+                    longitude === filter.value?.geo_point_value?.longitude
+                  );
+                }
+                case "null_value":
+                  return filter.value?.null_value === NullValue.NULL_VALUE;
+                case "bytes_value":
+                  return field.value === filter.value?.bytes_value;
+                case "timestamp_value": {
+                  const { seconds, nanos } =
+                    field.value as FirestoreStateDocumentFieldTypes["timestamp_value"][0];
+                  return (
+                    seconds === filter.value?.timestamp_value?.seconds &&
+                    nanos === filter.value?.timestamp_value?.nanos
+                  );
+                }
+                case "array_value":
+                case "map_value":
+                  throw new Error(
+                    `Invalid query: field type is not supported, ${field.type}`
+                  );
+
                 default:
                   assertNever(field.type);
               }

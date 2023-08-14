@@ -1,0 +1,605 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`can create document 1`] = `
+{
+  "projects": {
+    "test-project": {
+      "databases": {
+        "(default)": {
+          "collections": {
+            "users": {
+              "documents": {
+                "alice": {
+                  "collections": {},
+                  "fields": {
+                    "name": {
+                      "type": "string_value",
+                      "value": "Alice",
+                    },
+                  },
+                  "path": "projects/test-project/databases/(default)/users/alice",
+                },
+              },
+              "path": "projects/test-project/databases/(default)/users",
+            },
+          },
+          "path": "projects/test-project/databases/(default)",
+        },
+      },
+      "path": "projects/test-project",
+    },
+  },
+}
+`;
+
+exports[`can delete document 1`] = `
+{
+  "projects": {
+    "test-project": {
+      "databases": {
+        "(default)": {
+          "collections": {
+            "users": {
+              "documents": {
+                "alice": {
+                  "collections": {},
+                  "fields": {
+                    "name": {
+                      "type": "string_value",
+                      "value": "Alice",
+                    },
+                  },
+                  "path": "projects/test-project/databases/(default)/users/alice",
+                },
+              },
+              "path": "projects/test-project/databases/(default)/users",
+            },
+          },
+          "path": "projects/test-project/databases/(default)",
+        },
+      },
+      "path": "projects/test-project",
+    },
+  },
+}
+`;
+
+exports[`can delete document 2`] = `
+{
+  "projects": {
+    "test-project": {
+      "databases": {
+        "(default)": {
+          "collections": {
+            "users": {
+              "documents": {
+                "alice": {
+                  "collections": {},
+                  "fields": {},
+                  "path": "projects/test-project/databases/(default)/users/alice",
+                },
+              },
+              "path": "projects/test-project/databases/(default)/users",
+            },
+          },
+          "path": "projects/test-project/databases/(default)",
+        },
+      },
+      "path": "projects/test-project",
+    },
+  },
+}
+`;
+
+exports[`can set document 1`] = `
+{
+  "projects": {
+    "test-project": {
+      "databases": {
+        "(default)": {
+          "collections": {
+            "users": {
+              "documents": {
+                "alice": {
+                  "collections": {},
+                  "fields": {
+                    "name": {
+                      "type": "string_value",
+                      "value": "Alice",
+                    },
+                  },
+                  "path": "projects/test-project/databases/(default)/users/alice",
+                },
+              },
+              "path": "projects/test-project/databases/(default)/users",
+            },
+          },
+          "path": "projects/test-project/databases/(default)",
+        },
+      },
+      "path": "projects/test-project",
+    },
+  },
+}
+`;
+
+exports[`can update document 1`] = `
+{
+  "projects": {
+    "test-project": {
+      "databases": {
+        "(default)": {
+          "collections": {
+            "users": {
+              "documents": {
+                "alice": {
+                  "collections": {},
+                  "fields": {
+                    "name": {
+                      "type": "string_value",
+                      "value": "Bob",
+                    },
+                  },
+                  "path": "projects/test-project/databases/(default)/users/alice",
+                },
+              },
+              "path": "projects/test-project/databases/(default)/users",
+            },
+          },
+          "path": "projects/test-project/databases/(default)",
+        },
+      },
+      "path": "projects/test-project",
+    },
+  },
+}
+`;
+
+exports[`field type array 1`] = `
+{
+  "projects": {
+    "test-project": {
+      "databases": {
+        "(default)": {
+          "collections": {
+            "users": {
+              "documents": {
+                "alice": {
+                  "collections": {},
+                  "fields": {
+                    "favoriteFruits": {
+                      "type": "array_value",
+                      "value": [
+                        {
+                          "type": "string_value",
+                          "value": "apple",
+                        },
+                        {
+                          "type": "string_value",
+                          "value": "banana",
+                        },
+                      ],
+                    },
+                  },
+                  "path": "projects/test-project/databases/(default)/users/alice",
+                },
+              },
+              "path": "projects/test-project/databases/(default)/users",
+            },
+          },
+          "path": "projects/test-project/databases/(default)",
+        },
+      },
+      "path": "projects/test-project",
+    },
+  },
+}
+`;
+
+exports[`field type boolean 1`] = `
+{
+  "projects": {
+    "test-project": {
+      "databases": {
+        "(default)": {
+          "collections": {
+            "users": {
+              "documents": {
+                "alice": {
+                  "collections": {},
+                  "fields": {
+                    "isAdult": {
+                      "type": "boolean_value",
+                      "value": true,
+                    },
+                  },
+                  "path": "projects/test-project/databases/(default)/users/alice",
+                },
+              },
+              "path": "projects/test-project/databases/(default)/users",
+            },
+          },
+          "path": "projects/test-project/databases/(default)",
+        },
+      },
+      "path": "projects/test-project",
+    },
+  },
+}
+`;
+
+exports[`field type geopoint 1`] = `
+{
+  "projects": {
+    "test-project": {
+      "databases": {
+        "(default)": {
+          "collections": {
+            "users": {
+              "documents": {
+                "alice": {
+                  "collections": {},
+                  "fields": {
+                    "location": {
+                      "type": "geo_point_value",
+                      "value": {
+                        "latitude": 35.681236,
+                        "longitude": 139.767125,
+                      },
+                    },
+                  },
+                  "path": "projects/test-project/databases/(default)/users/alice",
+                },
+              },
+              "path": "projects/test-project/databases/(default)/users",
+            },
+          },
+          "path": "projects/test-project/databases/(default)",
+        },
+      },
+      "path": "projects/test-project",
+    },
+  },
+}
+`;
+
+exports[`field type map 1`] = `
+{
+  "projects": {
+    "test-project": {
+      "databases": {
+        "(default)": {
+          "collections": {
+            "users": {
+              "documents": {
+                "alice": {
+                  "collections": {},
+                  "fields": {
+                    "address": {
+                      "type": "map_value",
+                      "value": {
+                        "city": {
+                          "type": "string_value",
+                          "value": "Tokyo",
+                        },
+                        "zipCode": {
+                          "type": "string_value",
+                          "value": "123-4567",
+                        },
+                      },
+                    },
+                  },
+                  "path": "projects/test-project/databases/(default)/users/alice",
+                },
+              },
+              "path": "projects/test-project/databases/(default)/users",
+            },
+          },
+          "path": "projects/test-project/databases/(default)",
+        },
+      },
+      "path": "projects/test-project",
+    },
+  },
+}
+`;
+
+exports[`field type map in array 1`] = `
+{
+  "projects": {
+    "test-project": {
+      "databases": {
+        "(default)": {
+          "collections": {
+            "users": {
+              "documents": {
+                "alice": {
+                  "collections": {},
+                  "fields": {
+                    "favoriteFruits": {
+                      "type": "array_value",
+                      "value": [
+                        {
+                          "type": "map_value",
+                          "value": {
+                            "color": {
+                              "type": "string_value",
+                              "value": "red",
+                            },
+                            "name": {
+                              "type": "string_value",
+                              "value": "apple",
+                            },
+                          },
+                        },
+                        {
+                          "type": "map_value",
+                          "value": {
+                            "color": {
+                              "type": "string_value",
+                              "value": "yellow",
+                            },
+                            "name": {
+                              "type": "string_value",
+                              "value": "banana",
+                            },
+                          },
+                        },
+                      ],
+                    },
+                  },
+                  "path": "projects/test-project/databases/(default)/users/alice",
+                },
+              },
+              "path": "projects/test-project/databases/(default)/users",
+            },
+          },
+          "path": "projects/test-project/databases/(default)",
+        },
+      },
+      "path": "projects/test-project",
+    },
+  },
+}
+`;
+
+exports[`field type map in map 1`] = `
+{
+  "projects": {
+    "test-project": {
+      "databases": {
+        "(default)": {
+          "collections": {
+            "users": {
+              "documents": {
+                "alice": {
+                  "collections": {},
+                  "fields": {
+                    "address": {
+                      "type": "map_value",
+                      "value": {
+                        "zipCode": {
+                          "type": "map_value",
+                          "value": {
+                            "postfix": {
+                              "type": "string_value",
+                              "value": "4567",
+                            },
+                            "prefix": {
+                              "type": "string_value",
+                              "value": "123",
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                  "path": "projects/test-project/databases/(default)/users/alice",
+                },
+              },
+              "path": "projects/test-project/databases/(default)/users",
+            },
+          },
+          "path": "projects/test-project/databases/(default)",
+        },
+      },
+      "path": "projects/test-project",
+    },
+  },
+}
+`;
+
+exports[`field type null 1`] = `
+{
+  "projects": {
+    "test-project": {
+      "databases": {
+        "(default)": {
+          "collections": {
+            "users": {
+              "documents": {
+                "alice": {
+                  "collections": {},
+                  "fields": {
+                    "address": {
+                      "type": "null_value",
+                      "value": null,
+                    },
+                  },
+                  "path": "projects/test-project/databases/(default)/users/alice",
+                },
+              },
+              "path": "projects/test-project/databases/(default)/users",
+            },
+          },
+          "path": "projects/test-project/databases/(default)",
+        },
+      },
+      "path": "projects/test-project",
+    },
+  },
+}
+`;
+
+exports[`field type number 1`] = `
+{
+  "projects": {
+    "test-project": {
+      "databases": {
+        "(default)": {
+          "collections": {
+            "users": {
+              "documents": {
+                "alice": {
+                  "collections": {},
+                  "fields": {
+                    "age": {
+                      "type": "integer_value",
+                      "value": 20,
+                    },
+                  },
+                  "path": "projects/test-project/databases/(default)/users/alice",
+                },
+              },
+              "path": "projects/test-project/databases/(default)/users",
+            },
+          },
+          "path": "projects/test-project/databases/(default)",
+        },
+      },
+      "path": "projects/test-project",
+    },
+  },
+}
+`;
+
+exports[`field type reference 1`] = `
+{
+  "projects": {
+    "test-project": {
+      "databases": {
+        "(default)": {
+          "collections": {
+            "users": {
+              "documents": {
+                "alice": {
+                  "collections": {},
+                  "fields": {
+                    "friend": {
+                      "type": "reference_value",
+                      "value": "projects/test-project/databases/(default)/documents/users/bob",
+                    },
+                  },
+                  "path": "projects/test-project/databases/(default)/users/alice",
+                },
+              },
+              "path": "projects/test-project/databases/(default)/users",
+            },
+          },
+          "path": "projects/test-project/databases/(default)",
+        },
+      },
+      "path": "projects/test-project",
+    },
+  },
+}
+`;
+
+exports[`field type reference 2`] = `
+{
+  "projects": {
+    "test-project": {
+      "databases": {
+        "(default)": {
+          "collections": {
+            "users": {
+              "documents": {
+                "alice": {
+                  "collections": {},
+                  "fields": {
+                    "friend": {
+                      "type": "reference_value",
+                      "value": "projects/test-project/databases/(default)/documents/users/bob",
+                    },
+                  },
+                  "path": "projects/test-project/databases/(default)/users/alice",
+                },
+              },
+              "path": "projects/test-project/databases/(default)/users",
+            },
+          },
+          "path": "projects/test-project/databases/(default)",
+        },
+      },
+      "path": "projects/test-project",
+    },
+  },
+}
+`;
+
+exports[`field type string 1`] = `
+{
+  "projects": {
+    "test-project": {
+      "databases": {
+        "(default)": {
+          "collections": {
+            "users": {
+              "documents": {
+                "alice": {
+                  "collections": {},
+                  "fields": {
+                    "name": {
+                      "type": "string_value",
+                      "value": "Alice",
+                    },
+                  },
+                  "path": "projects/test-project/databases/(default)/users/alice",
+                },
+              },
+              "path": "projects/test-project/databases/(default)/users",
+            },
+          },
+          "path": "projects/test-project/databases/(default)",
+        },
+      },
+      "path": "projects/test-project",
+    },
+  },
+}
+`;
+
+exports[`field type timestamp 1`] = `
+{
+  "projects": {
+    "test-project": {
+      "databases": {
+        "(default)": {
+          "collections": {
+            "users": {
+              "documents": {
+                "alice": {
+                  "collections": {},
+                  "fields": {
+                    "createdAt": {
+                      "type": "timestamp_value",
+                      "value": {
+                        "nanos": 0,
+                        "seconds": 1577836800,
+                      },
+                    },
+                  },
+                  "path": "projects/test-project/databases/(default)/users/alice",
+                },
+              },
+              "path": "projects/test-project/databases/(default)/users",
+            },
+          },
+          "path": "projects/test-project/databases/(default)",
+        },
+      },
+      "path": "projects/test-project",
+    },
+  },
+}
+`;
