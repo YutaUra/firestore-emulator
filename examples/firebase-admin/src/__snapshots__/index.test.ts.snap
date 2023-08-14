@@ -603,3 +603,134 @@ exports[`field type timestamp 1`] = `
   },
 }
 `;
+
+exports[`transaction delete in transaction 1`] = `
+{
+  "projects": {
+    "test-project": {
+      "databases": {
+        "(default)": {
+          "collections": {
+            "users": {
+              "documents": {
+                "alice": {
+                  "collections": {},
+                  "fields": {},
+                  "path": "projects/test-project/databases/(default)/users/alice",
+                },
+              },
+              "path": "projects/test-project/databases/(default)/users",
+            },
+          },
+          "path": "projects/test-project/databases/(default)",
+        },
+      },
+      "path": "projects/test-project",
+    },
+  },
+}
+`;
+
+exports[`transaction get and set in transaction 1`] = `
+{
+  "projects": {
+    "test-project": {
+      "databases": {
+        "(default)": {
+          "collections": {
+            "users": {
+              "documents": {
+                "alice": {
+                  "collections": {},
+                  "fields": {
+                    "age": {
+                      "type": "integer_value",
+                      "value": 21,
+                    },
+                    "name": {
+                      "type": "string_value",
+                      "value": "Alice",
+                    },
+                  },
+                  "path": "projects/test-project/databases/(default)/users/alice",
+                },
+              },
+              "path": "projects/test-project/databases/(default)/users",
+            },
+          },
+          "path": "projects/test-project/databases/(default)",
+        },
+      },
+      "path": "projects/test-project",
+    },
+  },
+}
+`;
+
+exports[`transaction set in transaction 1`] = `
+{
+  "projects": {
+    "test-project": {
+      "databases": {
+        "(default)": {
+          "collections": {
+            "users": {
+              "documents": {
+                "alice": {
+                  "collections": {},
+                  "fields": {
+                    "name": {
+                      "type": "string_value",
+                      "value": "Alice",
+                    },
+                  },
+                  "path": "projects/test-project/databases/(default)/users/alice",
+                },
+              },
+              "path": "projects/test-project/databases/(default)/users",
+            },
+          },
+          "path": "projects/test-project/databases/(default)",
+        },
+      },
+      "path": "projects/test-project",
+    },
+  },
+}
+`;
+
+exports[`transaction update in transaction 1`] = `
+{
+  "projects": {
+    "test-project": {
+      "databases": {
+        "(default)": {
+          "collections": {
+            "users": {
+              "documents": {
+                "alice": {
+                  "collections": {},
+                  "fields": {
+                    "age": {
+                      "type": "integer_value",
+                      "value": 21,
+                    },
+                    "name": {
+                      "type": "string_value",
+                      "value": "Alice",
+                    },
+                  },
+                  "path": "projects/test-project/databases/(default)/users/alice",
+                },
+              },
+              "path": "projects/test-project/databases/(default)/users",
+            },
+          },
+          "path": "projects/test-project/databases/(default)",
+        },
+      },
+      "path": "projects/test-project",
+    },
+  },
+}
+`;

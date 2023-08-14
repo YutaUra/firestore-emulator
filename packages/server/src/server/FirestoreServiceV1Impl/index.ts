@@ -97,9 +97,9 @@ export class FirestoreServiceV1Impl extends UnimplementedFirestoreService {
   }
   override BeginTransaction(
     _call: ServerUnaryCall<BeginTransactionRequest, BeginTransactionResponse>,
-    _callback: sendUnaryData<BeginTransactionResponse>
+    callback: sendUnaryData<BeginTransactionResponse>
   ): void {
-    throw new Error("Method<BeginTransaction> not implemented.");
+    callback(null, BeginTransactionResponse.fromObject({}));
   }
   override Commit(
     call: ServerUnaryCall<CommitRequest, CommitResponse>,
@@ -149,9 +149,9 @@ export class FirestoreServiceV1Impl extends UnimplementedFirestoreService {
   }
   override Rollback(
     _call: ServerUnaryCall<RollbackRequest, Empty>,
-    _callback: sendUnaryData<Empty>
+    callback: sendUnaryData<Empty>
   ): void {
-    throw new Error("Method<Rollback> not implemented.");
+    callback(null, Empty.fromObject({}));
   }
   override RunQuery(
     call: ServerWritableStream<RunQueryRequest, RunQueryResponse>
