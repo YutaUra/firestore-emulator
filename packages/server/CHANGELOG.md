@@ -1,5 +1,12 @@
 # @firestore-emulator/server
 
+## 0.0.10
+
+### Patch Changes
+
+- a6de38f: Remove unnecessary console.log
+  - @firestore-emulator/proto@0.0.10
+
 ## 0.0.9
 
 ### Patch Changes
