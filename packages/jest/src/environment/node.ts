@@ -18,14 +18,25 @@ export default class FirestoreEmulatorEnvironment extends TestEnvironment {
   override async setup() {
     await super.setup();
 
-    const [port] = await findFreePorts(1);
-    if (!port) throw new Error("Could not find a free port");
-    await this.server.start(port);
-    this.global.emulator = {
-      state: this.server.state,
-      host: `0.0.0.0:${port}`,
-      port,
-    };
+    const tryCount = 0;
+    while (tryCount < 50) {
+      const [port] = await findFreePorts(1);
+      if (!port) throw new Error("Could not find a free port");
+      try {
+        await this.server.start(port);
+        this.global.emulator = {
+          state: this.server.state,
+          host: `0.0.0.0:${port}`,
+          port,
+        };
+        return;
+      } catch (err) {
+        if (!(err instanceof Error)) throw err;
+        if (!err.message.startsWith("No address added out of total")) throw err;
+        continue;
+      }
+    }
+    throw new Error("Could not find a free port");
   }
 
   override async teardown() {
