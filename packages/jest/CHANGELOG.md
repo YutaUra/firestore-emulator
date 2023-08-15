@@ -1,5 +1,12 @@
 # @firestore-emulator/jest
 
+## 0.0.7
+
+### Patch Changes
+
+- retry to take port
+  - @firestore-emulator/server@0.0.7
+
 ## 0.0.6
 
 ### Patch Changes
