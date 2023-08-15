@@ -1,10 +1,7 @@
 import { produce } from "immer";
 import { EventEmitter } from "node:events";
 import { TypeSafeEventEmitter } from "typesafe-event-emitter";
-import {
-  Document as v1Document,
-  Value as v1Value,
-} from "@firestore-emulator/proto/dist/google/firestore/v1/document";
+import { Document as v1Document } from "@firestore-emulator/proto/dist/google/firestore/v1/document";
 import {
   DocumentTransformFieldTransformServerValue,
   DocumentTransformFieldTransform as v1DocumentTransformFieldTransform,
@@ -22,7 +19,20 @@ import { Timestamp } from "@firestore-emulator/proto/dist/google/protobuf/timest
 import { assertNever } from "assert-never";
 import { FirestoreEmulatorError } from "../error/error";
 import { Status } from "@grpc/grpc-js/build/src/constants";
-import { NullValue } from "@firestore-emulator/proto/dist/google/protobuf/struct";
+import {
+  TargetChangeTargetChangeType as v1TargetChangeTargetChangeType,
+  ListenRequest as v1ListenRequest,
+  ListenResponse as v1ListenResponse,
+} from "@firestore-emulator/proto/dist/google/firestore/v1/firestore";
+import {
+  FirestoreStateDocumentArrayField,
+  FirestoreStateDocumentDoubleField,
+  FirestoreStateDocumentFields,
+  FirestoreStateDocumentIntegerField,
+  FirestoreStateDocumentTimestampField,
+  convertV1DocumentField,
+  convertV1Value,
+} from "./field";
 
 type Events = {
   "add-project": { project: FirestoreStateProject };
@@ -33,615 +43,6 @@ type Events = {
   "update-document": { document: FirestoreStateDocument };
   "delete-document": { document: FirestoreStateDocument };
   "clear-all-projects": {};
-};
-
-export type ValueObjectType = ReturnType<typeof v1Value.prototype.toObject>;
-export interface FirestoreStateDocumentBaseField {
-  toJSON(): { type: string; value: unknown };
-  toV1ValueObject(): ValueObjectType;
-  eq(other: FirestoreStateDocumentFields): boolean;
-  lt(other: FirestoreStateDocumentFields): boolean;
-  lte(other: FirestoreStateDocumentFields): boolean;
-  gt(other: FirestoreStateDocumentFields): boolean;
-  gte(other: FirestoreStateDocumentFields): boolean;
-}
-
-export class FirestoreStateDocumentStringField
-  implements FirestoreStateDocumentBaseField
-{
-  type = "string_value" as const;
-  constructor(readonly value: string) {}
-
-  toJSON() {
-    return { type: this.type, value: this.value };
-  }
-
-  toV1ValueObject(): ValueObjectType {
-    return { string_value: this.value };
-  }
-
-  eq(other: FirestoreStateDocumentFields): boolean {
-    return (
-      other instanceof FirestoreStateDocumentStringField &&
-      this.value === other.value
-    );
-  }
-
-  lt(other: FirestoreStateDocumentFields): boolean {
-    return (
-      other instanceof FirestoreStateDocumentStringField &&
-      this.value < other.value
-    );
-  }
-
-  lte(other: FirestoreStateDocumentFields): boolean {
-    return (
-      other instanceof FirestoreStateDocumentStringField &&
-      this.value <= other.value
-    );
-  }
-
-  gt(other: FirestoreStateDocumentFields): boolean {
-    return (
-      other instanceof FirestoreStateDocumentStringField &&
-      this.value > other.value
-    );
-  }
-
-  gte(other: FirestoreStateDocumentFields): boolean {
-    return (
-      other instanceof FirestoreStateDocumentStringField &&
-      this.value >= other.value
-    );
-  }
-}
-
-export class FirestoreStateDocumentNullField
-  implements FirestoreStateDocumentBaseField
-{
-  type = "null_value" as const;
-  value = null;
-  toJSON() {
-    return { type: this.type, value: null } as const;
-  }
-
-  toV1ValueObject(): ValueObjectType {
-    return { null_value: NullValue.NULL_VALUE };
-  }
-
-  eq(other: FirestoreStateDocumentFields): boolean {
-    return other.type === this.type;
-  }
-
-  lt(_other: FirestoreStateDocumentFields): boolean {
-    return false;
-  }
-
-  lte(_other: FirestoreStateDocumentFields): boolean {
-    return false;
-  }
-
-  gt(_other: FirestoreStateDocumentFields): boolean {
-    return false;
-  }
-
-  gte(_other: FirestoreStateDocumentFields): boolean {
-    return false;
-  }
-}
-
-export class FirestoreStateDocumentBooleanField
-  implements FirestoreStateDocumentBaseField
-{
-  type = "boolean_value" as const;
-  constructor(readonly value: boolean) {}
-
-  toJSON() {
-    return { type: this.type, value: this.value };
-  }
-
-  toV1ValueObject(): ValueObjectType {
-    return { boolean_value: this.value };
-  }
-
-  eq(other: FirestoreStateDocumentFields): boolean {
-    return (
-      other instanceof FirestoreStateDocumentBooleanField &&
-      this.value === other.value
-    );
-  }
-
-  lt(_other: FirestoreStateDocumentFields): boolean {
-    return false;
-  }
-
-  lte(_other: FirestoreStateDocumentFields): boolean {
-    return false;
-  }
-
-  gt(_other: FirestoreStateDocumentFields): boolean {
-    return false;
-  }
-
-  gte(_other: FirestoreStateDocumentFields): boolean {
-    return false;
-  }
-}
-
-export class FirestoreStateDocumentIntegerField
-  implements FirestoreStateDocumentBaseField
-{
-  type = "integer_value" as const;
-  constructor(readonly value: number) {
-    if (!Number.isInteger(value)) {
-      throw new Error(`value must be integer. value=${value}`);
-    }
-  }
-
-  toJSON() {
-    return { type: this.type, value: this.value };
-  }
-
-  toV1ValueObject(): ValueObjectType {
-    return { integer_value: this.value };
-  }
-
-  eq(other: FirestoreStateDocumentFields): boolean {
-    return (
-      other instanceof FirestoreStateDocumentIntegerField &&
-      this.value === other.value
-    );
-  }
-
-  lt(other: FirestoreStateDocumentFields): boolean {
-    return (
-      other instanceof FirestoreStateDocumentIntegerField &&
-      this.value < other.value
-    );
-  }
-
-  lte(other: FirestoreStateDocumentFields): boolean {
-    return (
-      other instanceof FirestoreStateDocumentIntegerField &&
-      this.value <= other.value
-    );
-  }
-
-  gt(other: FirestoreStateDocumentFields): boolean {
-    return (
-      other instanceof FirestoreStateDocumentIntegerField &&
-      this.value > other.value
-    );
-  }
-
-  gte(other: FirestoreStateDocumentFields): boolean {
-    return (
-      other instanceof FirestoreStateDocumentIntegerField &&
-      this.value >= other.value
-    );
-  }
-}
-
-export class FirestoreStateDocumentDoubleField
-  implements FirestoreStateDocumentBaseField
-{
-  type = "double_value" as const;
-  constructor(readonly value: number) {}
-
-  toJSON() {
-    return { type: this.type, value: this.value };
-  }
-
-  toV1ValueObject(): ValueObjectType {
-    return { double_value: this.value };
-  }
-
-  eq(other: FirestoreStateDocumentFields): boolean {
-    return (
-      other instanceof FirestoreStateDocumentDoubleField &&
-      this.value === other.value
-    );
-  }
-
-  lt(other: FirestoreStateDocumentFields): boolean {
-    return (
-      other instanceof FirestoreStateDocumentDoubleField &&
-      this.value < other.value
-    );
-  }
-
-  lte(other: FirestoreStateDocumentFields): boolean {
-    return (
-      other instanceof FirestoreStateDocumentDoubleField &&
-      this.value <= other.value
-    );
-  }
-
-  gt(other: FirestoreStateDocumentFields): boolean {
-    return (
-      other instanceof FirestoreStateDocumentDoubleField &&
-      this.value > other.value
-    );
-  }
-
-  gte(other: FirestoreStateDocumentFields): boolean {
-    return (
-      other instanceof FirestoreStateDocumentDoubleField &&
-      this.value >= other.value
-    );
-  }
-}
-
-export class FirestoreStateDocumentTimestampField
-  implements FirestoreStateDocumentBaseField
-{
-  type = "timestamp_value" as const;
-  constructor(readonly value: { seconds: number; nanos: number }) {}
-
-  static fromDate(date: Date) {
-    return new FirestoreStateDocumentTimestampField({
-      seconds: Math.floor(date.getTime() / 1000),
-      nanos: (date.getTime() % 1000) * 1000000,
-    });
-  }
-
-  toJSON() {
-    return { type: this.type, value: this.value } as const;
-  }
-
-  toV1ValueObject(): ValueObjectType {
-    return { timestamp_value: this.value };
-  }
-
-  eq(other: FirestoreStateDocumentFields): boolean {
-    return (
-      other instanceof FirestoreStateDocumentTimestampField &&
-      this.value.seconds === other.value.seconds &&
-      this.value.nanos === other.value.nanos
-    );
-  }
-
-  lt(other: FirestoreStateDocumentFields): boolean {
-    return (
-      other instanceof FirestoreStateDocumentTimestampField &&
-      (this.value.seconds < other.value.seconds ||
-        (this.value.seconds === other.value.seconds &&
-          this.value.nanos < other.value.nanos))
-    );
-  }
-
-  lte(other: FirestoreStateDocumentFields): boolean {
-    return (
-      other instanceof FirestoreStateDocumentTimestampField &&
-      (this.value.seconds < other.value.seconds ||
-        (this.value.seconds === other.value.seconds &&
-          this.value.nanos <= other.value.nanos))
-    );
-  }
-
-  gt(other: FirestoreStateDocumentFields): boolean {
-    return (
-      other instanceof FirestoreStateDocumentTimestampField &&
-      (this.value.seconds > other.value.seconds ||
-        (this.value.seconds === other.value.seconds &&
-          this.value.nanos > other.value.nanos))
-    );
-  }
-
-  gte(other: FirestoreStateDocumentFields): boolean {
-    return (
-      other instanceof FirestoreStateDocumentTimestampField &&
-      (this.value.seconds > other.value.seconds ||
-        (this.value.seconds === other.value.seconds &&
-          this.value.nanos >= other.value.nanos))
-    );
-  }
-}
-
-export class FirestoreStateDocumentBytesField
-  implements FirestoreStateDocumentBaseField
-{
-  type = "bytes_value" as const;
-  constructor(readonly value: Uint8Array) {}
-
-  toJSON() {
-    return { type: this.type, value: this.value } as const;
-  }
-
-  toV1ValueObject(): ValueObjectType {
-    return { bytes_value: this.value };
-  }
-
-  eq(other: FirestoreStateDocumentFields): boolean {
-    return (
-      other instanceof FirestoreStateDocumentBytesField &&
-      this.value.toString() === other.value.toString()
-    );
-  }
-
-  lt(other: FirestoreStateDocumentFields): boolean {
-    return (
-      other instanceof FirestoreStateDocumentBytesField &&
-      this.value.toString() < other.value.toString()
-    );
-  }
-
-  lte(other: FirestoreStateDocumentFields): boolean {
-    return (
-      other instanceof FirestoreStateDocumentBytesField &&
-      this.value.toString() <= other.value.toString()
-    );
-  }
-
-  gt(other: FirestoreStateDocumentFields): boolean {
-    return (
-      other instanceof FirestoreStateDocumentBytesField &&
-      this.value.toString() > other.value.toString()
-    );
-  }
-
-  gte(other: FirestoreStateDocumentFields): boolean {
-    return (
-      other instanceof FirestoreStateDocumentBytesField &&
-      this.value.toString() >= other.value.toString()
-    );
-  }
-}
-
-export class FirestoreStateDocumentReferenceField
-  implements FirestoreStateDocumentBaseField
-{
-  type = "reference_value" as const;
-  constructor(readonly value: string) {}
-
-  toJSON() {
-    return { type: this.type, value: this.value };
-  }
-
-  toV1ValueObject(): ValueObjectType {
-    return { reference_value: this.value };
-  }
-
-  eq(other: FirestoreStateDocumentFields): boolean {
-    return (
-      other instanceof FirestoreStateDocumentReferenceField &&
-      this.value === other.value
-    );
-  }
-
-  lt(_other: FirestoreStateDocumentFields): boolean {
-    return false;
-  }
-
-  lte(_other: FirestoreStateDocumentFields): boolean {
-    return false;
-  }
-
-  gt(_other: FirestoreStateDocumentFields): boolean {
-    return false;
-  }
-
-  gte(_other: FirestoreStateDocumentFields): boolean {
-    return false;
-  }
-}
-
-export class FirestoreStateDocumentGeoPointField
-  implements FirestoreStateDocumentBaseField
-{
-  type = "geo_point_value" as const;
-  constructor(readonly value: { latitude: number; longitude: number }) {}
-
-  toJSON() {
-    return { type: this.type, value: this.value };
-  }
-
-  toV1ValueObject(): ValueObjectType {
-    return { geo_point_value: this.value };
-  }
-
-  eq(other: FirestoreStateDocumentFields): boolean {
-    return (
-      other instanceof FirestoreStateDocumentGeoPointField &&
-      this.value.latitude === other.value.latitude &&
-      this.value.longitude === other.value.longitude
-    );
-  }
-
-  lt(other: FirestoreStateDocumentFields): boolean {
-    return (
-      other instanceof FirestoreStateDocumentGeoPointField &&
-      (this.value.latitude < other.value.latitude ||
-        this.value.longitude < other.value.longitude)
-    );
-  }
-
-  lte(other: FirestoreStateDocumentFields): boolean {
-    return (
-      other instanceof FirestoreStateDocumentGeoPointField &&
-      (this.value.latitude <= other.value.latitude ||
-        this.value.longitude <= other.value.longitude)
-    );
-  }
-
-  gt(other: FirestoreStateDocumentFields): boolean {
-    return (
-      other instanceof FirestoreStateDocumentGeoPointField &&
-      (this.value.latitude > other.value.latitude ||
-        this.value.longitude > other.value.longitude)
-    );
-  }
-
-  gte(other: FirestoreStateDocumentFields): boolean {
-    return (
-      other instanceof FirestoreStateDocumentGeoPointField &&
-      (this.value.latitude >= other.value.latitude ||
-        this.value.longitude >= other.value.longitude)
-    );
-  }
-}
-
-export class FirestoreStateDocumentArrayField
-  implements FirestoreStateDocumentBaseField
-{
-  type = "array_value" as const;
-  constructor(readonly value: FirestoreStateDocumentFields[]) {}
-
-  toJSON(): { type: string; value: unknown } {
-    return {
-      type: this.type,
-      value: this.value.map((v) => v.toJSON()),
-    };
-  }
-
-  toV1ValueObject(): ValueObjectType {
-    return {
-      array_value: { values: this.value.map((v) => v.toV1ValueObject()) },
-    };
-  }
-
-  eq(other: FirestoreStateDocumentFields): boolean {
-    return (
-      other instanceof FirestoreStateDocumentArrayField &&
-      this.value.length === other.value.length &&
-      this.value.every((v, i) => {
-        const item = other.value[i];
-        if (!item) return false;
-        return item.eq(v);
-      })
-    );
-  }
-
-  lt(_other: FirestoreStateDocumentFields): boolean {
-    return false;
-  }
-
-  lte(_other: FirestoreStateDocumentFields): boolean {
-    return false;
-  }
-
-  gt(_other: FirestoreStateDocumentFields): boolean {
-    return false;
-  }
-
-  gte(_other: FirestoreStateDocumentFields): boolean {
-    return false;
-  }
-}
-
-export class FirestoreStateDocumentMapField
-  implements FirestoreStateDocumentBaseField
-{
-  type = "map_value" as const;
-  constructor(readonly value: Record<string, FirestoreStateDocumentFields>) {}
-
-  toJSON(): { type: string; value: unknown } {
-    return {
-      type: this.type,
-      value: Object.fromEntries(
-        Object.entries(this.value).map(([k, v]) => [k, v.toJSON()])
-      ),
-    };
-  }
-
-  toV1ValueObject(): ValueObjectType {
-    return {
-      map_value: {
-        fields: Object.fromEntries(
-          Object.entries(this.value).map(([k, v]) => [k, v.toV1ValueObject()])
-        ),
-      },
-    };
-  }
-
-  eq(other: FirestoreStateDocumentFields): boolean {
-    return (
-      other instanceof FirestoreStateDocumentMapField &&
-      Object.keys(this.value).length === Object.keys(other.value).length &&
-      Object.entries(this.value).every(([k, v]) => {
-        const item = other.value[k];
-        if (!item) return false;
-        return item.eq(v);
-      })
-    );
-  }
-
-  lt(_other: FirestoreStateDocumentFields): boolean {
-    return false;
-  }
-
-  lte(_other: FirestoreStateDocumentFields): boolean {
-    return false;
-  }
-
-  gt(_other: FirestoreStateDocumentFields): boolean {
-    return false;
-  }
-
-  gte(_other: FirestoreStateDocumentFields): boolean {
-    return false;
-  }
-}
-
-export type FirestoreStateDocumentFields =
-  | FirestoreStateDocumentStringField
-  | FirestoreStateDocumentNullField
-  | FirestoreStateDocumentBooleanField
-  | FirestoreStateDocumentIntegerField
-  | FirestoreStateDocumentDoubleField
-  | FirestoreStateDocumentTimestampField
-  | FirestoreStateDocumentBytesField
-  | FirestoreStateDocumentReferenceField
-  | FirestoreStateDocumentGeoPointField
-  | FirestoreStateDocumentArrayField
-  | FirestoreStateDocumentMapField;
-
-export const convertV1DocumentField = (
-  field: v1Value
-): FirestoreStateDocumentFields => {
-  if (field.has_string_value)
-    return new FirestoreStateDocumentStringField(field.string_value);
-  if (field.has_null_value) return new FirestoreStateDocumentNullField();
-  if (field.has_boolean_value)
-    return new FirestoreStateDocumentBooleanField(field.boolean_value);
-  if (field.has_integer_value)
-    return new FirestoreStateDocumentIntegerField(field.integer_value);
-  if (field.has_double_value)
-    return new FirestoreStateDocumentDoubleField(field.double_value);
-  if (field.has_timestamp_value)
-    return new FirestoreStateDocumentTimestampField({
-      nanos: field.timestamp_value.nanos ?? 0,
-      seconds: field.timestamp_value.seconds ?? 0,
-    });
-  if (field.has_bytes_value)
-    return new FirestoreStateDocumentBytesField(field.bytes_value);
-  if (field.has_reference_value)
-    return new FirestoreStateDocumentReferenceField(field.reference_value);
-  if (field.has_geo_point_value)
-    return new FirestoreStateDocumentGeoPointField({
-      latitude: field.geo_point_value.latitude ?? 0,
-      longitude: field.geo_point_value.longitude ?? 0,
-    });
-  if (field.has_array_value)
-    return new FirestoreStateDocumentArrayField(
-      (field.array_value.values ?? []).map(convertV1DocumentField)
-    );
-  if (field.has_map_value)
-    return new FirestoreStateDocumentMapField(
-      Object.fromEntries(
-        Array.from(field.map_value.fields.entries() ?? []).map(([k, v]) => [
-          k,
-          convertV1DocumentField(v),
-        ])
-      )
-    );
-  throw new Error(`unknown field type. field=${JSON.stringify(field)}`);
-};
-
-export const convertV1Value = (
-  value: v1Value
-): ReturnType<typeof v1Value.prototype.toObject> => {
-  return convertV1DocumentField(value).toV1ValueObject();
 };
 
 export interface HasCollections {
@@ -676,6 +77,13 @@ export class FirestoreStateDocument implements HasCollections {
     private collections: Record<string, FirestoreStateCollection>
   ) {}
 
+  hasChild(): boolean {
+    for (const collection of Object.values(this.collections)) {
+      if (collection.hasChild()) return true;
+    }
+    return false;
+  }
+
   getCollection(collectionName: string) {
     this.collections = produce(this.collections, (draft) => {
       if (!(collectionName in draft)) {
@@ -703,13 +111,13 @@ export class FirestoreStateDocument implements HasCollections {
       create_time: this.metadata.hasExist
         ? Timestamp.fromObject({
             seconds: Math.floor(this.metadata.createdAt.getTime() / 1000),
-            nanos: 0,
+            nanos: this.metadata.createdAt.getMilliseconds() * 1000 * 1000,
           })
         : undefined,
       update_time: this.metadata.hasExist
         ? Timestamp.fromObject({
             seconds: Math.floor(this.metadata.updatedAt.getTime() / 1000),
-            nanos: 0,
+            nanos: this.metadata.updatedAt.getMilliseconds() * 1000 * 1000,
           })
         : undefined,
       name: this.getPath(),
@@ -748,10 +156,9 @@ export class FirestoreStateDocument implements HasCollections {
         Object.entries(this.fields).map(([key, field]) => [key, field.toJSON()])
       ),
       collections: Object.fromEntries(
-        Object.entries(this.collections).map(([key, collection]) => [
-          key,
-          collection.toJSON(),
-        ])
+        Object.entries(this.collections)
+          .filter(([, collection]) => collection.hasChild())
+          .map(([key, collection]) => [key, collection.toJSON()])
       ),
     };
   }
@@ -795,6 +202,7 @@ export class FirestoreStateDocument implements HasCollections {
   }
 
   set(date: Date, fields: Record<string, FirestoreStateDocumentFields>) {
+    const isCreate = !this.metadata.hasExist;
     if (!this.metadata.hasExist) {
       this.metadata = produce<
         FirestoreStateDocumentMetadata,
@@ -818,7 +226,11 @@ export class FirestoreStateDocument implements HasCollections {
         draft[key] = field;
       }
     });
-    this.emitter.emit("update-document", { document: this });
+    if (isCreate) {
+      this.emitter.emit("create-document", { document: this });
+    } else {
+      this.emitter.emit("update-document", { document: this });
+    }
   }
 
   delete() {
@@ -989,7 +401,6 @@ export class FirestoreStateCollection {
           {}
         );
         draft[documentName] = document;
-        this.emitter.emit("add-document", { document });
       }
     });
 
@@ -1000,6 +411,14 @@ export class FirestoreStateCollection {
     return document;
   }
 
+  hasChild(): boolean {
+    for (const document of Object.values(this.documents)) {
+      if (document.metadata.hasExist) return true;
+      if (document.hasChild()) return true;
+    }
+    return false;
+  }
+
   getAllDocuments() {
     return Object.values(this.documents);
   }
@@ -1008,10 +427,11 @@ export class FirestoreStateCollection {
     return {
       path: this.getPath(),
       documents: Object.fromEntries(
-        Object.entries(this.documents).map(([key, document]) => [
-          key,
-          document.toJSON(),
-        ])
+        Object.entries(this.documents)
+          .filter(
+            ([, document]) => document.metadata.hasExist || document.hasChild()
+          )
+          .map(([key, document]) => [key, document.toJSON()])
       ),
     };
   }
@@ -1112,6 +532,16 @@ export class FirestoreStateProject {
     return database;
   }
 }
+
+export const TimestampFromDate = (date: Date) =>
+  Timestamp.fromObject({
+    seconds: Math.floor(date.getTime() / 1000),
+    nanos: (date.getTime() % 1000) * 1000 * 1000,
+  });
+export const DateFromTimestamp = (timestamp: Timestamp) =>
+  new Date(timestamp.seconds * 1000 + timestamp.nanos / 1000 / 1000);
+
+export const TimestampFromNow = () => TimestampFromDate(new Date());
 
 const v1FilterDocuments = (
   field: FirestoreStateDocumentFields,
@@ -1264,13 +694,8 @@ export class FirestoreState {
     this.emitter.emit("clear-all-projects", {});
   }
 
-  writeV1Document(
-    writeTime: ReturnType<typeof Timestamp.prototype.toObject>,
-    write: v1Write
-  ): v1WriteResult {
-    const date = new Date(
-      (writeTime.seconds ?? 0) * 1000 + (writeTime.nanos ?? 0) / 1000 / 1000
-    );
+  writeV1Document(date: Date, write: v1Write): v1WriteResult {
+    const writeTime = TimestampFromDate(date);
     if (write.delete) {
       const document = this.getDocument(write.delete);
       if (!document.metadata.hasExist) {
@@ -1302,10 +727,7 @@ export class FirestoreState {
         }
 
         document.create(
-          new Date(
-            (writeTime.seconds ?? 0) * 1000 +
-              (writeTime.nanos ?? 0) / 1000 / 1000
-          ),
+          date,
           Object.fromEntries(
             Array.from(fields.entries()).map(([key, field]) => [
               key,
@@ -1330,10 +752,7 @@ path <
         }
 
         document.update(
-          new Date(
-            (writeTime.seconds ?? 0) * 1000 +
-              (writeTime.nanos ?? 0) / 1000 / 1000
-          ),
+          date,
           Object.fromEntries(
             Array.from(fields.entries())
               .filter(([key]) =>
@@ -1381,7 +800,7 @@ path <
     }
     const collectionName = `${parent}/${collection_id}`;
     const collection = this.getCollection(collectionName);
-    let docs = collection.getAllDocuments();
+    let docs = collection.getAllDocuments().filter((v) => v.metadata.hasExist);
 
     if (query.order_by) {
       docs = docs.slice().sort((aDocument, bDocument) => {
@@ -1474,5 +893,116 @@ path <
     }
 
     return docs;
+  }
+
+  v1Listen(
+    listen: v1ListenRequest,
+    callback: (response: v1ListenResponse) => void,
+    onEnd: (handler: () => void) => void
+  ) {
+    if (listen.has_remove_target) {
+      console.error(`remove_target is not implemented`);
+      throw new Error(`remove_target is not implemented`);
+    }
+    if (listen.has_add_target) {
+      if (!listen.add_target.has_query) {
+        console.error(`add_target.query is required`);
+        throw new Error(`add_target.query is required`);
+      }
+
+      let currentDocumentsPaths: string[] = [];
+
+      const sendNewDocuments = (docs: FirestoreStateDocument[]) => {
+        currentDocumentsPaths = docs.map((v) => v.getPath());
+        for (const doc of docs) {
+          callback(
+            v1ListenResponse.fromObject({
+              document_change: {
+                target_ids: [listen.add_target.target_id],
+                document: doc.toV1DocumentObject(),
+              },
+            })
+          );
+        }
+        callback(
+          v1ListenResponse.fromObject({
+            target_change: {
+              target_ids: [listen.add_target.target_id],
+              target_change_type: v1TargetChangeTargetChangeType.CURRENT,
+              read_time: TimestampFromNow().toObject(),
+            },
+          })
+        );
+        callback(
+          v1ListenResponse.fromObject({
+            target_change: {
+              target_ids: [],
+              target_change_type: v1TargetChangeTargetChangeType.NO_CHANGE,
+              read_time: TimestampFromNow().toObject(),
+            },
+          })
+        );
+      };
+
+      callback(
+        v1ListenResponse.fromObject({
+          target_change: {
+            target_change_type: v1TargetChangeTargetChangeType.ADD,
+            target_ids: [listen.add_target.target_id],
+          },
+        })
+      );
+
+      sendNewDocuments(
+        this.v1Query(
+          listen.add_target.query.parent,
+          listen.add_target.query.structured_query
+        )
+      );
+
+      const handleOnUpdate = () => {
+        const nextDocuments = this.v1Query(
+          listen.add_target.query.parent,
+          listen.add_target.query.structured_query
+        );
+        const newDocumentsPaths = nextDocuments.map((v) => v.getPath());
+        const hasCreate = newDocumentsPaths.some(
+          (v) => !currentDocumentsPaths.includes(v)
+        );
+        const hasDelete = currentDocumentsPaths.some(
+          (v) => !newDocumentsPaths.includes(v)
+        );
+        const hasUpdate =
+          !hasCreate &&
+          !hasDelete &&
+          newDocumentsPaths.length === currentDocumentsPaths.length &&
+          newDocumentsPaths.every((v) => currentDocumentsPaths.includes(v)) &&
+          currentDocumentsPaths.every((v) => newDocumentsPaths.includes(v));
+
+        const hasChange = hasDelete || hasCreate || hasUpdate;
+
+        if (!hasChange) {
+          // pass
+          return;
+        }
+        callback(
+          v1ListenResponse.fromObject({
+            target_change: {
+              target_ids: [listen.add_target.target_id],
+              target_change_type: v1TargetChangeTargetChangeType.RESET,
+              read_time: TimestampFromNow().toObject(),
+            },
+          })
+        );
+        sendNewDocuments(nextDocuments);
+      };
+      this.emitter.on("create-document", handleOnUpdate);
+      onEnd(() => this.emitter.off("create-document", handleOnUpdate));
+
+      this.emitter.on("update-document", handleOnUpdate);
+      onEnd(() => this.emitter.off("update-document", handleOnUpdate));
+      this.emitter.on("delete-document", handleOnUpdate);
+      onEnd(() => this.emitter.off("delete-document", handleOnUpdate));
+    }
   }
 }

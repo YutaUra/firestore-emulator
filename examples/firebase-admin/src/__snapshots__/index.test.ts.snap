@@ -221,13 +221,7 @@ exports[`can delete document 2`] = `
         "(default)": {
           "collections": {
             "users": {
-              "documents": {
-                "alice": {
-                  "collections": {},
-                  "fields": {},
-                  "path": "projects/test-project/databases/(default)/users/alice",
-                },
-              },
+              "documents": {},
               "path": "projects/test-project/databases/(default)/users",
             },
           },
@@ -654,38 +648,6 @@ exports[`field type reference 1`] = `
 }
 `;
 
-exports[`field type reference 2`] = `
-{
-  "projects": {
-    "test-project": {
-      "databases": {
-        "(default)": {
-          "collections": {
-            "users": {
-              "documents": {
-                "alice": {
-                  "collections": {},
-                  "fields": {
-                    "friend": {
-                      "type": "reference_value",
-                      "value": "projects/test-project/databases/(default)/documents/users/bob",
-                    },
-                  },
-                  "path": "projects/test-project/databases/(default)/users/alice",
-                },
-              },
-              "path": "projects/test-project/databases/(default)/users",
-            },
-          },
-          "path": "projects/test-project/databases/(default)",
-        },
-      },
-      "path": "projects/test-project",
-    },
-  },
-}
-`;
-
 exports[`field type string 1`] = `
 {
   "projects": {
@@ -808,13 +770,7 @@ exports[`transaction delete in transaction 1`] = `
         "(default)": {
           "collections": {
             "users": {
-              "documents": {
-                "alice": {
-                  "collections": {},
-                  "fields": {},
-                  "path": "projects/test-project/databases/(default)/users/alice",
-                },
-              },
+              "documents": {},
               "path": "projects/test-project/databases/(default)/users",
             },
           },

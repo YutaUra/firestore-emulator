@@ -1,14 +1,18 @@
-import { initializeApp } from "firebase-admin/app";
+import { initializeApp, deleteApp, App } from "firebase-admin/app";
 import {
   Firestore,
   initializeFirestore,
   Timestamp,
   GeoPoint,
   FieldValue,
+  setLogFunction,
 } from "firebase-admin/firestore";
 import fetch from "node-fetch";
 import { getSeconds } from "date-fns";
 import assert from "assert";
+
+const LOGGING = false;
+
 expect.extend({
   toBeCloseToTimestamp(
     received: Timestamp | undefined,
@@ -30,15 +34,18 @@ expect.extend({
     };
   },
 });
+
+let realEmulator: App;
+let firestoreEmulator: App;
 let realFirestore: Firestore;
 let firestore: Firestore;
 process.env["GCLOUD_PROJECT"] = "test-project";
 beforeAll(() => {
-  const realEmulator = initializeApp(
+  realEmulator = initializeApp(
     { projectId: process.env["GCLOUD_PROJECT"] },
     "firebase-emulator"
   );
-  const firestoreEmulator = initializeApp(
+  firestoreEmulator = initializeApp(
     { projectId: process.env["GCLOUD_PROJECT"] },
     "firestore-emulator"
   );
@@ -46,6 +53,17 @@ beforeAll(() => {
   realFirestore = initializeFirestore(realEmulator);
   process.env["FIRESTORE_EMULATOR_HOST"] = emulator.host;
   firestore = initializeFirestore(firestoreEmulator);
+
+  if (LOGGING) {
+    setLogFunction(console.log);
+  }
+});
+
+afterAll(async () => {
+  await Promise.all([
+    realFirestore.terminate().then(() => deleteApp(realEmulator)),
+    firestore.terminate().then(() => deleteApp(firestoreEmulator)),
+  ]);
 });
 beforeEach(async () => {
   emulator.state.clear();
@@ -56,12 +74,24 @@ beforeEach(async () => {
 });
 
 const testCase = async <T>(
-  handler: (db: Firestore, isEmulator: boolean) => Promise<T>
+  handler: (
+    db: Firestore,
+    compare: (value: unknown) => void,
+    isEmulator: boolean
+  ) => Promise<T>
 ) => {
+  const realCompares: unknown[] = [];
+  const emulatorCompares: unknown[] = [];
+
   return await Promise.allSettled([
-    handler(realFirestore, false),
-    handler(firestore, true),
-  ]);
+    handler(realFirestore, (value) => realCompares.push(value), false),
+    handler(firestore, (value) => emulatorCompares.push(value), true),
+  ]).finally(() => {
+    expect(emulatorCompares.length).toBe(realCompares.length);
+    for (let i = 0; i < emulatorCompares.length; i++) {
+      expect(emulatorCompares[i]).toEqual(realCompares[i]);
+    }
+  });
 };
 
 it(
@@ -312,20 +342,15 @@ describe("field type", () => {
     expect(emulator.state.toJSON()).toMatchSnapshot();
   });
   it("reference", async () => {
-    const [realResult, emulatorResult] = await testCase(
-      async (db, isEmulator) => {
-        await db
-          .collection("users")
-          .doc("alice")
-          .set({
-            friend: db.collection("users").doc("bob"),
-          });
-        if (isEmulator) {
-          expect(emulator.state.toJSON()).toMatchSnapshot();
-        }
-        return db.collection("users").doc("alice").get();
-      }
-    );
+    const [realResult, emulatorResult] = await testCase(async (db) => {
+      await db
+        .collection("users")
+        .doc("alice")
+        .set({
+          friend: db.collection("users").doc("bob"),
+        });
+      return db.collection("users").doc("alice").get();
+    });
     assert(realResult.status === "fulfilled");
     assert(emulatorResult.status === "fulfilled");
     // reference type cannot be compared, so convert to JSON and compare
@@ -951,3 +976,170 @@ describe("query", () => {
     });
   });
 });
+
+describe("onSnapshot", () => {
+  it("onSnapshot", async () => {
+    const [realResult, emulatorResult] = await testCase(async (db) => {
+      await db.collection("users").doc("alice").set({ name: "Alice" });
+      await db.collection("users").doc("bob").set({ name: "Bob" });
+      await db.collection("users").doc("charlie").set({ name: "Charlie" });
+
+      return new Promise((resolve) => {
+        const unsubscribe = db.collection("users").onSnapshot((snapshot) => {
+          resolve(snapshot.docs.map((v) => v.data()));
+          unsubscribe();
+        });
+      });
+    });
+    assert(realResult.status === "fulfilled");
+    assert(emulatorResult.status === "fulfilled");
+    expect(emulatorResult.value).toEqual(realResult.value);
+  });
+
+  describe("snapshot.docChanges", () => {
+    it("create", async () => {
+      const [realResult, emulatorResult] = await testCase(
+        async (db, compare) => {
+          await db.collection("users").doc("alice").set({ name: "Alice" });
+          await db.collection("users").doc("bob").set({ name: "Bob" });
+          await db.collection("users").doc("charlie").set({ name: "Charlie" });
+
+          await new Promise((resolve) => {
+            const later1 = resolveLater();
+            let isCreate = false;
+            const unsubscribe = db
+              .collection("users")
+              .onSnapshot((snapshot) => {
+                later1.resolve();
+                compare(snapshot.docChanges().map((v) => v.doc.data()));
+
+                if (isCreate) {
+                  expect(
+                    snapshot.docChanges().some((v) => v.type === "added")
+                  ).toBe(true);
+                  compare(
+                    snapshot.docChanges().map((v) => ({
+                      type: v.type,
+                      data: v.doc.data(),
+                      newIndex: v.newIndex,
+                      oldIndex: v.oldIndex,
+                    }))
+                  );
+                  unsubscribe();
+                  resolve(null);
+                }
+              });
+
+            later1.promise.then(() => {
+              db.collection("users").doc("dennis").set({ name: "Dennis" });
+              isCreate = true;
+            });
+          });
+        }
+      );
+      assert(realResult.status === "fulfilled");
+      assert(emulatorResult.status === "fulfilled");
+    });
+
+    it("update", async () => {
+      const [realResult, emulatorResult] = await testCase(
+        async (db, compare) => {
+          await db.collection("users").doc("alice").set({ name: "Alice" });
+          await db.collection("users").doc("bob").set({ name: "Bob" });
+          await db.collection("users").doc("charlie").set({ name: "Charlie" });
+
+          await new Promise((resolve) => {
+            const later1 = resolveLater();
+            let isUpdated = false;
+            const unsubscribe = db
+              .collection("users")
+              .onSnapshot((snapshot) => {
+                later1.resolve();
+                compare(snapshot.docChanges().map((v) => v.doc.data()));
+
+                if (isUpdated) {
+                  expect(
+                    snapshot.docChanges().some((v) => v.type === "modified")
+                  ).toBe(true);
+                  compare(
+                    snapshot.docChanges().map((v) => ({
+                      type: v.type,
+                      data: v.doc.data(),
+                      newIndex: v.newIndex,
+                      oldIndex: v.oldIndex,
+                    }))
+                  );
+                  unsubscribe();
+                  resolve(null);
+                }
+              });
+
+            later1.promise.then(() => {
+              db.collection("users").doc("alice").update({ age: 20 });
+              isUpdated = true;
+            });
+          });
+        }
+      );
+      assert(realResult.status === "fulfilled");
+      assert(emulatorResult.status === "fulfilled");
+    });
+
+    it("delete", async () => {
+      const [realResult, emulatorResult] = await testCase(
+        async (db, compare) => {
+          await db.collection("users").doc("alice").set({ name: "Alice" });
+          await db.collection("users").doc("bob").set({ name: "Bob" });
+          await db.collection("users").doc("charlie").set({ name: "Charlie" });
+
+          await new Promise((resolve) => {
+            const later1 = resolveLater();
+            let isDeleted = false;
+            const unsubscribe = db
+              .collection("users")
+              .onSnapshot((snapshot) => {
+                later1.resolve();
+                compare(snapshot.docChanges().map((v) => v.doc.data()));
+
+                if (isDeleted) {
+                  expect(
+                    snapshot.docChanges().some((v) => v.type === "removed")
+                  ).toBe(true);
+                  compare(
+                    snapshot.docChanges().map((v) => ({
+                      type: v.type,
+                      data: v.doc.data(),
+                      newIndex: v.newIndex,
+                      oldIndex: v.oldIndex,
+                    }))
+                  );
+                  unsubscribe();
+                  resolve(null);
+                }
+              });
+
+            later1.promise.then(() => {
+              db.collection("users").doc("alice").delete();
+              isDeleted = true;
+            });
+          });
+        }
+      );
+      assert(realResult.status === "fulfilled");
+      assert(emulatorResult.status === "fulfilled");
+    });
+  });
+});
+
+const resolveLater = () => {
+  let isResolved = false;
+  let resolve: () => void = () => {};
+  const promise = new Promise<null>((r) => {
+    resolve = () => {
+      if (isResolved) return;
+      isResolved = true;
+      r(null);
+    };
+  });
+  return { promise, resolve, getIsResolved: () => isResolved };
+};

@@ -32,13 +32,6 @@ export class FirestoreServer {
   }
 
   async stop(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      this.server.tryShutdown((err) => {
-        if (err) {
-          return reject(err);
-        }
-        resolve(undefined);
-      });
-    });
+    this.server.forceShutdown();
   }
 }

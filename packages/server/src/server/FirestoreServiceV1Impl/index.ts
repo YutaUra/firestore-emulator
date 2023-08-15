@@ -34,10 +34,13 @@ import {
   WriteRequest,
   WriteResponse,
 } from "@firestore-emulator/proto/dist/google/firestore/v1/firestore";
-import { FirestoreState } from "../../FirestoreState";
+import {
+  FirestoreState,
+  TimestampFromDate,
+  TimestampFromNow,
+} from "../../FirestoreState";
 import { Document } from "@firestore-emulator/proto/dist/google/firestore/v1/document";
 import { Empty } from "@firestore-emulator/proto/dist/google/protobuf/empty";
-import { Timestamp } from "@firestore-emulator/proto/dist/google/protobuf/timestamp";
 import { FirestoreEmulatorError } from "../../error/error";
 
 export class FirestoreServiceV1Impl extends UnimplementedFirestoreService {
@@ -51,24 +54,28 @@ export class FirestoreServiceV1Impl extends UnimplementedFirestoreService {
     _call: ServerUnaryCall<GetDocumentRequest, Document>,
     _callback: sendUnaryData<Document>
   ): void {
+    console.error("Method<GetDocument> not implemented.");
     throw new Error("Method<GetDocument> not implemented.");
   }
   override ListDocuments(
     _call: ServerUnaryCall<ListDocumentsRequest, ListDocumentsResponse>,
     _callback: sendUnaryData<ListDocumentsResponse>
   ): void {
+    console.error("Method<ListDocuments> not implemented.");
     throw new Error("Method<ListDocuments> not implemented.");
   }
   override UpdateDocument(
     _call: ServerUnaryCall<UpdateDocumentRequest, Document>,
     _callback: sendUnaryData<Document>
   ): void {
+    console.error("Method<UpdateDocument> not implemented.");
     throw new Error("Method<UpdateDocument> not implemented.");
   }
   override DeleteDocument(
     _call: ServerUnaryCall<DeleteDocumentRequest, Empty>,
     _callback: sendUnaryData<Empty>
   ): void {
+    console.error("Method<DeleteDocument> not implemented.");
     throw new Error("Method<DeleteDocument> not implemented.");
   }
   override BatchGetDocuments(
@@ -77,14 +84,12 @@ export class FirestoreServiceV1Impl extends UnimplementedFirestoreService {
       BatchGetDocumentsResponse
     >
   ): void {
+    const date = TimestampFromNow();
     call.request.documents.forEach((documentPath) => {
       const document = this.#state.getDocument(documentPath);
       call.write(
         BatchGetDocumentsResponse.fromObject({
-          read_time: Timestamp.fromObject({
-            seconds: Math.floor(Date.now() / 1000),
-            nanos: 0,
-          }),
+          read_time: date,
           found: document.metadata.hasExist
             ? document.toV1DocumentObject()
             : undefined,
@@ -105,18 +110,15 @@ export class FirestoreServiceV1Impl extends UnimplementedFirestoreService {
     call: ServerUnaryCall<CommitRequest, CommitResponse>,
     callback: sendUnaryData<CommitResponse>
   ): void {
-    const createTime = Timestamp.fromObject({
-      seconds: Math.floor(Date.now() / 1000),
-      nanos: 0,
-    });
+    const date = new Date();
     try {
       const results = call.request.writes.map((write) => {
-        return this.#state.writeV1Document(createTime.toObject(), write);
+        return this.#state.writeV1Document(date, write);
       });
       callback(
         null,
         CommitResponse.fromObject({
-          commit_time: createTime,
+          commit_time: TimestampFromDate(date),
           write_results: results.map((result) => result.toObject()),
         })
       );
@@ -144,8 +146,6 @@ export class FirestoreServiceV1Impl extends UnimplementedFirestoreService {
         null
       );
     }
-
-    throw new Error("Method<Commit> not implemented.");
   }
   override Rollback(
     _call: ServerUnaryCall<RollbackRequest, Empty>,
@@ -156,10 +156,7 @@ export class FirestoreServiceV1Impl extends UnimplementedFirestoreService {
   override RunQuery(
     call: ServerWritableStream<RunQueryRequest, RunQueryResponse>
   ): void {
-    const readTime = Timestamp.fromObject({
-      seconds: Math.floor(Date.now() / 1000),
-      nanos: 0,
-    });
+    const date = new Date();
     const results = this.#state.v1Query(
       call.request.parent,
       call.request.structured_query
@@ -169,7 +166,7 @@ export class FirestoreServiceV1Impl extends UnimplementedFirestoreService {
       call.write(
         RunQueryResponse.fromObject({
           done: i === arr.length - 1,
-          read_time: readTime,
+          read_time: TimestampFromDate(date),
           document: result.toV1DocumentObject(),
           transaction: call.request.transaction,
           skipped_results: 0,
@@ -185,38 +182,59 @@ export class FirestoreServiceV1Impl extends UnimplementedFirestoreService {
       RunAggregationQueryResponse
     >
   ): void {
+    console.error("Method<RunAggregationQuery> not implemented.");
     throw new Error("Method<RunAggregationQuery> not implemented.");
   }
   override PartitionQuery(
     _call: ServerUnaryCall<PartitionQueryRequest, PartitionQueryResponse>,
     _callback: sendUnaryData<PartitionQueryResponse>
   ): void {
+    console.error("Method<PartitionQuery> not implemented.");
     throw new Error("Method<PartitionQuery> not implemented.");
   }
   override Write(_call: ServerDuplexStream<WriteRequest, WriteResponse>): void {
+    console.error("Method<Write> not implemented.");
     throw new Error("Method<Write> not implemented.");
   }
   override Listen(
-    _call: ServerDuplexStream<ListenRequest, ListenResponse>
+    call: ServerDuplexStream<ListenRequest, ListenResponse>
   ): void {
-    throw new Error("Method<Listen> not implemented.");
+    call.once("data", async (request) => {
+      if (!(request instanceof ListenRequest)) {
+        console.error("Invalid request type");
+        call.end();
+        throw new Error("Invalid request type");
+      }
+      this.#state.v1Listen(
+        request,
+        (value) => {
+          call.write(value);
+        },
+        (handler) => {
+          call.once("end", handler);
+        }
+      );
+    });
   }
   override ListCollectionIds(
     _call: ServerUnaryCall<ListCollectionIdsRequest, ListCollectionIdsResponse>,
     _callback: sendUnaryData<ListCollectionIdsResponse>
   ): void {
+    console.error("Method<ListCollectionIds> not implemented.");
     throw new Error("Method<ListCollectionIds> not implemented.");
   }
   override BatchWrite(
     _call: ServerUnaryCall<BatchWriteRequest, BatchWriteResponse>,
     _callback: sendUnaryData<BatchWriteResponse>
   ): void {
+    console.error("Method<BatchWrite> not implemented.");
     throw new Error("Method<BatchWrite> not implemented.");
   }
   override CreateDocument(
     _call: ServerUnaryCall<CreateDocumentRequest, Document>,
     _callback: sendUnaryData<Document>
   ): void {
+    console.error("Method<CreateDocument> not implemented.");
     throw new Error("Method<CreateDocument> not implemented.");
   }
 
