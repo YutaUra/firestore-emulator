@@ -1,5 +1,12 @@
 # @firestore-emulator/server
 
+## 0.0.8
+
+### Patch Changes
+
+- add support for onSnapshot
+  - @firestore-emulator/proto@0.0.8
+
 ## 0.0.7
 
 ### Patch Changes

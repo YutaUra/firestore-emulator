@@ -1,5 +1,12 @@
 # @firestore-emulator/jest
 
+## 0.0.8
+
+### Patch Changes
+
+- Updated dependencies
+  - @firestore-emulator/server@0.0.8
+
 ## 0.0.7
 
 ### Patch Changes
