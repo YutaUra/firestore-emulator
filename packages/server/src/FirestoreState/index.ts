@@ -14,6 +14,9 @@ import {
 import {
   StructuredQuery as v1StructuredQuery,
   StructuredQueryFieldFilterOperator as v1StructuredQueryFieldFilterOperator,
+  StructuredQueryCompositeFilterOperator as v1StructuredQueryCompositeFilterOperator,
+  StructuredQueryFieldFilter as v1StructuredQueryFieldFilter,
+  StructuredQueryDirection as v1StructuredQueryDirection,
 } from "@firestore-emulator/proto/dist/google/firestore/v1/query";
 import { Timestamp } from "@firestore-emulator/proto/dist/google/protobuf/timestamp";
 import { assertNever } from "assert-never";
@@ -1110,6 +1113,65 @@ export class FirestoreStateProject {
   }
 }
 
+const v1FilterDocuments = (
+  field: FirestoreStateDocumentFields,
+  filter: v1StructuredQueryFieldFilter
+) => {
+  const filterValue = convertV1DocumentField(filter.value);
+  if (!filter.field?.field_path) {
+    throw new Error("field_path is required");
+  }
+  if (!field) return false;
+  switch (filter.op) {
+    case v1StructuredQueryFieldFilterOperator.EQUAL:
+      return field.eq(filterValue);
+    case v1StructuredQueryFieldFilterOperator.LESS_THAN:
+      return field.lt(filterValue);
+    case v1StructuredQueryFieldFilterOperator.LESS_THAN_OR_EQUAL:
+      return field.lte(filterValue);
+    case v1StructuredQueryFieldFilterOperator.GREATER_THAN:
+      return field.gt(filterValue);
+    case v1StructuredQueryFieldFilterOperator.GREATER_THAN_OR_EQUAL:
+      return field.gte(filterValue);
+    case v1StructuredQueryFieldFilterOperator.ARRAY_CONTAINS:
+      return (
+        field instanceof FirestoreStateDocumentArrayField &&
+        field.value.some((value) => value.eq(filterValue))
+      );
+    case v1StructuredQueryFieldFilterOperator.ARRAY_CONTAINS_ANY:
+      return (
+        field instanceof FirestoreStateDocumentArrayField &&
+        filterValue instanceof FirestoreStateDocumentArrayField &&
+        field.value.some((value) =>
+          filterValue.value.some((filterValue) => value.eq(filterValue))
+        )
+      );
+    case v1StructuredQueryFieldFilterOperator.IN:
+      return (
+        filterValue instanceof FirestoreStateDocumentArrayField &&
+        filterValue.value.some((value) => field.eq(value))
+      );
+    case v1StructuredQueryFieldFilterOperator.NOT_EQUAL:
+      return !field.eq(filterValue);
+    case v1StructuredQueryFieldFilterOperator.NOT_IN:
+      return (
+        filterValue instanceof FirestoreStateDocumentArrayField &&
+        filterValue.value.every((value) => !field.eq(value))
+      );
+    case v1StructuredQueryFieldFilterOperator.OPERATOR_UNSPECIFIED: {
+      throw new Error(
+        `Invalid query: op is not supported yet, ${
+          v1StructuredQueryFieldFilterOperator[filter.op]
+        }`
+      );
+    }
+    case undefined:
+      throw new Error(`Invalid query: op is required`);
+    default:
+      assertNever(filter.op);
+  }
+};
+
 export class FirestoreState {
   readonly emitter: TypeSafeEventEmitter<Events>;
   constructor(private projects: Record<string, FirestoreStateProject> = {}) {
@@ -1319,78 +1381,98 @@ path <
     }
     const collectionName = `${parent}/${collection_id}`;
     const collection = this.getCollection(collectionName);
-    let documents = collection.getAllDocuments();
+    let docs = collection.getAllDocuments();
 
-    if (query.where) {
-      if (query.where.has_field_filter) {
-        if (
-          !query.where.field_filter.has_field ||
-          !query.where.field_filter.has_value
-        ) {
-          throw new Error("field and value is required");
+    if (query.order_by) {
+      docs = docs.slice().sort((aDocument, bDocument) => {
+        for (const { field, direction } of query.order_by) {
+          const a = aDocument.getField(field.field_path);
+          const b = bDocument.getField(field.field_path);
+          if (!a || !b) {
+            if (a && !b) return -1;
+            if (!a && b) return 1;
+            continue;
+          }
+          if (a.eq(b)) continue;
+          if (direction === v1StructuredQueryDirection.ASCENDING) {
+            if (a.lt(b)) return -1;
+            if (b.lt(a)) return 1;
+          } else if (direction === v1StructuredQueryDirection.DESCENDING) {
+            if (a.lt(b)) return 1;
+            if (b.lt(a)) return -1;
+          }
         }
-        const filterValue = convertV1DocumentField(
-          query.where.field_filter.value
-        );
+        return 0;
+      });
+    }
+
+    if (query.has_where) {
+      if (query.where.has_field_filter) {
         const filter = query.where.field_filter;
-        documents = documents.filter((document) => {
+
+        docs = docs.filter((document) => {
           if (!filter.field?.field_path) {
             throw new Error("field_path is required");
           }
           const field = document.getField(filter.field.field_path);
           if (!field) return false;
-          switch (filter.op) {
-            case v1StructuredQueryFieldFilterOperator.EQUAL:
-              return field.eq(filterValue);
-            case v1StructuredQueryFieldFilterOperator.LESS_THAN:
-              return field.lt(filterValue);
-            case v1StructuredQueryFieldFilterOperator.LESS_THAN_OR_EQUAL:
-              return field.lte(filterValue);
-            case v1StructuredQueryFieldFilterOperator.GREATER_THAN:
-              return field.gt(filterValue);
-            case v1StructuredQueryFieldFilterOperator.GREATER_THAN_OR_EQUAL:
-              return field.gte(filterValue);
-            case v1StructuredQueryFieldFilterOperator.ARRAY_CONTAINS:
-              return (
-                field instanceof FirestoreStateDocumentArrayField &&
-                field.value.some((value) => value.eq(filterValue))
+          return v1FilterDocuments(field, filter);
+        });
+      }
+      if (query.where.has_composite_filter) {
+        switch (query.where.composite_filter.op) {
+          case v1StructuredQueryCompositeFilterOperator.AND:
+          case v1StructuredQueryCompositeFilterOperator.OR:
+            break;
+          case v1StructuredQueryCompositeFilterOperator.OPERATOR_UNSPECIFIED:
+            throw new Error(`Invalid query: op is required`);
+          default:
+            assertNever(query.where.composite_filter.op);
+        }
+
+        docs = docs.filter((document) => {
+          if (
+            query.where.composite_filter.op ===
+            v1StructuredQueryCompositeFilterOperator.AND
+          ) {
+            return query.where.composite_filter.filters.every((filter) => {
+              if (!filter.has_field_filter) {
+                console.error(`composite_filter only supports field_filter`);
+                throw new Error(`composite_filter only supports field_filter`);
+              }
+              const field = document.getField(
+                filter.field_filter.field.field_path
               );
-            case v1StructuredQueryFieldFilterOperator.ARRAY_CONTAINS_ANY:
-              return (
-                field instanceof FirestoreStateDocumentArrayField &&
-                filterValue instanceof FirestoreStateDocumentArrayField &&
-                field.value.some((value) =>
-                  filterValue.value.some((filterValue) => value.eq(filterValue))
-                )
+              if (!field) return false;
+              return v1FilterDocuments(field, filter.field_filter);
+            });
+          } else if (
+            query.where.composite_filter.op ===
+            v1StructuredQueryCompositeFilterOperator.OR
+          ) {
+            return query.where.composite_filter.filters.some((filter) => {
+              if (!filter.has_field_filter) {
+                console.error(`composite_filter only supports field_filter`);
+                throw new Error(`composite_filter only supports field_filter`);
+              }
+              const field = document.getField(
+                filter.field_filter.field.field_path
               );
-            case v1StructuredQueryFieldFilterOperator.IN:
-              return (
-                filterValue instanceof FirestoreStateDocumentArrayField &&
-                filterValue.value.some((value) => field.eq(value))
-              );
-            case v1StructuredQueryFieldFilterOperator.NOT_EQUAL:
-              return !field.eq(filterValue);
-            case v1StructuredQueryFieldFilterOperator.NOT_IN:
-              return (
-                filterValue instanceof FirestoreStateDocumentArrayField &&
-                filterValue.value.every((value) => !field.eq(value))
-              );
-            case v1StructuredQueryFieldFilterOperator.OPERATOR_UNSPECIFIED: {
-              throw new Error(
-                `Invalid query: op is not supported yet, ${
-                  v1StructuredQueryFieldFilterOperator[filter.op]
-                }`
-              );
-            }
-            case undefined:
-              throw new Error(`Invalid query: op is required`);
-            default:
-              assertNever(filter.op);
+              if (!field) return false;
+              return v1FilterDocuments(field, filter.field_filter);
+            });
+          } else {
+            // this is unreachable
+            return false;
           }
         });
       }
     }
 
-    return documents;
+    if (query.has_limit) {
+      docs = docs.slice(0, query.limit.value);
+    }
+
+    return docs;
   }
 }

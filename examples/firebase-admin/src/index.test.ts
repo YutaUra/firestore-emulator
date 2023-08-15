@@ -657,5 +657,227 @@ describe("query", () => {
         }
       );
     });
+
+    describe("multiple where", () => {
+      describe("multiple where for single field", () => {
+        it("== and ==", async () => {
+          const [realResult, emulatorResult] = await testCase(async (db) => {
+            await db.collection("users").doc("alice").set({
+              name: "Alice",
+              age: 20,
+            });
+            await db.collection("users").doc("bob").set({
+              name: "Bob",
+              age: 21,
+            });
+            await db.collection("users").doc("charlie").set({
+              name: "Charlie",
+              age: 21,
+            });
+            const result = await db
+              .collection("users")
+              .where("age", "==", 21)
+              .where("age", ">=", 20)
+              .get();
+            return result;
+          });
+          assert(realResult.status === "fulfilled");
+          assert(emulatorResult.status === "fulfilled");
+          expect(emulatorResult.value.docs.map((doc) => doc.data())).toEqual(
+            realResult.value.docs.map((doc) => doc.data())
+          );
+        });
+
+        it("== and !=", async () => {
+          const [realResult, emulatorResult] = await testCase(async (db) => {
+            await db.collection("users").doc("alice").set({
+              name: "Alice",
+              age: 20,
+            });
+            await db.collection("users").doc("bob").set({
+              name: "Bob",
+              age: 21,
+            });
+            await db.collection("users").doc("charlie").set({
+              name: "Charlie",
+              age: 21,
+            });
+            const result = await db
+              .collection("users")
+              .where("age", "==", 21)
+              .where("age", "!=", 20)
+              .get();
+            return result;
+          });
+          assert(realResult.status === "fulfilled");
+          assert(emulatorResult.status === "fulfilled");
+          expect(emulatorResult.value.docs.map((doc) => doc.data())).toEqual(
+            realResult.value.docs.map((doc) => doc.data())
+          );
+        });
+      });
+
+      describe("multiple where for multiple fields", () => {
+        it("== and ==", async () => {
+          const [realResult, emulatorResult] = await testCase(async (db) => {
+            await db.collection("users").doc("alice").set({
+              name: "Alice",
+              age: 20,
+            });
+            await db.collection("users").doc("bob").set({
+              name: "Bob",
+              age: 21,
+            });
+            await db.collection("users").doc("charlie").set({
+              name: "Charlie",
+              age: 21,
+            });
+            const result = await db
+              .collection("users")
+              .where("age", "==", 21)
+              .where("name", "==", "Bob")
+              .get();
+            return result;
+          });
+          assert(realResult.status === "fulfilled");
+          assert(emulatorResult.status === "fulfilled");
+          expect(emulatorResult.value.docs.map((doc) => doc.data())).toEqual(
+            realResult.value.docs.map((doc) => doc.data())
+          );
+        });
+      });
+    });
+  });
+
+  describe("limit", () => {
+    it("limit", async () => {
+      const [realResult, emulatorResult] = await testCase(async (db) => {
+        await db.collection("users").doc("alice").set({
+          name: "Alice",
+        });
+        await db.collection("users").doc("bob").set({
+          name: "Bob",
+        });
+        await db.collection("users").doc("charlie").set({
+          name: "Charlie",
+        });
+        const result = await db.collection("users").limit(2).get();
+        return result;
+      });
+      assert(realResult.status === "fulfilled");
+      assert(emulatorResult.status === "fulfilled");
+      expect(emulatorResult.value.docs.map((doc) => doc.data())).toEqual(
+        realResult.value.docs.map((doc) => doc.data())
+      );
+    });
+  });
+
+  describe("orderBy", () => {
+    it("orderBy string asc", async () => {
+      const [realResult, emulatorResult] = await testCase(async (db) => {
+        await db.collection("users").doc("alice").set({
+          name: "Alice",
+        });
+        await db.collection("users").doc("bob").set({
+          name: "Bob",
+        });
+        await db.collection("users").doc("charlie").set({
+          name: "Charlie",
+        });
+        const result = await db
+          .collection("users")
+          .orderBy("name", "asc")
+          .get();
+        return result;
+      });
+      assert(realResult.status === "fulfilled");
+      assert(emulatorResult.status === "fulfilled");
+      expect(emulatorResult.value.docs.map((doc) => doc.data())).toEqual(
+        realResult.value.docs.map((doc) => doc.data())
+      );
+    });
+    it("orderBy string desc", async () => {
+      const [realResult, emulatorResult] = await testCase(async (db) => {
+        await db.collection("users").doc("alice").set({
+          name: "Alice",
+        });
+        await db.collection("users").doc("bob").set({
+          name: "Bob",
+        });
+        await db.collection("users").doc("charlie").set({
+          name: "Charlie",
+        });
+        const result = await db
+          .collection("users")
+          .orderBy("name", "desc")
+          .get();
+        return result;
+      });
+      assert(realResult.status === "fulfilled");
+      assert(emulatorResult.status === "fulfilled");
+      expect(emulatorResult.value.docs.map((doc) => doc.data())).toEqual(
+        realResult.value.docs.map((doc) => doc.data())
+      );
+    });
+
+    it("multiple orderBy", async () => {
+      const [realResult, emulatorResult] = await testCase(async (db) => {
+        await db.collection("users").doc("alice").set({
+          name: "Alice",
+          age: 21,
+        });
+        await db.collection("users").doc("bob").set({
+          name: "Alice",
+          age: 20,
+        });
+        await db.collection("users").doc("charlie").set({
+          name: "Bob",
+          age: 20,
+        });
+        const result = await db
+          .collection("users")
+          .orderBy("name", "desc")
+          .orderBy("age", "asc")
+          .get();
+        return result;
+      });
+      assert(realResult.status === "fulfilled");
+      assert(emulatorResult.status === "fulfilled");
+      expect(emulatorResult.value.docs.map((doc) => doc.data())).toEqual(
+        realResult.value.docs.map((doc) => doc.data())
+      );
+    });
+  });
+
+  describe("complex query", () => {
+    describe("where and limit", () => {
+      it("== and limit", async () => {
+        const [realResult, emulatorResult] = await testCase(async (db) => {
+          await db.collection("users").doc("alice").set({
+            name: "Alice",
+            age: 20,
+          });
+          await db.collection("users").doc("bob").set({
+            name: "Bob",
+            age: 21,
+          });
+          await db.collection("users").doc("charlie").set({
+            name: "Charlie",
+            age: 21,
+          });
+          const result = await db
+            .collection("users")
+            .where("age", "==", 21)
+            .limit(1)
+            .get();
+          return result;
+        });
+        assert(realResult.status === "fulfilled");
+        assert(emulatorResult.status === "fulfilled");
+        expect(emulatorResult.value.docs.map((doc) => doc.data())).toEqual(
+          realResult.value.docs.map((doc) => doc.data())
+        );
+      });
+    });
   });
 });
