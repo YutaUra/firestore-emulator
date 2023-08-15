@@ -1029,15 +1029,6 @@ path <
           const hasChange = listen.add_target.documents.documents.includes(
             document.getPath()
           );
-          // projects/test-project/databases/(default)/documents/users/alice
-          // projects/test-project/databases/(default)/users/alice
-          console.log(
-            "hasChange",
-            hasChange,
-            listen.add_target.documents.documents,
-            document.getPath()
-          );
-
           if (!hasChange) {
             // pass
             return;
