@@ -1,6 +1,7 @@
 ---
 "@firestore-emulator/server": patch
 "@firestore-emulator/jest": patch
+"@firestore-emulator/proto": patch
 ---
 
-fix sub collections
+single query operator support

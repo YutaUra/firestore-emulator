@@ -54,6 +54,7 @@ beforeEach(async () => {
     { method: "DELETE" }
   );
 });
+
 const testCase = async <T>(
   handler: (db: Firestore, isEmulator: boolean) => Promise<T>
 ) => {
@@ -62,6 +63,7 @@ const testCase = async <T>(
     handler(firestore, true),
   ]);
 };
+
 it(
   "can create document",
   async () => {
@@ -72,6 +74,7 @@ it(
       return result;
     });
     if (realResult.status === "rejected") throw realResult.reason;
+    if (emulatorResult.status === "rejected") throw emulatorResult.reason;
     expect(emulatorResult.value.writeTime).toBeCloseToTimestamp(
       realResult.value.writeTime
     );
@@ -104,6 +107,7 @@ it("can update document", async () => {
     return result;
   });
   if (realResult.status === "rejected") throw realResult.reason;
+  if (emulatorResult.status === "rejected") throw emulatorResult.reason;
   expect(emulatorResult.value.writeTime).toBeCloseToTimestamp(
     realResult.value.writeTime
   );
@@ -557,7 +561,7 @@ describe("FieldValue", () => {
 });
 
 describe("nested collection", () => {
-  it.only("set", async () => {
+  it("set", async () => {
     const [realResult, emulatorResult] = await testCase(async (db) => {
       await db
         .collection("users")
@@ -582,5 +586,76 @@ describe("nested collection", () => {
     expect(emulatorResult.value.data()).toEqual(realResult.value.data());
     expect(emulatorResult.value.ref.path).toEqual(realResult.value.ref.path);
     expect(emulator.state.toJSON()).toMatchSnapshot();
+  });
+});
+
+describe("query", () => {
+  describe("where", () => {
+    describe("single where", () => {
+      it.each`
+        operator                | testName                     | values                                                                          | compareValue
+        ${"=="}                 | ${"array and array"}         | ${[["apple", "banana"], ["banana", "orange"]]}                                  | ${["apple", "banana"]}
+        ${"=="}                 | ${"map and map"}             | ${[{ name: "Alice", age: 20 }, { name: "Bob", age: 21 }]}                       | ${{ name: "Alice", age: 20 }}
+        ${"=="}                 | ${"timestamp and timestamp"} | ${[new Date("2020-01-01T00:00:00.000Z"), new Date("2020-01-02T00:00:00.000Z")]} | ${new Date("2020-01-01T00:00:00.000Z")}
+        ${"=="}                 | ${"geopoint and geopoint"}   | ${[new GeoPoint(35.681236, 139.767125), new GeoPoint(35.681236, 139.767125)]}   | ${new GeoPoint(35.681236, 139.767125)}
+        ${"<"}                  | ${"string and string"}       | ${["Alice", "Bob"]}                                                             | ${"Bob"}
+        ${"<"}                  | ${"string and number"}       | ${["Alice", 20]}                                                                | ${21}
+        ${"<"}                  | ${"number and number"}       | ${[20, 21]}                                                                     | ${21}
+        ${"<"}                  | ${"number and string"}       | ${[20, "Alice"]}                                                                | ${"Bob"}
+        ${"<"}                  | ${"timestamp and timestamp"} | ${[new Date("2020-01-01T00:00:00.000Z"), new Date("2020-01-02T00:00:00.000Z")]} | ${new Date("2020-01-02T00:00:00.000Z")}
+        ${"<="}                 | ${"string and string"}       | ${["Alice", "Bob"]}                                                             | ${"Bob"}
+        ${"<="}                 | ${"string and number"}       | ${["Alice", 20]}                                                                | ${21}
+        ${"<="}                 | ${"number and number"}       | ${[20, 21]}                                                                     | ${21}
+        ${"<="}                 | ${"number and string"}       | ${[20, "Alice"]}                                                                | ${"Bob"}
+        ${"<="}                 | ${"timestamp and timestamp"} | ${[new Date("2020-01-01T00:00:00.000Z"), new Date("2020-01-02T00:00:00.000Z")]} | ${new Date("2020-01-02T00:00:00.000Z")}
+        ${">"}                  | ${"string and string"}       | ${["Alice", "Bob"]}                                                             | ${"Alice"}
+        ${">"}                  | ${"string and number"}       | ${["Alice", 20]}                                                                | ${19}
+        ${">"}                  | ${"number and number"}       | ${[20, 21]}                                                                     | ${19}
+        ${">"}                  | ${"number and string"}       | ${[20, "Alice"]}                                                                | ${"Alic"}
+        ${">"}                  | ${"timestamp and timestamp"} | ${[new Date("2020-01-01T00:00:00.000Z"), new Date("2020-01-02T00:00:00.000Z")]} | ${new Date("2020-01-01T00:00:00.000Z")}
+        ${">"}                  | ${"geopoint and geopoint"}   | ${[new GeoPoint(35.681236, 139.767125), new GeoPoint(35.681236, 139.767125)]}   | ${new GeoPoint(35.681236, 139.767125)}
+        ${">"}                  | ${"geopoint and geopoint"}   | ${[new GeoPoint(35.681236, 139.767125), new GeoPoint(35.681236, 139.767125)]}   | ${new GeoPoint(35.681235, 139.767125)}
+        ${">"}                  | ${"geopoint and geopoint"}   | ${[new GeoPoint(35.681236, 139.767125), new GeoPoint(35.681236, 139.767125)]}   | ${new GeoPoint(35.681236, 139.767124)}
+        ${">"}                  | ${"geopoint and geopoint"}   | ${[new GeoPoint(35.681236, 139.767125), new GeoPoint(35.681236, 139.767125)]}   | ${new GeoPoint(35.681235, 139.767124)}
+        ${">="}                 | ${"string and string"}       | ${["Alice", "Bob"]}                                                             | ${"Alice"}
+        ${">="}                 | ${"string and number"}       | ${["Alice", 20]}                                                                | ${19}
+        ${">="}                 | ${"number and number"}       | ${[20, 21]}                                                                     | ${19}
+        ${">="}                 | ${"number and string"}       | ${[20, "Alice"]}                                                                | ${"Alice"}
+        ${">="}                 | ${"timestamp and timestamp"} | ${[new Date("2020-01-01T00:00:00.000Z"), new Date("2020-01-02T00:00:00.000Z")]} | ${new Date("2019-12-31T00:00:00.000Z")}
+        ${"array-contains"}     | ${"array and string"}        | ${[["apple", "banana"], ["banana", "orange"]]}                                  | ${"apple"}
+        ${"array-contains"}     | ${"array and map"}           | ${[["apple", { name: "orange" }], ["banana", { name: "apple" }]]}               | ${{ name: "apple" }}
+        ${"array-contains-any"} | ${"array and array"}         | ${[["apple", "banana"], ["banana", "orange"], ["banana", "grape"]]}             | ${["apple", "orange"]}
+        ${"in"}                 | ${"string and array"}        | ${["Alice", "Bob"]}                                                             | ${["Alice"]}
+        ${"in"}                 | ${"number and array"}        | ${[20, 21, 23]}                                                                 | ${[20, 23]}
+        ${"not-in"}             | ${"string and array"}        | ${["Alice", "Bob"]}                                                             | ${["Alice"]}
+        ${"not-in"}             | ${"number and array"}        | ${[20, 21, 23]}                                                                 | ${[20, 23]}
+      `(
+        `$operator for $testName`,
+        async ({ operator, values, compareValue }) => {
+          const [realResult, emulatorResult] = await testCase(async (db) => {
+            for (let i = 0; i < values.length; i++) {
+              const value = values[i];
+              await db
+                .collection("values")
+                .doc(`${i + 1}`)
+                .set({
+                  value,
+                });
+            }
+
+            const result = await db
+              .collection("values")
+              .where("value", operator, compareValue)
+              .get();
+            return result;
+          });
+          assert(realResult.status === "fulfilled");
+          assert(emulatorResult.status === "fulfilled");
+          expect(emulatorResult.value.docs.map((doc) => doc.data())).toEqual(
+            realResult.value.docs.map((doc) => doc.data())
+          );
+        }
+      );
+    });
   });
 });

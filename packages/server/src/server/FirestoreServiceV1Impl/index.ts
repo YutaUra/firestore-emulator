@@ -162,7 +162,7 @@ export class FirestoreServiceV1Impl extends UnimplementedFirestoreService {
     });
     const results = this.#state.v1Query(
       call.request.parent,
-      call.request.structured_query.toObject()
+      call.request.structured_query
     );
 
     results.forEach((result, i, arr) => {
