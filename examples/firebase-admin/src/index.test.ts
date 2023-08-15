@@ -819,6 +819,76 @@ describe("query", () => {
         realResult.value.docs.map((doc) => doc.data())
       );
     });
+    it("orderBy Timestamp asc", async () => {
+      const [realResult, emulatorResult] = await testCase(async (db) => {
+        await db
+          .collection("users")
+          .doc("bob")
+          .set({
+            name: "Bob",
+            createdAt: new Date("2020-01-02T00:00:00.000Z"),
+          });
+        await db
+          .collection("users")
+          .doc("alice")
+          .set({
+            name: "Alice",
+            createdAt: new Date("2020-01-01T00:00:00.000Z"),
+          });
+        await db
+          .collection("users")
+          .doc("charlie")
+          .set({
+            name: "Charlie",
+            createdAt: new Date("2020-01-03T00:00:00.000Z"),
+          });
+        const result = await db
+          .collection("users")
+          .orderBy("createdAt", "asc")
+          .get();
+        return result;
+      });
+      assert(realResult.status === "fulfilled");
+      assert(emulatorResult.status === "fulfilled");
+      expect(emulatorResult.value.docs.map((doc) => doc.data())).toEqual(
+        realResult.value.docs.map((doc) => doc.data())
+      );
+    });
+    it("orderBy Timestamp desc", async () => {
+      const [realResult, emulatorResult] = await testCase(async (db) => {
+        await db
+          .collection("users")
+          .doc("bob")
+          .set({
+            name: "Bob",
+            createdAt: new Date("2020-01-02T00:00:00.000Z"),
+          });
+        await db
+          .collection("users")
+          .doc("alice")
+          .set({
+            name: "Alice",
+            createdAt: new Date("2020-01-01T00:00:00.000Z"),
+          });
+        await db
+          .collection("users")
+          .doc("charlie")
+          .set({
+            name: "Charlie",
+            createdAt: new Date("2020-01-03T00:00:00.000Z"),
+          });
+        const result = await db
+          .collection("users")
+          .orderBy("createdAt", "desc")
+          .get();
+        return result;
+      });
+      assert(realResult.status === "fulfilled");
+      assert(emulatorResult.status === "fulfilled");
+      expect(emulatorResult.value.docs.map((doc) => doc.data())).toEqual(
+        realResult.value.docs.map((doc) => doc.data())
+      );
+    });
 
     it("multiple orderBy", async () => {
       const [realResult, emulatorResult] = await testCase(async (db) => {
