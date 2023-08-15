@@ -33,6 +33,7 @@ import {
   convertV1DocumentField,
   convertV1Value,
 } from "./field";
+import { isNotNull } from "../utils";
 
 type Events = {
   "add-project": { project: FirestoreStateProject };
@@ -484,7 +485,7 @@ export class FirestoreStateDatabase implements HasCollections {
   }
 
   getPath(): string {
-    return `${this.project.getPath()}/databases/${this.name}`;
+    return `${this.project.getPath()}/databases/${this.name}/documents`;
   }
 }
 
@@ -905,15 +906,7 @@ path <
       throw new Error(`remove_target is not implemented`);
     }
     if (listen.has_add_target) {
-      if (!listen.add_target.has_query) {
-        console.error(`add_target.query is required`);
-        throw new Error(`add_target.query is required`);
-      }
-
-      let currentDocumentsPaths: string[] = [];
-
       const sendNewDocuments = (docs: FirestoreStateDocument[]) => {
-        currentDocumentsPaths = docs.map((v) => v.getPath());
         for (const doc of docs) {
           callback(
             v1ListenResponse.fromObject({
@@ -944,65 +937,140 @@ path <
         );
       };
 
-      callback(
-        v1ListenResponse.fromObject({
-          target_change: {
-            target_change_type: v1TargetChangeTargetChangeType.ADD,
-            target_ids: [listen.add_target.target_id],
-          },
-        })
-      );
-
-      sendNewDocuments(
-        this.v1Query(
-          listen.add_target.query.parent,
-          listen.add_target.query.structured_query
-        )
-      );
-
-      const handleOnUpdate = () => {
-        const nextDocuments = this.v1Query(
-          listen.add_target.query.parent,
-          listen.add_target.query.structured_query
-        );
-        const newDocumentsPaths = nextDocuments.map((v) => v.getPath());
-        const hasCreate = newDocumentsPaths.some(
-          (v) => !currentDocumentsPaths.includes(v)
-        );
-        const hasDelete = currentDocumentsPaths.some(
-          (v) => !newDocumentsPaths.includes(v)
-        );
-        const hasUpdate =
-          !hasCreate &&
-          !hasDelete &&
-          newDocumentsPaths.length === currentDocumentsPaths.length &&
-          newDocumentsPaths.every((v) => currentDocumentsPaths.includes(v)) &&
-          currentDocumentsPaths.every((v) => newDocumentsPaths.includes(v));
-
-        const hasChange = hasDelete || hasCreate || hasUpdate;
-
-        if (!hasChange) {
-          // pass
-          return;
-        }
+      if (listen.add_target.has_query) {
+        let currentDocumentsPaths: string[] = [];
         callback(
           v1ListenResponse.fromObject({
             target_change: {
+              target_change_type: v1TargetChangeTargetChangeType.ADD,
               target_ids: [listen.add_target.target_id],
-              target_change_type: v1TargetChangeTargetChangeType.RESET,
-              read_time: TimestampFromNow().toObject(),
             },
           })
         );
-        sendNewDocuments(nextDocuments);
-      };
-      this.emitter.on("create-document", handleOnUpdate);
-      onEnd(() => this.emitter.off("create-document", handleOnUpdate));
 
-      this.emitter.on("update-document", handleOnUpdate);
-      onEnd(() => this.emitter.off("update-document", handleOnUpdate));
-      this.emitter.on("delete-document", handleOnUpdate);
-      onEnd(() => this.emitter.off("delete-document", handleOnUpdate));
+        const docs = this.v1Query(
+          listen.add_target.query.parent,
+          listen.add_target.query.structured_query
+        );
+        currentDocumentsPaths = docs.map((v) => v.getPath());
+        sendNewDocuments(docs);
+
+        const handleOnUpdate = () => {
+          const nextDocuments = this.v1Query(
+            listen.add_target.query.parent,
+            listen.add_target.query.structured_query
+          );
+          const newDocumentsPaths = nextDocuments.map((v) => v.getPath());
+          const hasCreate = newDocumentsPaths.some(
+            (v) => !currentDocumentsPaths.includes(v)
+          );
+          const hasDelete = currentDocumentsPaths.some(
+            (v) => !newDocumentsPaths.includes(v)
+          );
+          const hasUpdate =
+            !hasCreate &&
+            !hasDelete &&
+            newDocumentsPaths.length === currentDocumentsPaths.length &&
+            newDocumentsPaths.every((v) => currentDocumentsPaths.includes(v)) &&
+            currentDocumentsPaths.every((v) => newDocumentsPaths.includes(v));
+
+          const hasChange = hasDelete || hasCreate || hasUpdate;
+
+          if (!hasChange) {
+            // pass
+            return;
+          }
+          callback(
+            v1ListenResponse.fromObject({
+              target_change: {
+                target_ids: [listen.add_target.target_id],
+                target_change_type: v1TargetChangeTargetChangeType.RESET,
+                read_time: TimestampFromNow().toObject(),
+              },
+            })
+          );
+          currentDocumentsPaths = nextDocuments.map((v) => v.getPath());
+          sendNewDocuments(nextDocuments);
+        };
+        this.emitter.on("create-document", handleOnUpdate);
+        onEnd(() => this.emitter.off("create-document", handleOnUpdate));
+
+        this.emitter.on("update-document", handleOnUpdate);
+        onEnd(() => this.emitter.off("update-document", handleOnUpdate));
+        this.emitter.on("delete-document", handleOnUpdate);
+        onEnd(() => this.emitter.off("delete-document", handleOnUpdate));
+      } else if (listen.add_target.has_documents) {
+        callback(
+          v1ListenResponse.fromObject({
+            target_change: {
+              target_change_type: v1TargetChangeTargetChangeType.ADD,
+              target_ids: [listen.add_target.target_id],
+            },
+          })
+        );
+
+        sendNewDocuments(
+          listen.add_target.documents.documents
+            .map((path) => {
+              const document = this.getDocument(path);
+              if (!document.metadata.hasExist) {
+                return null;
+              }
+              return document;
+            })
+            .filter(isNotNull)
+        );
+
+        const handleOnUpdate = ({
+          document,
+        }: {
+          document: FirestoreStateDocument;
+        }) => {
+          const hasChange = listen.add_target.documents.documents.includes(
+            document.getPath()
+          );
+          // projects/test-project/databases/(default)/documents/users/alice
+          // projects/test-project/databases/(default)/users/alice
+          console.log(
+            "hasChange",
+            hasChange,
+            listen.add_target.documents.documents,
+            document.getPath()
+          );
+
+          if (!hasChange) {
+            // pass
+            return;
+          }
+          callback(
+            v1ListenResponse.fromObject({
+              target_change: {
+                target_ids: [listen.add_target.target_id],
+                target_change_type: v1TargetChangeTargetChangeType.RESET,
+                read_time: TimestampFromNow().toObject(),
+              },
+            })
+          );
+          sendNewDocuments(
+            listen.add_target.documents.documents
+              .map((path) => {
+                const document = this.getDocument(path);
+                if (!document.metadata.hasExist) {
+                  return null;
+                }
+                return document;
+              })
+              .filter(isNotNull)
+          );
+        };
+        this.emitter.on("create-document", handleOnUpdate);
+        onEnd(() => this.emitter.off("create-document", handleOnUpdate));
+
+        this.emitter.on("update-document", handleOnUpdate);
+        onEnd(() => this.emitter.off("update-document", handleOnUpdate));
+        this.emitter.on("delete-document", handleOnUpdate);
+        onEnd(() => this.emitter.off("delete-document", handleOnUpdate));
+      }
     }
   }
 }

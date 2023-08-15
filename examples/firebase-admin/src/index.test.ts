@@ -977,7 +977,7 @@ describe("query", () => {
   });
 });
 
-describe("onSnapshot", () => {
+describe("onSnapshot for collection", () => {
   it("onSnapshot", async () => {
     const [realResult, emulatorResult] = await testCase(async (db) => {
       await db.collection("users").doc("alice").set({ name: "Alice" });
@@ -1128,6 +1128,118 @@ describe("onSnapshot", () => {
       assert(realResult.status === "fulfilled");
       assert(emulatorResult.status === "fulfilled");
     });
+  });
+});
+
+describe("onSnapshot for document", () => {
+  it("onSnapshot", async () => {
+    const [realResult, emulatorResult] = await testCase(async (db, compare) => {
+      await db.collection("users").doc("alice").set({ name: "Alice" });
+
+      return new Promise((resolve) => {
+        const unsubscribe = db
+          .collection("users")
+          .doc("alice")
+          .onSnapshot((snapshot) => {
+            compare(snapshot.data());
+            resolve(null);
+            unsubscribe();
+          });
+      });
+    });
+    assert(realResult.status === "fulfilled");
+    assert(emulatorResult.status === "fulfilled");
+  });
+
+  it("create", async () => {
+    const [realResult, emulatorResult] = await testCase(async (db, compare) => {
+      await new Promise((resolve) => {
+        const later1 = resolveLater();
+        let isCreate = false;
+        const unsubscribe = db
+          .collection("users")
+          .doc("alice")
+          .onSnapshot((snapshot) => {
+            later1.resolve();
+            compare(snapshot.data());
+
+            if (isCreate) {
+              expect(snapshot.exists).toBe(true);
+              compare(snapshot.data());
+              unsubscribe();
+              resolve(null);
+            }
+          });
+
+        later1.promise.then(() => {
+          db.collection("users").doc("alice").set({ name: "Alice" });
+          isCreate = true;
+        });
+      });
+    });
+    assert(realResult.status === "fulfilled");
+    assert(emulatorResult.status === "fulfilled");
+  });
+
+  it("update", async () => {
+    const [realResult, emulatorResult] = await testCase(async (db, compare) => {
+      await db.collection("users").doc("alice").set({ name: "Alice" });
+      await new Promise((resolve) => {
+        const later1 = resolveLater();
+        let isUpdate = false;
+        const unsubscribe = db
+          .collection("users")
+          .doc("alice")
+          .onSnapshot((snapshot) => {
+            later1.resolve();
+            compare(snapshot.data());
+
+            if (isUpdate) {
+              expect(snapshot.exists).toBe(true);
+              compare(snapshot.data());
+              unsubscribe();
+              resolve(null);
+            }
+          });
+
+        later1.promise.then(() => {
+          db.collection("users").doc("alice").update({ age: 20 });
+          isUpdate = true;
+        });
+      });
+    });
+    assert(realResult.status === "fulfilled");
+    assert(emulatorResult.status === "fulfilled");
+  });
+
+  it("delete", async () => {
+    const [realResult, emulatorResult] = await testCase(async (db, compare) => {
+      await db.collection("users").doc("alice").set({ name: "Alice" });
+      await new Promise((resolve) => {
+        const later1 = resolveLater();
+        let isDelete = false;
+        const unsubscribe = db
+          .collection("users")
+          .doc("alice")
+          .onSnapshot((snapshot) => {
+            later1.resolve();
+            compare(snapshot.data());
+
+            if (isDelete) {
+              expect(snapshot.exists).toBe(false);
+              unsubscribe();
+              resolve(null);
+            }
+          });
+
+        later1.promise.then(() => {
+          db.collection("users").doc("alice").delete();
+          isDelete = true;
+        });
+      });
+    });
+    assert(realResult.status === "fulfilled");
+    assert(emulatorResult.status === "fulfilled");
   });
 });
 
