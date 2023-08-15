@@ -1,5 +1,14 @@
 # @firestore-emulator/server
 
+## 0.0.6
+
+### Patch Changes
+
+- 42aeda6: limit and orderby support
+- 5f68481: single query operator support
+- Updated dependencies [5f68481]
+  - @firestore-emulator/proto@0.0.3
+
 ## 0.0.5
 
 ### Patch Changes

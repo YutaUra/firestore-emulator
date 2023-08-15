@@ -1,5 +1,14 @@
 # @firestore-emulator/jest
 
+## 0.0.6
+
+### Patch Changes
+
+- 5f68481: single query operator support
+- Updated dependencies [42aeda6]
+- Updated dependencies [5f68481]
+  - @firestore-emulator/server@0.0.6
+
 ## 0.0.5
 
 ### Patch Changes
