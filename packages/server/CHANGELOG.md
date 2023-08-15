@@ -1,5 +1,12 @@
 # @firestore-emulator/server
 
+## 0.0.9
+
+### Patch Changes
+
+- 0350916: add support onSnapshot for document
+  - @firestore-emulator/proto@0.0.9
+
 ## 0.0.8
 
 ### Patch Changes
