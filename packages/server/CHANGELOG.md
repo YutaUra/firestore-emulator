@@ -1,5 +1,12 @@
 # @firestore-emulator/server
 
+## 0.0.12
+
+### Patch Changes
+
+- 1705db5: improve create duplicate error
+  - @firestore-emulator/proto@0.0.12
+
 ## 0.0.11
 
 ### Patch Changes
