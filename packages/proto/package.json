@@ -11,6 +11,26 @@
     "generated",
     "dist"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YutaUra/firestore-emulator.git",
+    "directory": "packages/proto"
+  },
+  "bugs": {
+    "url": "https://github.com/YutaUra/firestore-emulator/issues/new"
+  },
+  "keywords": [
+    "firestore",
+    "firestore emulator",
+    "google cloud firestore",
+    "protocol buffers",
+    "protobuf",
+    "grpc"
+  ],
+  "author": {
+    "name": "Yuta Ura",
+    "url": "http://github.com/YutaUra"
+  },
   "scripts": {
     "build": "tsup ./generated/ --sourcemap --clean --format cjs,esm --no-splitting && tsc",
     "generate": "rm -rf generated && mkdir -p generated && grpc_tools_node_protoc --plugin=protoc-gen-ts=./node_modules/.bin/protoc-gen-ts --ts_out=explicit_override,no_namespace:./generated -I ./node_modules/@google-cloud/firestore/build/protos $(find ./node_modules/@google-cloud/firestore/build/protos -name \"*.proto\")"

@@ -25,6 +25,26 @@
     "dist",
     "src"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YutaUra/firestore-emulator.git",
+    "directory": "packages/jest"
+  },
+  "bugs": {
+    "url": "https://github.com/YutaUra/firestore-emulator/issues/new"
+  },
+  "keywords": [
+    "firestore",
+    "firestore emulator",
+    "firebase",
+    "firebase admin",
+    "jest",
+    "testing"
+  ],
+  "author": {
+    "name": "Yuta Ura",
+    "url": "http://github.com/YutaUra"
+  },
   "scripts": {
     "test": "vitest --run",
     "test:watch": "vitest",
