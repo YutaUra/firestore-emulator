@@ -955,7 +955,8 @@ path <
         currentDocumentsPaths = docs.map((v) => v.getPath());
         sendNewDocuments(docs);
 
-        const handleOnUpdate = () => {
+        const handleOnUpdate = async () => {
+          await new Promise((resolve) => setImmediate(resolve));
           const nextDocuments = this.v1Query(
             listen.add_target.query.parent,
             listen.add_target.query.structured_query
@@ -1021,11 +1022,12 @@ path <
             .filter(isNotNull)
         );
 
-        const handleOnUpdate = ({
+        const handleOnUpdate = async ({
           document,
         }: {
           document: FirestoreStateDocument;
         }) => {
+          await new Promise((resolve) => setImmediate(resolve));
           const hasChange = listen.add_target.documents.documents.includes(
             document.getPath()
           );
