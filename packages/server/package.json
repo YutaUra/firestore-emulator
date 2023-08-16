@@ -13,6 +13,26 @@
     "dist",
     "src"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YutaUra/firestore-emulator.git",
+    "directory": "packages/server"
+  },
+  "bugs": {
+    "url": "https://github.com/YutaUra/firestore-emulator/issues/new"
+  },
+  "keywords": [
+    "firestore",
+    "firestore emulator",
+    "google cloud firestore",
+    "protocol buffers",
+    "protobuf",
+    "grpc"
+  ],
+  "author": {
+    "name": "Yuta Ura",
+    "url": "http://github.com/YutaUra"
+  },
   "scripts": {
     "build": "tsup ./src/ --sourcemap --clean --format esm,cjs --no-splitting && tsc"
   },
