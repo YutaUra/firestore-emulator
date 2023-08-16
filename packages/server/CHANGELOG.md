@@ -1,5 +1,13 @@
 # @firestore-emulator/server
 
+## 0.0.13
+
+### Patch Changes
+
+- 060859d: update bundler
+- Updated dependencies [060859d]
+  - @firestore-emulator/proto@0.0.13
+
 ## 0.0.12
 
 ### Patch Changes

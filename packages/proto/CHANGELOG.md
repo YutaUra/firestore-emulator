@@ -1,5 +1,11 @@
 # @firestore-emulator/proto
 
+## 0.0.13
+
+### Patch Changes
+
+- 060859d: update bundler
+
 ## 0.0.12
 
 ## 0.0.11
