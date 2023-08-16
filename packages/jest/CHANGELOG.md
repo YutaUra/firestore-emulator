@@ -1,5 +1,13 @@
 # @firestore-emulator/jest
 
+## 0.0.14
+
+### Patch Changes
+
+- e12a43c: add readme
+- Updated dependencies [e12a43c]
+  - @firestore-emulator/server@0.0.14
+
 ## 0.0.13
 
 ### Patch Changes

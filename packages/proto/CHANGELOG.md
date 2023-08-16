@@ -1,5 +1,11 @@
 # @firestore-emulator/proto
 
+## 0.0.14
+
+### Patch Changes
+
+- e12a43c: add readme
+
 ## 0.0.13
 
 ### Patch Changes
