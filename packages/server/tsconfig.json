@@ -3,13 +3,13 @@
   "compilerOptions": {
     "module": "ESNext",
     "target": "ESNext",
-    "moduleResolution": "NodeNext",
-    "types": ["vitest/importMeta"],
+    "moduleResolution": "node",
     "exactOptionalPropertyTypes": false,
     "skipLibCheck": true,
-    "sourceMap": true,
     "declaration": true,
-    "declarationMap": true
+    "declarationMap": true,
+    "emitDeclarationOnly": true,
+    "outDir": "dist"
   },
   "include": ["src"]
 }

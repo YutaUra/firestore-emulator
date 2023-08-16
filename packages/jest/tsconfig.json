@@ -4,12 +4,12 @@
     "module": "ESNext",
     "target": "ESNext",
     "moduleResolution": "NodeNext",
-    "types": ["vitest/importMeta"],
     "exactOptionalPropertyTypes": false,
     "skipLibCheck": true,
-    "sourceMap": true,
     "declaration": true,
-    "declarationMap": true
+    "declarationMap": true,
+    "emitDeclarationOnly": true,
+    "outDir": "dist"
   },
   "include": ["src"]
 }

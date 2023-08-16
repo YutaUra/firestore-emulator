@@ -5,7 +5,7 @@
     "build": {
       "outputs": ["dist"],
       "dependsOn": ["generate"],
-      "inputs": ["generated", "vite.config.ts"]
+      "inputs": ["package.json", "generated"]
     },
     "generate": {
       "outputs": ["generated"],
