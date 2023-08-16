@@ -1,5 +1,12 @@
 # @firestore-emulator/server
 
+## 0.0.11
+
+### Patch Changes
+
+- 8a69843: make onSnapshot stable
+  - @firestore-emulator/proto@0.0.11
+
 ## 0.0.10
 
 ### Patch Changes
