@@ -126,6 +126,48 @@ it(
   },
   1000 * 60
 );
+
+describe("create with same id", () => {
+  it("simple document", async () => {
+    const [realResult, emulatorResult] = await testCase(async (db) => {
+      await db.collection("users").doc("alice").create({
+        name: "Alice",
+      });
+      const result = await db.collection("users").doc("alice").create({
+        name: "Bob",
+      });
+      return result;
+    });
+    assert(realResult.status === "rejected");
+    assert(emulatorResult.status === "rejected");
+    expect(emulatorResult.reason).toStrictEqual(realResult.reason);
+  });
+
+  it("nested document", async () => {
+    const [realResult, emulatorResult] = await testCase(async (db) => {
+      await db
+        .collection("users")
+        .doc("alice")
+        .collection("posts")
+        .doc("post-1")
+        .create({
+          name: "Alice",
+        });
+      const result = await db
+        .collection("users")
+        .doc("alice")
+        .collection("posts")
+        .doc("post-1")
+        .create({
+          name: "Bob",
+        });
+      return result;
+    });
+    assert(realResult.status === "rejected");
+    assert(emulatorResult.status === "rejected");
+    expect(emulatorResult.reason).toStrictEqual(realResult.reason);
+  });
+});
 it("can update document", async () => {
   const [realResult, emulatorResult] = await testCase(async (db) => {
     await db.collection("users").doc("alice").create({

@@ -78,6 +78,17 @@ export class FirestoreStateDocument implements HasCollections {
     private collections: Record<string, FirestoreStateCollection>
   ) {}
 
+  iterateFromRoot() {
+    const iters: FirestoreStateDocument[] = [this];
+    let current: FirestoreStateDocument = this;
+    while (current.parent.parent instanceof FirestoreStateDocument) {
+      const next = current.parent.parent;
+      current = next;
+      iters.push(current);
+    }
+    return iters.slice().reverse();
+  }
+
   hasChild(): boolean {
     for (const collection of Object.values(this.collections)) {
       if (collection.hasChild()) return true;
@@ -722,8 +733,22 @@ export class FirestoreState {
       const document = this.getDocument(name);
       if (write.current_document?.exists === false) {
         if (document.metadata.hasExist) {
-          throw new Error(
-            "Invalid write: current_document.exists doesn't match"
+          throw new FirestoreEmulatorError(
+            Status.ALREADY_EXISTS,
+            `entity already exists: app: "dev~${document.database.project.name}"
+path <
+${document
+  .iterateFromRoot()
+  .map(
+    (doc) =>
+      `  Element {
+    type: "${doc.parent.name}"
+    name: "${doc.name}"
+  }`
+  )
+  .join("\n")}
+>
+`
           );
         }
 
@@ -743,10 +768,16 @@ export class FirestoreState {
             Status.NOT_FOUND,
             `no entity to update: app: "dev~${document.database.project.name}"
 path <
-  Element {
-    type: "${document.parent.name}"
-    name: "${document.name}"
-  }
+${document
+  .iterateFromRoot()
+  .map(
+    (doc) =>
+      `  Element {
+    type: "${doc.parent.name}"
+    name: "${doc.name}"
+  }`
+  )
+  .join("\n")}
 >
 `
           );

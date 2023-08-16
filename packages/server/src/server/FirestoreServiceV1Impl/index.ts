@@ -123,8 +123,6 @@ export class FirestoreServiceV1Impl extends UnimplementedFirestoreService {
         })
       );
     } catch (err) {
-      console.error(err);
-
       if (err instanceof FirestoreEmulatorError) {
         callback(
           {
@@ -137,6 +135,7 @@ export class FirestoreServiceV1Impl extends UnimplementedFirestoreService {
         );
         return;
       }
+      console.error(err);
       callback(
         {
           message: "Something went wrong",
