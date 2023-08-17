@@ -1,5 +1,5 @@
 {
-  "extends": "@tsconfig/strictest/tsconfig.json",
+  "extends": "@shared/typescript-config/tsconfig.json",
   "compilerOptions": {
     "module": "ESNext",
     "target": "ESNext",
