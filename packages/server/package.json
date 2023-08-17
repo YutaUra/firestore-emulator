@@ -34,11 +34,12 @@
     "url": "http://github.com/YutaUra"
   },
   "scripts": {
-    "build": "tsup ./src/ --sourcemap --clean --format esm,cjs --no-splitting && tsc",
+    "build": "tsup ./src/ --sourcemap --clean --format esm,cjs --no-splitting && tsc --emitDeclarationOnly",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint --fix .",
-    "lint:check": "eslint ."
+    "lint:check": "eslint .",
+    "type:check": "tsc --noEmit"
   },
   "dependencies": {
     "@firestore-emulator/proto": "workspace:*",
@@ -52,6 +53,7 @@
     "@google-cloud/firestore": "^6.7.0",
     "@shared/eslint-config": "workspace:^",
     "@shared/prettier-config": "workspace:^",
+    "@shared/typescript-config": "workspace:^",
     "@tsconfig/strictest": "^2.0.1",
     "@types/google-protobuf": "^3.15.6",
     "@types/node": "20",

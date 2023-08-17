@@ -9,7 +9,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint --fix .",
-    "lint:check": "eslint ."
+    "lint:check": "eslint .",
+    "type:check": "tsc --noEmit"
   },
   "dependencies": {
     "@firestore-emulator/jest": "workspace:*",
@@ -20,6 +21,7 @@
   "devDependencies": {
     "@shared/eslint-config": "workspace:^",
     "@shared/prettier-config": "workspace:^",
+    "@shared/typescript-config": "workspace:^",
     "@tsconfig/strictest": "^2.0.1",
     "@types/jest": "^29.5.3",
     "@types/node": "20",

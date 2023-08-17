@@ -1,0 +1,18 @@
+{
+  "name": "@shared/typescript-config",
+  "private": true,
+  "main": ".prettierrc.js",
+  "scripts": {
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "dependencies": {
+    "@tsconfig/strictest": "^2.0.1"
+  },
+  "devDependencies": {
+    "typescript": "^4.9.5"
+  },
+  "peerDependencies": {
+    "typescript": "^4.9.5"
+  }
+}

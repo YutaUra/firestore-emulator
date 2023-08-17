@@ -6,15 +6,16 @@
       "dependsOn": ["^build"]
     },
     "fix": {
-      "dependsOn": ["^format", "lint"]
+      "dependsOn": ["^format", "^lint"]
     },
     "check": {
-      "dependsOn": ["^format:check", "lint:check"]
+      "dependsOn": ["^format:check", "^lint:check", "^type:check"]
     },
     "format": {},
     "format:check": {},
     "lint": {},
     "lint:check": {},
+    "type:check": {},
     "dev": {
       "cache": false,
       "persistent": true

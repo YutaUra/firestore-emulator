@@ -41,7 +41,7 @@ export default class FirestoreEmulatorEnvironment extends TestEnvironment {
   }
 
   override async teardown() {
-    await this.server.stop()
+    this.server.stop()
     await super.teardown()
   }
 }
