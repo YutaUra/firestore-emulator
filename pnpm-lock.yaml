@@ -33,6 +33,9 @@ importers:
         specifier: ^12.4.7
         version: 12.4.7
     devDependencies:
+      '@shared/format':
+        specifier: workspace:^
+        version: link:../../shared/format
       '@tsconfig/strictest':
         specifier: ^2.0.1
         version: 2.0.1
@@ -98,6 +101,9 @@ importers:
       '@jest/environment':
         specifier: ^29.6.2
         version: 29.6.2
+      '@shared/format':
+        specifier: workspace:^
+        version: link:../../shared/format
       '@tsconfig/strictest':
         specifier: ^2.0.1
         version: 2.0.1
@@ -169,6 +175,9 @@ importers:
       '@google-cloud/firestore':
         specifier: ^6.7.0
         version: 6.7.0
+      '@shared/format':
+        specifier: workspace:^
+        version: link:../../shared/format
       '@tsconfig/strictest':
         specifier: ^2.0.1
         version: 2.0.1
@@ -190,6 +199,12 @@ importers:
       typescript:
         specifier: ^4.9.5
         version: 4.9.5
+
+  shared/format:
+    dependencies:
+      prettier:
+        specifier: ^3.0.2
+        version: 3.0.2
 
 packages:
 
@@ -6731,6 +6746,12 @@ packages:
     engines: {node: '>=10.13.0'}
     hasBin: true
     dev: true
+
+  /prettier@3.0.2:
+    resolution: {integrity: sha512-o2YR9qtniXvwEZlOKbveKfDQVyqxbEIWn48Z8m3ZJjBjcCmUy3xZGIv+7AkaeuaTr6yPXJjwv07ZWlsWbEy1rQ==}
+    engines: {node: '>=14'}
+    hasBin: true
+    dev: false
 
   /pretty-format@29.6.2:
     resolution: {integrity: sha512-1q0oC8eRveTg5nnBEWMXAU2qpv65Gnuf2eCQzSjxpWFkPaPARwqZZDGuNE0zPAZfTCHzIk3A8dIjwlQKKLphyg==}

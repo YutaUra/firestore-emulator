@@ -1,0 +1,12 @@
+{
+  "name": "@shared/format",
+  "private": true,
+  "main": ".prettierrc.js",
+  "scripts": {
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "dependencies": {
+    "prettier": "^3.0.2"
+  }
+}

@@ -5,7 +5,14 @@
     "build": {
       "dependsOn": ["^build"]
     },
-    "lint": {},
+    "fix": {
+      "dependsOn": ["^format"]
+    },
+    "check": {
+      "dependsOn": ["^format:check"]
+    },
+    "format": {},
+    "format:check": {},
     "dev": {
       "cache": false,
       "persistent": true

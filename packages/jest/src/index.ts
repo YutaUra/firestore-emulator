@@ -1,11 +1,11 @@
-export * from "./types";
-export * from "./environment/node";
-import { FirestoreState } from "@firestore-emulator/server";
+export * from './types'
+export * from './environment/node'
+import { FirestoreState } from '@firestore-emulator/server'
 
 declare global {
   var emulator: {
-    state: FirestoreState;
-    host: string;
-    port: number;
-  };
+    state: FirestoreState
+    host: string
+    port: number
+  }
 }

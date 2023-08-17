@@ -1,7 +1,7 @@
-import { Timestamp } from "firebase-admin/firestore";
+import { Timestamp } from 'firebase-admin/firestore'
 
 export interface CustomMatchers<R = unknown> {
-  toBeCloseToTimestamp(expect: Timestamp | undefined): R;
+  toBeCloseToTimestamp(expect: Timestamp | undefined): R
 }
 
 declare global {
