@@ -1,4 +1,3 @@
-import { JestEnvironmentConfig } from '@jest/environment'
+import type { JestEnvironmentConfig } from '@jest/environment'
 
-export interface FirestoreEmulatorEnvironmentOptions
-  extends JestEnvironmentConfig {}
+export type FirestoreEmulatorEnvironmentOptions = JestEnvironmentConfig

@@ -1,3 +1,4 @@
 {
-  "cSpell.words": ["hono", "immer", "protobuf"]
+  "cSpell.words": ["hono", "immer", "protobuf"],
+  "eslint.workingDirectories": [{ "mode": "auto" }]
 }

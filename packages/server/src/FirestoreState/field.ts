@@ -1,16 +1,15 @@
-import { Value as v1Value } from '@firestore-emulator/proto/dist/google/firestore/v1/document'
-
+import type { Value as v1Value } from '@firestore-emulator/proto/dist/google/firestore/v1/document'
 import { NullValue } from '@firestore-emulator/proto/dist/google/protobuf/struct'
 
 export type ValueObjectType = ReturnType<typeof v1Value.prototype.toObject>
 export interface FirestoreStateDocumentBaseField {
-  toJSON(): { type: string; value: unknown }
-  toV1ValueObject(): ValueObjectType
   eq(other: FirestoreStateDocumentFields): boolean
-  lt(other: FirestoreStateDocumentFields): boolean
-  lte(other: FirestoreStateDocumentFields): boolean
   gt(other: FirestoreStateDocumentFields): boolean
   gte(other: FirestoreStateDocumentFields): boolean
+  lt(other: FirestoreStateDocumentFields): boolean
+  lte(other: FirestoreStateDocumentFields): boolean
+  toJSON(): { type: string; value: unknown }
+  toV1ValueObject(): ValueObjectType
 }
 
 export class FirestoreStateDocumentStringField
@@ -243,12 +242,12 @@ export class FirestoreStateDocumentTimestampField
   implements FirestoreStateDocumentBaseField
 {
   type = 'timestamp_value' as const
-  constructor(readonly value: { seconds: number; nanos: number }) {}
+  constructor(readonly value: { nanos: number; seconds: number }) {}
 
   static fromDate(date: Date) {
     return new FirestoreStateDocumentTimestampField({
-      seconds: Math.floor(date.getTime() / 1000),
       nanos: (date.getTime() % 1000) * 1000000,
+      seconds: Math.floor(date.getTime() / 1000),
     })
   }
 
@@ -577,8 +576,8 @@ export const convertV1DocumentField = (
     return new FirestoreStateDocumentDoubleField(field.double_value)
   if (field.has_timestamp_value)
     return new FirestoreStateDocumentTimestampField({
-      nanos: field.timestamp_value.nanos ?? 0,
-      seconds: field.timestamp_value.seconds ?? 0,
+      nanos: field.timestamp_value.nanos,
+      seconds: field.timestamp_value.seconds,
     })
   if (field.has_bytes_value)
     return new FirestoreStateDocumentBytesField(field.bytes_value)
@@ -586,17 +585,17 @@ export const convertV1DocumentField = (
     return new FirestoreStateDocumentReferenceField(field.reference_value)
   if (field.has_geo_point_value)
     return new FirestoreStateDocumentGeoPointField({
-      latitude: field.geo_point_value.latitude ?? 0,
-      longitude: field.geo_point_value.longitude ?? 0,
+      latitude: field.geo_point_value.latitude,
+      longitude: field.geo_point_value.longitude,
     })
   if (field.has_array_value)
     return new FirestoreStateDocumentArrayField(
-      (field.array_value.values ?? []).map(convertV1DocumentField),
+      field.array_value.values.map(convertV1DocumentField),
     )
   if (field.has_map_value)
     return new FirestoreStateDocumentMapField(
       Object.fromEntries(
-        Array.from(field.map_value.fields.entries() ?? []).map(([k, v]) => [
+        Array.from(field.map_value.fields.entries()).map(([k, v]) => [
           k,
           convertV1DocumentField(v),
         ]),

@@ -1,6 +1,8 @@
 import { Server, ServerCredentials } from '@grpc/grpc-js'
-import { FirestoreServiceV1Impl } from './FirestoreServiceV1Impl'
+
 import { FirestoreState } from '../FirestoreState'
+
+import { FirestoreServiceV1Impl } from './FirestoreServiceV1Impl'
 
 export class FirestoreServer {
   state: FirestoreState
@@ -22,7 +24,8 @@ export class FirestoreServer {
         ServerCredentials.createInsecure(),
         (err) => {
           if (err) {
-            return reject(err)
+            reject(err)
+            return
           }
           this.server.start()
           resolve(undefined)
@@ -31,7 +34,7 @@ export class FirestoreServer {
     })
   }
 
-  async stop(): Promise<void> {
+  stop() {
     this.server.forceShutdown()
   }
 }

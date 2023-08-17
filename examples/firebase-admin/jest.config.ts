@@ -1,6 +1,7 @@
-import { JestConfigWithTsJest } from 'ts-jest'
+import type { JestConfigWithTsJest } from 'ts-jest'
 
 export default {
+  testEnvironment: '@firestore-emulator/jest/environment/node',
   transform: {
     '^.+\\.test.ts?$': [
       'ts-jest',
@@ -11,5 +12,5 @@ export default {
       },
     ],
   },
-  testEnvironment: '@firestore-emulator/jest/environment/node',
+  watchman: false,
 } satisfies JestConfigWithTsJest

@@ -8,5 +8,5 @@
     "skipLibCheck": true,
     "types": ["@types/jest", "@firestore-emulator/jest"]
   },
-  "include": ["src"]
+  "include": ["src", "jest.config.ts"]
 }

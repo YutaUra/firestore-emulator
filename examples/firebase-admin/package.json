@@ -7,7 +7,9 @@
     "test": "firebase emulators:exec --only firestore \"pnpm exec jest\"",
     "test:watch": "firebase emulators:exec --only firestore \"pnpm exec jest --watch\"",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "lint": "eslint --fix .",
+    "lint:check": "eslint ."
   },
   "dependencies": {
     "@firestore-emulator/jest": "workspace:*",
@@ -16,7 +18,8 @@
     "firebase-tools": "^12.4.7"
   },
   "devDependencies": {
-    "@shared/format": "workspace:^",
+    "@shared/eslint-config": "workspace:^",
+    "@shared/prettier-config": "workspace:^",
     "@tsconfig/strictest": "^2.0.1",
     "@types/jest": "^29.5.3",
     "@types/node": "20",

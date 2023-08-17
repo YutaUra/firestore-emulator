@@ -1,17 +1,22 @@
-import { initializeApp, deleteApp, App } from 'firebase-admin/app'
-import {
+import assert from 'assert'
+
+import { getSeconds } from 'date-fns'
+import type { App } from 'firebase-admin/app'
+import { initializeApp, deleteApp } from 'firebase-admin/app'
+import type {
   Firestore,
-  initializeFirestore,
   Timestamp,
+  WhereFilterOp,
+} from 'firebase-admin/firestore'
+import {
+  initializeFirestore,
   GeoPoint,
   FieldValue,
   setLogFunction,
 } from 'firebase-admin/firestore'
 import fetch from 'node-fetch'
-import { getSeconds } from 'date-fns'
-import assert from 'assert'
 
-const LOGGING = false
+const LOGGING = false as boolean
 
 expect.extend({
   toBeCloseToTimestamp(
@@ -19,18 +24,18 @@ expect.extend({
     expected: Timestamp | undefined,
   ) {
     if (!received)
-      return { pass: false, message: () => 'received is undefined' }
+      return { message: () => 'received is undefined', pass: false }
     if (!expected)
-      return { pass: false, message: () => 'expected is undefined' }
+      return { message: () => 'expected is undefined', pass: false }
     return {
-      pass:
-        Math.abs(
-          getSeconds(received.toDate()) - getSeconds(expected.toDate()),
-        ) < 5,
       message: () =>
         `expected ${received.toDate().getTime() / 1000} to be close to ${
           expected.toDate().getTime() / 1000
         }`,
+      pass:
+        Math.abs(
+          getSeconds(received.toDate()) - getSeconds(expected.toDate()),
+        ) < 5,
     }
   },
 })
@@ -344,8 +349,8 @@ describe('field type', () => {
         .doc('alice')
         .set({
           address: {
-            zipCode: '123-4567',
             city: 'Tokyo',
+            zipCode: '123-4567',
           },
         })
       return db.collection('users').doc('alice').get()
@@ -409,8 +414,8 @@ describe('field type', () => {
         .set({
           address: {
             zipCode: {
-              prefix: '123',
               postfix: '4567',
+              prefix: '123',
             },
           },
         })
@@ -429,12 +434,12 @@ describe('field type', () => {
         .set({
           favoriteFruits: [
             {
-              name: 'apple',
               color: 'red',
+              name: 'apple',
             },
             {
-              name: 'banana',
               color: 'yellow',
+              name: 'banana',
             },
           ],
         })
@@ -449,10 +454,11 @@ describe('field type', () => {
 describe('transaction', () => {
   it('set in transaction', async () => {
     const [realResult, emulatorResult] = await testCase(async (db) => {
-      await db.runTransaction(async (transaction) => {
+      await db.runTransaction((transaction) => {
         transaction.set(db.collection('users').doc('alice'), {
           name: 'Alice',
         })
+        return Promise.resolve()
       })
       return db.collection('users').doc('alice').get()
     })
@@ -464,13 +470,14 @@ describe('transaction', () => {
   it('update in transaction', async () => {
     const [realResult, emulatorResult] = await testCase(async (db) => {
       await db.collection('users').doc('alice').set({
-        name: 'Alice',
         age: 20,
+        name: 'Alice',
       })
-      await db.runTransaction(async (transaction) => {
+      await db.runTransaction((transaction) => {
         transaction.update(db.collection('users').doc('alice'), {
           age: 21,
         })
+        return Promise.resolve()
       })
       return db.collection('users').doc('alice').get()
     })
@@ -482,13 +489,14 @@ describe('transaction', () => {
   it('delete in transaction', async () => {
     const [realResult, emulatorResult] = await testCase(async (db) => {
       await db.collection('users').doc('alice').set({
-        name: 'Alice',
         age: 20,
+        name: 'Alice',
       })
       const current = await db.collection('users').doc('alice').get()
       expect(current.exists).toEqual(true)
-      await db.runTransaction(async (transaction) => {
+      await db.runTransaction((transaction) => {
         transaction.delete(db.collection('users').doc('alice'))
+        return Promise.resolve()
       })
       return db.collection('users').doc('alice').get()
     })
@@ -500,16 +508,14 @@ describe('transaction', () => {
   it('get and set in transaction', async () => {
     const [realResult, emulatorResult] = await testCase(async (db) => {
       await db.collection('users').doc('alice').set({
-        name: 'Alice',
         age: 20,
+        name: 'Alice',
       })
       await db.runTransaction(async (transaction) => {
         const current = await transaction.get(
           db.collection('users').doc('alice'),
         )
-        const age = current.data()?.['age']
-        if (age === undefined || typeof age !== 'number')
-          throw new Error('age is undefined')
+        const age = current.data()?.['age'] as number
         transaction.set(
           db.collection('users').doc('alice'),
           {
@@ -531,8 +537,8 @@ describe('FieldValue', () => {
   it('serverTimestamp', async () => {
     const [realResult, emulatorResult] = await testCase(async (db) => {
       await db.collection('users').doc('alice').set({
-        name: 'Alice',
         createdAt: FieldValue.serverTimestamp(),
+        name: 'Alice',
       })
 
       return db.collection('users').doc('alice').get()
@@ -540,7 +546,7 @@ describe('FieldValue', () => {
     assert(realResult.status === 'fulfilled')
     assert(emulatorResult.status === 'fulfilled')
     expect(emulatorResult.value.data()?.['createdAt']).toBeCloseToTimestamp(
-      realResult.value.data()?.['createdAt'],
+      realResult.value.data()?.['createdAt'] as Timestamp,
     )
   })
 
@@ -550,8 +556,8 @@ describe('FieldValue', () => {
         .collection('users')
         .doc('alice')
         .set({
-          name: 'Alice',
           favoriteFruits: ['apple', { name: 'banana' }],
+          name: 'Alice',
         })
 
       await db
@@ -580,13 +586,13 @@ describe('FieldValue', () => {
         .collection('users')
         .doc('alice')
         .set({
-          name: 'Alice',
           favoriteFruits: [
             'apple',
             'banana',
             { name: 'orange' },
             { name: 'grape' },
           ],
+          name: 'Alice',
         })
 
       await db
@@ -607,8 +613,8 @@ describe('FieldValue', () => {
   it('increment', async () => {
     const [realResult, emulatorResult] = await testCase(async (db) => {
       await db.collection('users').doc('alice').set({
-        name: 'Alice',
         age: 20,
+        name: 'Alice',
       })
 
       await db
@@ -636,8 +642,8 @@ describe('nested collection', () => {
         .collection('posts')
         .doc('post1')
         .set({
-          title: 'Hello',
           body: 'World',
+          title: 'Hello',
         })
 
       return db
@@ -649,7 +655,6 @@ describe('nested collection', () => {
     })
     assert(realResult.status === 'fulfilled')
     if (emulatorResult.status === 'rejected') throw emulatorResult.reason
-    assert(emulatorResult.status === 'fulfilled')
     expect(emulatorResult.value.data()).toEqual(realResult.value.data())
     expect(emulatorResult.value.ref.path).toEqual(realResult.value.ref.path)
     expect(emulator.state.toJSON()).toMatchSnapshot()
@@ -662,7 +667,7 @@ describe('query', () => {
       it.each`
         operator                | testName                     | values                                                                          | compareValue
         ${'=='}                 | ${'array and array'}         | ${[['apple', 'banana'], ['banana', 'orange']]}                                  | ${['apple', 'banana']}
-        ${'=='}                 | ${'map and map'}             | ${[{ name: 'Alice', age: 20 }, { name: 'Bob', age: 21 }]}                       | ${{ name: 'Alice', age: 20 }}
+        ${'=='}                 | ${'map and map'}             | ${[{ age: 20, name: 'Alice' }, { age: 21, name: 'Bob' }]}                       | ${{ age: 20, name: 'Alice' }}
         ${'=='}                 | ${'timestamp and timestamp'} | ${[new Date('2020-01-01T00:00:00.000Z'), new Date('2020-01-02T00:00:00.000Z')]} | ${new Date('2020-01-01T00:00:00.000Z')}
         ${'=='}                 | ${'geopoint and geopoint'}   | ${[new GeoPoint(35.681236, 139.767125), new GeoPoint(35.681236, 139.767125)]}   | ${new GeoPoint(35.681236, 139.767125)}
         ${'<'}                  | ${'string and string'}       | ${['Alice', 'Bob']}                                                             | ${'Bob'}
@@ -696,33 +701,35 @@ describe('query', () => {
         ${'in'}                 | ${'number and array'}        | ${[20, 21, 23]}                                                                 | ${[20, 23]}
         ${'not-in'}             | ${'string and array'}        | ${['Alice', 'Bob']}                                                             | ${['Alice']}
         ${'not-in'}             | ${'number and array'}        | ${[20, 21, 23]}                                                                 | ${[20, 23]}
-      `(
-        `$operator for $testName`,
-        async ({ operator, values, compareValue }) => {
-          const [realResult, emulatorResult] = await testCase(async (db) => {
-            for (let i = 0; i < values.length; i++) {
-              const value = values[i]
-              await db
-                .collection('values')
-                .doc(`${i + 1}`)
-                .set({
-                  value,
-                })
-            }
-
-            const result = await db
+      `(`$operator for $testName`, async (context) => {
+        const { operator, values, compareValue } = context as {
+          compareValue: unknown
+          operator: WhereFilterOp
+          values: unknown[]
+        }
+        const [realResult, emulatorResult] = await testCase(async (db) => {
+          for (let i = 0; i < values.length; i++) {
+            const value = values[i]
+            await db
               .collection('values')
-              .where('value', operator, compareValue)
-              .get()
-            return result
-          })
-          assert(realResult.status === 'fulfilled')
-          assert(emulatorResult.status === 'fulfilled')
-          expect(emulatorResult.value.docs.map((doc) => doc.data())).toEqual(
-            realResult.value.docs.map((doc) => doc.data()),
-          )
-        },
-      )
+              .doc(`${i + 1}`)
+              .set({
+                value,
+              })
+          }
+
+          const result = await db
+            .collection('values')
+            .where('value', operator, compareValue)
+            .get()
+          return result
+        })
+        assert(realResult.status === 'fulfilled')
+        assert(emulatorResult.status === 'fulfilled')
+        expect(emulatorResult.value.docs.map((doc) => doc.data())).toEqual(
+          realResult.value.docs.map((doc) => doc.data()),
+        )
+      })
     })
 
     describe('multiple where', () => {
@@ -730,16 +737,16 @@ describe('query', () => {
         it('== and ==', async () => {
           const [realResult, emulatorResult] = await testCase(async (db) => {
             await db.collection('users').doc('alice').set({
-              name: 'Alice',
               age: 20,
+              name: 'Alice',
             })
             await db.collection('users').doc('bob').set({
-              name: 'Bob',
               age: 21,
+              name: 'Bob',
             })
             await db.collection('users').doc('charlie').set({
-              name: 'Charlie',
               age: 21,
+              name: 'Charlie',
             })
             const result = await db
               .collection('users')
@@ -758,16 +765,16 @@ describe('query', () => {
         it('== and !=', async () => {
           const [realResult, emulatorResult] = await testCase(async (db) => {
             await db.collection('users').doc('alice').set({
-              name: 'Alice',
               age: 20,
+              name: 'Alice',
             })
             await db.collection('users').doc('bob').set({
-              name: 'Bob',
               age: 21,
+              name: 'Bob',
             })
             await db.collection('users').doc('charlie').set({
-              name: 'Charlie',
               age: 21,
+              name: 'Charlie',
             })
             const result = await db
               .collection('users')
@@ -788,16 +795,16 @@ describe('query', () => {
         it('== and ==', async () => {
           const [realResult, emulatorResult] = await testCase(async (db) => {
             await db.collection('users').doc('alice').set({
-              name: 'Alice',
               age: 20,
+              name: 'Alice',
             })
             await db.collection('users').doc('bob').set({
-              name: 'Bob',
               age: 21,
+              name: 'Bob',
             })
             await db.collection('users').doc('charlie').set({
-              name: 'Charlie',
               age: 21,
+              name: 'Charlie',
             })
             const result = await db
               .collection('users')
@@ -889,22 +896,22 @@ describe('query', () => {
           .collection('users')
           .doc('bob')
           .set({
-            name: 'Bob',
             createdAt: new Date('2020-01-02T00:00:00.000Z'),
+            name: 'Bob',
           })
         await db
           .collection('users')
           .doc('alice')
           .set({
-            name: 'Alice',
             createdAt: new Date('2020-01-01T00:00:00.000Z'),
+            name: 'Alice',
           })
         await db
           .collection('users')
           .doc('charlie')
           .set({
-            name: 'Charlie',
             createdAt: new Date('2020-01-03T00:00:00.000Z'),
+            name: 'Charlie',
           })
         const result = await db
           .collection('users')
@@ -924,22 +931,22 @@ describe('query', () => {
           .collection('users')
           .doc('bob')
           .set({
-            name: 'Bob',
             createdAt: new Date('2020-01-02T00:00:00.000Z'),
+            name: 'Bob',
           })
         await db
           .collection('users')
           .doc('alice')
           .set({
-            name: 'Alice',
             createdAt: new Date('2020-01-01T00:00:00.000Z'),
+            name: 'Alice',
           })
         await db
           .collection('users')
           .doc('charlie')
           .set({
-            name: 'Charlie',
             createdAt: new Date('2020-01-03T00:00:00.000Z'),
+            name: 'Charlie',
           })
         const result = await db
           .collection('users')
@@ -957,16 +964,16 @@ describe('query', () => {
     it('multiple orderBy', async () => {
       const [realResult, emulatorResult] = await testCase(async (db) => {
         await db.collection('users').doc('alice').set({
-          name: 'Alice',
           age: 21,
+          name: 'Alice',
         })
         await db.collection('users').doc('bob').set({
-          name: 'Alice',
           age: 20,
+          name: 'Alice',
         })
         await db.collection('users').doc('charlie').set({
-          name: 'Bob',
           age: 20,
+          name: 'Bob',
         })
         const result = await db
           .collection('users')
@@ -988,16 +995,16 @@ describe('query', () => {
       it('== and limit', async () => {
         const [realResult, emulatorResult] = await testCase(async (db) => {
           await db.collection('users').doc('alice').set({
-            name: 'Alice',
             age: 20,
+            name: 'Alice',
           })
           await db.collection('users').doc('bob').set({
-            name: 'Bob',
             age: 21,
+            name: 'Bob',
           })
           await db.collection('users').doc('charlie').set({
-            name: 'Charlie',
             age: 21,
+            name: 'Charlie',
           })
           const result = await db
             .collection('users')
@@ -1058,10 +1065,10 @@ describe('onSnapshot for collection', () => {
                   ).toBe(true)
                   compare(
                     snapshot.docChanges().map((v) => ({
-                      type: v.type,
                       data: v.doc.data(),
                       newIndex: v.newIndex,
                       oldIndex: v.oldIndex,
+                      type: v.type,
                     })),
                   )
                   unsubscribe()
@@ -1069,8 +1076,8 @@ describe('onSnapshot for collection', () => {
                 }
               })
 
-            later1.promise.then(() => {
-              db.collection('users').doc('dennis').set({ name: 'Dennis' })
+            void later1.promise.then(() => {
+              void db.collection('users').doc('dennis').set({ name: 'Dennis' })
               isCreate = true
             })
           })
@@ -1102,10 +1109,10 @@ describe('onSnapshot for collection', () => {
                   ).toBe(true)
                   compare(
                     snapshot.docChanges().map((v) => ({
-                      type: v.type,
                       data: v.doc.data(),
                       newIndex: v.newIndex,
                       oldIndex: v.oldIndex,
+                      type: v.type,
                     })),
                   )
                   unsubscribe()
@@ -1113,8 +1120,8 @@ describe('onSnapshot for collection', () => {
                 }
               })
 
-            later1.promise.then(() => {
-              db.collection('users').doc('alice').update({ age: 20 })
+            void later1.promise.then(() => {
+              void db.collection('users').doc('alice').update({ age: 20 })
               isUpdated = true
             })
           })
@@ -1146,10 +1153,10 @@ describe('onSnapshot for collection', () => {
                   ).toBe(true)
                   compare(
                     snapshot.docChanges().map((v) => ({
-                      type: v.type,
                       data: v.doc.data(),
                       newIndex: v.newIndex,
                       oldIndex: v.oldIndex,
+                      type: v.type,
                     })),
                   )
                   unsubscribe()
@@ -1157,8 +1164,8 @@ describe('onSnapshot for collection', () => {
                 }
               })
 
-            later1.promise.then(() => {
-              db.collection('users').doc('alice').delete()
+            void later1.promise.then(() => {
+              void db.collection('users').doc('alice').delete()
               isDeleted = true
             })
           })
@@ -1210,8 +1217,8 @@ describe('onSnapshot for document', () => {
             }
           })
 
-        later1.promise.then(() => {
-          db.collection('users').doc('alice').set({ name: 'Alice' })
+        void later1.promise.then(() => {
+          void db.collection('users').doc('alice').set({ name: 'Alice' })
           isCreate = true
         })
       })
@@ -1241,8 +1248,8 @@ describe('onSnapshot for document', () => {
             }
           })
 
-        later1.promise.then(() => {
-          db.collection('users').doc('alice').update({ age: 20 })
+        void later1.promise.then(() => {
+          void db.collection('users').doc('alice').update({ age: 20 })
           isUpdate = true
         })
       })
@@ -1271,8 +1278,8 @@ describe('onSnapshot for document', () => {
             }
           })
 
-        later1.promise.then(() => {
-          db.collection('users').doc('alice').delete()
+        void later1.promise.then(() => {
+          void db.collection('users').doc('alice').delete()
           isDelete = true
         })
       })
@@ -1284,7 +1291,7 @@ describe('onSnapshot for document', () => {
 
 const resolveLater = () => {
   let isResolved = false
-  let resolve: () => void = () => {}
+  let resolve: () => void = () => undefined
   const promise = new Promise<null>((r) => {
     resolve = () => {
       if (isResolved) return
@@ -1292,5 +1299,5 @@ const resolveLater = () => {
       r(null)
     }
   })
-  return { promise, resolve, getIsResolved: () => isResolved }
+  return { getIsResolved: () => isResolved, promise, resolve }
 }

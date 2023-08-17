@@ -1,28 +1,18 @@
-import {
-  ServerDuplexStream,
-  ServerUnaryCall,
-  ServerWritableStream,
-  sendUnaryData,
-} from '@grpc/grpc-js'
-import {
-  UnimplementedFirestoreService,
+import type { Document } from '@firestore-emulator/proto/dist/google/firestore/v1/document'
+import type {
   GetDocumentRequest,
   ListDocumentsRequest,
   ListDocumentsResponse,
   UpdateDocumentRequest,
   DeleteDocumentRequest,
   BatchGetDocumentsRequest,
-  BatchGetDocumentsResponse,
   BatchWriteRequest,
   BatchWriteResponse,
   BeginTransactionRequest,
-  BeginTransactionResponse,
   CommitRequest,
-  CommitResponse,
   CreateDocumentRequest,
   ListCollectionIdsRequest,
   ListCollectionIdsResponse,
-  ListenRequest,
   ListenResponse,
   PartitionQueryRequest,
   PartitionQueryResponse,
@@ -30,17 +20,28 @@ import {
   RunAggregationQueryRequest,
   RunAggregationQueryResponse,
   RunQueryRequest,
-  RunQueryResponse,
   WriteRequest,
   WriteResponse,
 } from '@firestore-emulator/proto/dist/google/firestore/v1/firestore'
 import {
-  FirestoreState,
-  TimestampFromDate,
-  TimestampFromNow,
-} from '../../FirestoreState'
-import { Document } from '@firestore-emulator/proto/dist/google/firestore/v1/document'
+  UnimplementedFirestoreService,
+  BatchGetDocumentsResponse,
+  BeginTransactionResponse,
+  CommitResponse,
+  ListenRequest,
+  RunQueryResponse,
+} from '@firestore-emulator/proto/dist/google/firestore/v1/firestore'
 import { Empty } from '@firestore-emulator/proto/dist/google/protobuf/empty'
+import { UntypedHandleCall } from '@grpc/grpc-js'
+import type {
+  ServerDuplexStream,
+  ServerUnaryCall,
+  ServerWritableStream,
+  sendUnaryData,
+} from '@grpc/grpc-js'
+
+import type { FirestoreState } from '../../FirestoreState'
+import { TimestampFromDate, TimestampFromNow } from '../../FirestoreState'
 import { FirestoreEmulatorError } from '../../error/error'
 
 export class FirestoreServiceV1Impl extends UnimplementedFirestoreService {
@@ -89,11 +90,11 @@ export class FirestoreServiceV1Impl extends UnimplementedFirestoreService {
       const document = this.#state.getDocument(documentPath)
       call.write(
         BatchGetDocumentsResponse.fromObject({
-          read_time: date,
           found: document.metadata.hasExist
             ? document.toV1DocumentObject()
             : undefined,
           missing: document.metadata.hasExist ? undefined : documentPath,
+          read_time: date,
         }),
       )
     })
@@ -126,10 +127,10 @@ export class FirestoreServiceV1Impl extends UnimplementedFirestoreService {
       if (err instanceof FirestoreEmulatorError) {
         callback(
           {
-            message: err.message,
-            code: err.code,
-            name: 'Error',
             cause: err,
+            code: err.code,
+            message: err.message,
+            name: 'Error',
           },
           null,
         )
@@ -138,9 +139,9 @@ export class FirestoreServiceV1Impl extends UnimplementedFirestoreService {
       console.error(err)
       callback(
         {
+          cause: err,
           message: 'Something went wrong',
           name: 'Error',
-          cause: err,
         },
         null,
       )
@@ -164,11 +165,11 @@ export class FirestoreServiceV1Impl extends UnimplementedFirestoreService {
     results.forEach((result, i, arr) => {
       call.write(
         RunQueryResponse.fromObject({
+          document: result.toV1DocumentObject(),
           done: i === arr.length - 1,
           read_time: TimestampFromDate(date),
-          document: result.toV1DocumentObject(),
-          transaction: call.request.transaction,
           skipped_results: 0,
+          transaction: call.request.transaction,
         }),
       )
     })
@@ -198,7 +199,7 @@ export class FirestoreServiceV1Impl extends UnimplementedFirestoreService {
   override Listen(
     call: ServerDuplexStream<ListenRequest, ListenResponse>,
   ): void {
-    call.once('data', async (request) => {
+    call.once('data', (request) => {
       if (!(request instanceof ListenRequest)) {
         console.error('Invalid request type')
         call.end()
@@ -237,5 +238,5 @@ export class FirestoreServiceV1Impl extends UnimplementedFirestoreService {
     throw new Error('Method<CreateDocument> not implemented.')
   }
 
-  [name: string]: import('@grpc/grpc-js').UntypedHandleCall
+  [name: string]: UntypedHandleCall
 }

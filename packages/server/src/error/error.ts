@@ -1,4 +1,4 @@
-import { Status } from '@grpc/grpc-js/build/src/constants'
+import type { Status } from '@grpc/grpc-js/build/src/constants'
 
 export class FirestoreEmulatorError extends Error {
   constructor(

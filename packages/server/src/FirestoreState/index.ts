@@ -1,49 +1,56 @@
-import { produce } from 'immer'
 import { EventEmitter } from 'node:events'
-import { TypeSafeEventEmitter } from 'typesafe-event-emitter'
+
 import { Document as v1Document } from '@firestore-emulator/proto/dist/google/firestore/v1/document'
-import {
-  DocumentTransformFieldTransformServerValue,
-  DocumentTransformFieldTransform as v1DocumentTransformFieldTransform,
-  Write as v1Write,
-  WriteResult as v1WriteResult,
-} from '@firestore-emulator/proto/dist/google/firestore/v1/write'
-import {
-  StructuredQuery as v1StructuredQuery,
-  StructuredQueryFieldFilterOperator as v1StructuredQueryFieldFilterOperator,
-  StructuredQueryCompositeFilterOperator as v1StructuredQueryCompositeFilterOperator,
-  StructuredQueryFieldFilter as v1StructuredQueryFieldFilter,
-  StructuredQueryDirection as v1StructuredQueryDirection,
-} from '@firestore-emulator/proto/dist/google/firestore/v1/query'
-import { Timestamp } from '@firestore-emulator/proto/dist/google/protobuf/timestamp'
-import { assertNever } from 'assert-never'
-import { FirestoreEmulatorError } from '../error/error'
-import { Status } from '@grpc/grpc-js/build/src/constants'
+import type { ListenRequest as v1ListenRequest } from '@firestore-emulator/proto/dist/google/firestore/v1/firestore'
 import {
   TargetChangeTargetChangeType as v1TargetChangeTargetChangeType,
-  ListenRequest as v1ListenRequest,
   ListenResponse as v1ListenResponse,
 } from '@firestore-emulator/proto/dist/google/firestore/v1/firestore'
+import type {
+  StructuredQuery as v1StructuredQuery,
+  StructuredQueryFieldFilter as v1StructuredQueryFieldFilter,
+} from '@firestore-emulator/proto/dist/google/firestore/v1/query'
+import {
+  StructuredQueryFieldFilterOperator as v1StructuredQueryFieldFilterOperator,
+  StructuredQueryCompositeFilterOperator as v1StructuredQueryCompositeFilterOperator,
+  StructuredQueryDirection as v1StructuredQueryDirection,
+} from '@firestore-emulator/proto/dist/google/firestore/v1/query'
+import type {
+  DocumentTransformFieldTransform as v1DocumentTransformFieldTransform,
+  Write as v1Write,
+} from '@firestore-emulator/proto/dist/google/firestore/v1/write'
+import {
+  DocumentTransformFieldTransformServerValue,
+  WriteResult as v1WriteResult,
+} from '@firestore-emulator/proto/dist/google/firestore/v1/write'
+import { Timestamp } from '@firestore-emulator/proto/dist/google/protobuf/timestamp'
+import { Status } from '@grpc/grpc-js/build/src/constants'
+import { assertNever } from 'assert-never'
+import { produce } from 'immer'
+import type { TypeSafeEventEmitter } from 'typesafe-event-emitter'
+
+import { FirestoreEmulatorError } from '../error/error'
+import { isNotNull } from '../utils'
+
+import type { FirestoreStateDocumentFields } from './field'
 import {
   FirestoreStateDocumentArrayField,
   FirestoreStateDocumentDoubleField,
-  FirestoreStateDocumentFields,
   FirestoreStateDocumentIntegerField,
   FirestoreStateDocumentTimestampField,
   convertV1DocumentField,
   convertV1Value,
 } from './field'
-import { isNotNull } from '../utils'
 
-type Events = {
-  'add-project': { project: FirestoreStateProject }
-  'add-database': { database: FirestoreStateDatabase }
+interface Events {
   'add-collection': { collection: FirestoreStateCollection }
+  'add-database': { database: FirestoreStateDatabase }
   'add-document': { document: FirestoreStateDocument }
+  'add-project': { project: FirestoreStateProject }
+  'clear-all-projects': Record<string, never>
   'create-document': { document: FirestoreStateDocument }
-  'update-document': { document: FirestoreStateDocument }
   'delete-document': { document: FirestoreStateDocument }
-  'clear-all-projects': {}
+  'update-document': { document: FirestoreStateDocument }
 }
 
 export interface HasCollections {
@@ -53,20 +60,20 @@ export interface HasCollections {
 
 type FirestoreStateDocumentMetadata =
   | {
-      hasExist: false
       createdAt: null
+      hasExist: false
       updatedAt: null
     }
   | {
-      hasExist: true
       createdAt: Date
+      hasExist: true
       updatedAt: Date
     }
 
 export class FirestoreStateDocument implements HasCollections {
   metadata: FirestoreStateDocumentMetadata = {
-    hasExist: false,
     createdAt: null,
+    hasExist: false,
     updatedAt: null,
   }
   constructor(
@@ -80,6 +87,7 @@ export class FirestoreStateDocument implements HasCollections {
 
   iterateFromRoot() {
     const iters: FirestoreStateDocument[] = [this]
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     let current: FirestoreStateDocument = this
     while (current.parent.parent instanceof FirestoreStateDocument) {
       const next = current.parent.parent
@@ -122,59 +130,59 @@ export class FirestoreStateDocument implements HasCollections {
     return v1Document.fromObject({
       create_time: this.metadata.hasExist
         ? Timestamp.fromObject({
-            seconds: Math.floor(this.metadata.createdAt.getTime() / 1000),
             nanos: this.metadata.createdAt.getMilliseconds() * 1000 * 1000,
+            seconds: Math.floor(this.metadata.createdAt.getTime() / 1000),
           })
         : undefined,
-      update_time: this.metadata.hasExist
-        ? Timestamp.fromObject({
-            seconds: Math.floor(this.metadata.updatedAt.getTime() / 1000),
-            nanos: this.metadata.updatedAt.getMilliseconds() * 1000 * 1000,
-          })
-        : undefined,
-      name: this.getPath(),
       fields: Object.fromEntries(
         Object.entries(this.fields).map(([key, field]) => [
           key,
           field.toV1ValueObject(),
         ]),
       ),
+      name: this.getPath(),
+      update_time: this.metadata.hasExist
+        ? Timestamp.fromObject({
+            nanos: this.metadata.updatedAt.getMilliseconds() * 1000 * 1000,
+            seconds: Math.floor(this.metadata.updatedAt.getTime() / 1000),
+          })
+        : undefined,
     })
   }
 
   toV1DocumentObject(): ReturnType<typeof v1Document.prototype.toObject> {
     const document = this.toV1Document()
     return {
-      name: document.name,
       create_time: document.create_time.toObject(),
-      update_time: document.update_time.toObject(),
       fields: Object.fromEntries(
         Array.from(document.fields).map(([key, value]) => [
           key,
           convertV1Value(value),
         ]),
       ),
+      name: document.name,
+      update_time: document.update_time.toObject(),
     }
   }
 
   toJSON(): {
-    path: string
-    fields: Record<string, ReturnType<FirestoreStateDocumentFields['toJSON']>>
     collections: Record<string, ReturnType<FirestoreStateCollection['toJSON']>>
+    fields: Record<string, ReturnType<FirestoreStateDocumentFields['toJSON']>>
+    path: string
   } {
     return {
-      path: this.getPath(),
+      collections: Object.fromEntries(
+        Object.entries(this.collections)
+          .filter(([, collection]) => collection.hasChild())
+          .map(([key, collection]) => [key, collection.toJSON()]),
+      ),
       fields: Object.fromEntries(
         Object.entries(this.fields).map(([key, field]) => [
           key,
           field.toJSON(),
         ]),
       ),
-      collections: Object.fromEntries(
-        Object.entries(this.collections)
-          .filter(([, collection]) => collection.hasChild())
-          .map(([key, collection]) => [key, collection.toJSON()]),
-      ),
+      path: this.getPath(),
     }
   }
 
@@ -262,6 +270,7 @@ export class FirestoreStateDocument implements HasCollections {
     })
     this.fields = produce(this.fields, (draft) => {
       Object.keys(draft).forEach((key) => {
+        // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
         delete draft[key]
       })
     })
@@ -285,52 +294,63 @@ export class FirestoreStateDocument implements HasCollections {
       if (transform.has_increment) {
         if (transform.increment.has_integer_value) {
           if (!field) {
-            return this.set(date, {
+            this.set(date, {
               [transform.field_path]: new FirestoreStateDocumentIntegerField(
                 transform.increment.integer_value,
               ),
             })
+            return
           } else if (field instanceof FirestoreStateDocumentIntegerField) {
-            return this.set(date, {
+            this.set(date, {
               [transform.field_path]: new FirestoreStateDocumentIntegerField(
                 field.value + transform.increment.integer_value,
               ),
             })
+            return
           } else if (field instanceof FirestoreStateDocumentDoubleField) {
-            return this.set(date, {
+            this.set(date, {
               [transform.field_path]: new FirestoreStateDocumentDoubleField(
                 field.value + transform.increment.integer_value,
               ),
             })
+            return
           } else {
             throw new Error(
-              `Invalid transform: ${transform}. increment transform can only be applied to an integer or a double field`,
+              `Invalid transform: ${JSON.stringify(
+                transform,
+              )}. increment transform can only be applied to an integer or a double field`,
             )
           }
         } else if (transform.increment.has_double_value) {
           if (!field) {
-            return this.set(date, {
+            this.set(date, {
               [transform.field_path]: new FirestoreStateDocumentDoubleField(
                 transform.increment.double_value,
               ),
             })
+            return
           } else if (
             field instanceof FirestoreStateDocumentIntegerField ||
             field instanceof FirestoreStateDocumentDoubleField
           ) {
-            return this.set(date, {
+            this.set(date, {
               [transform.field_path]: new FirestoreStateDocumentDoubleField(
                 field.value + transform.increment.double_value,
               ),
             })
+            return
           } else {
             throw new Error(
-              `Invalid transform: ${transform}. increment transform can only be applied to an integer or a double field`,
+              `Invalid transform: ${JSON.stringify(
+                transform,
+              )}. increment transform can only be applied to an integer or a double field`,
             )
           }
         }
         throw new Error(
-          `Invalid transform: ${transform}. increment transform can only be applied to an integer or a double field`,
+          `Invalid transform: ${JSON.stringify(
+            transform,
+          )}. increment transform can only be applied to an integer or a double field`,
         )
       }
       if (transform.has_remove_all_from_array) {
@@ -342,11 +362,12 @@ export class FirestoreStateDocument implements HasCollections {
             (value) =>
               !removeFields.some((removeField) => removeField.eq(value)),
           )
-          return this.set(date, {
+          this.set(date, {
             [transform.field_path]: new FirestoreStateDocumentArrayField(
               removedFields,
             ),
           })
+          return
         }
       }
       if (transform.has_append_missing_elements) {
@@ -361,11 +382,12 @@ export class FirestoreStateDocument implements HasCollections {
                 !field.value.some((value) => value.eq(appendField)),
             ),
           ]
-          return this.set(date, {
+          this.set(date, {
             [transform.field_path]: new FirestoreStateDocumentArrayField(
               appendedFields,
             ),
           })
+          return
         }
       }
       if (transform.has_set_to_server_value) {
@@ -373,21 +395,18 @@ export class FirestoreStateDocument implements HasCollections {
           transform.set_to_server_value ===
           DocumentTransformFieldTransformServerValue.REQUEST_TIME
         ) {
-          return this.set(date, {
+          this.set(date, {
             [transform.field_path]:
               FirestoreStateDocumentTimestampField.fromDate(date),
           })
+          return
         }
-        if (
-          transform.set_to_server_value ===
-          DocumentTransformFieldTransformServerValue.SERVER_VALUE_UNSPECIFIED
-        ) {
-          throw new Error(
-            `Invalid transform: ${transform}. set_to_server_value must be a valid value`,
-          )
-        }
+        throw new Error(
+          `Invalid transform: ${JSON.stringify(
+            transform,
+          )}. set_to_server_value must be a valid value`,
+        )
       }
-
       throw new Error(
         `Invalid transform: ${JSON.stringify(transform.toObject(), null, 4)}`,
       )
@@ -440,7 +459,6 @@ export class FirestoreStateCollection {
 
   toJSON() {
     return {
-      path: this.getPath(),
       documents: Object.fromEntries(
         Object.entries(this.documents)
           .filter(
@@ -448,6 +466,7 @@ export class FirestoreStateCollection {
           )
           .map(([key, document]) => [key, document.toJSON()]),
       ),
+      path: this.getPath(),
     }
   }
 
@@ -488,13 +507,13 @@ export class FirestoreStateDatabase implements HasCollections {
 
   toJSON() {
     return {
-      path: this.getPath(),
       collections: Object.fromEntries(
         Object.entries(this.collections).map(([key, collection]) => [
           key,
           collection.toJSON(),
         ]),
       ),
+      path: this.getPath(),
     }
   }
 
@@ -512,13 +531,13 @@ export class FirestoreStateProject {
 
   toJSON() {
     return {
-      path: this.getPath(),
       databases: Object.fromEntries(
         Object.entries(this.databases).map(([key, database]) => [
           key,
           database.toJSON(),
         ]),
       ),
+      path: this.getPath(),
     }
   }
 
@@ -550,8 +569,8 @@ export class FirestoreStateProject {
 
 export const TimestampFromDate = (date: Date) =>
   Timestamp.fromObject({
-    seconds: Math.floor(date.getTime() / 1000),
     nanos: (date.getTime() % 1000) * 1000 * 1000,
+    seconds: Math.floor(date.getTime() / 1000),
   })
 export const DateFromTimestamp = (timestamp: Timestamp) =>
   new Date(timestamp.seconds * 1000 + timestamp.nanos / 1000 / 1000)
@@ -563,10 +582,9 @@ const v1FilterDocuments = (
   filter: v1StructuredQueryFieldFilter,
 ) => {
   const filterValue = convertV1DocumentField(filter.value)
-  if (!filter.field?.field_path) {
+  if (!filter.field.field_path) {
     throw new Error('field_path is required')
   }
-  if (!field) return false
   switch (filter.op) {
     case v1StructuredQueryFieldFilterOperator.EQUAL:
       return field.eq(filterValue)
@@ -714,27 +732,27 @@ export class FirestoreState {
       }
       document.delete()
       return v1WriteResult.fromObject({
-        update_time: writeTime,
         transform_results: [],
+        update_time: writeTime,
       })
     }
-    if (write.update) {
-      if (write.update.create_time) {
+    if (write.has_update) {
+      if (write.update.has_create_time) {
         throw new Error('update.create_time is not implemented')
       }
-      if (write.update.update_time) {
+      if (write.update.has_update_time) {
         throw new Error('update.update_time is not implemented')
       }
       const { name, fields } = write.update
-      if (!name || !fields) {
-        throw new Error('Invalid write')
-      }
       const document = this.getDocument(name)
-      if (write.current_document?.exists === false) {
-        if (document.metadata.hasExist) {
-          throw new FirestoreEmulatorError(
-            Status.ALREADY_EXISTS,
-            `entity already exists: app: "dev~${document.database.project.name}"
+      if (write.has_current_document && write.current_document.has_exists) {
+        if (!write.current_document.exists) {
+          if (document.metadata.hasExist) {
+            throw new FirestoreEmulatorError(
+              Status.ALREADY_EXISTS,
+              `entity already exists: app: "dev~${
+                document.database.project.name
+              }"
 path <
 ${document
   .iterateFromRoot()
@@ -748,24 +766,24 @@ ${document
   .join('\n')}
 >
 `,
-          )
-        }
+            )
+          }
 
-        document.create(
-          date,
-          Object.fromEntries(
-            Array.from(fields.entries()).map(([key, field]) => [
-              key,
-              convertV1DocumentField(field),
-            ]),
-          ),
-        )
-        document.v1Transform(date, write.update_transforms)
-      } else if (write.current_document?.exists === true) {
-        if (!document.metadata.hasExist) {
-          throw new FirestoreEmulatorError(
-            Status.NOT_FOUND,
-            `no entity to update: app: "dev~${document.database.project.name}"
+          document.create(
+            date,
+            Object.fromEntries(
+              Array.from(fields.entries()).map(([key, field]) => [
+                key,
+                convertV1DocumentField(field),
+              ]),
+            ),
+          )
+          document.v1Transform(date, write.update_transforms)
+        } else {
+          if (!document.metadata.hasExist) {
+            throw new FirestoreEmulatorError(
+              Status.NOT_FOUND,
+              `no entity to update: app: "dev~${document.database.project.name}"
 path <
 ${document
   .iterateFromRoot()
@@ -779,28 +797,29 @@ ${document
   .join('\n')}
 >
 `,
-          )
-        }
+            )
+          }
 
-        document.update(
-          date,
-          Object.fromEntries(
-            Array.from(fields.entries())
-              .filter(([key]) =>
-                write.update_mask?.field_paths
-                  ? write.update_mask.field_paths.includes(key)
-                  : true,
-              )
-              .map(([key, field]) => [key, convertV1DocumentField(field)]),
-          ),
-        )
-        document.v1Transform(date, write.update_transforms)
+          document.update(
+            date,
+            Object.fromEntries(
+              Array.from(fields.entries())
+                .filter(([key]) =>
+                  write.update_mask.field_paths.length > 0
+                    ? write.update_mask.field_paths.includes(key)
+                    : true,
+                )
+                .map(([key, field]) => [key, convertV1DocumentField(field)]),
+            ),
+          )
+          document.v1Transform(date, write.update_transforms)
+        }
       } else {
         document.set(date, {
           ...Object.fromEntries(
             Array.from(fields.entries())
               .filter(([key]) =>
-                write.update_mask?.field_paths
+                write.has_update_mask
                   ? write.update_mask.field_paths.includes(key)
                   : true,
               )
@@ -811,17 +830,14 @@ ${document
       }
 
       return v1WriteResult.fromObject({
-        update_time: writeTime,
         transform_results: [],
+        update_time: writeTime,
       })
     }
     throw new Error('Invalid write')
   }
 
   v1Query(parent: string, query: v1StructuredQuery) {
-    if (!query.from) {
-      throw new Error('query.from is required')
-    }
     if (query.from.length !== 1) {
       throw new Error('query.from.length must be 1')
     }
@@ -833,35 +849,33 @@ ${document
     const collection = this.getCollection(collectionName)
     let docs = collection.getAllDocuments().filter((v) => v.metadata.hasExist)
 
-    if (query.order_by) {
-      docs = docs.slice().sort((aDocument, bDocument) => {
-        for (const { field, direction } of query.order_by) {
-          const a = aDocument.getField(field.field_path)
-          const b = bDocument.getField(field.field_path)
-          if (!a || !b) {
-            if (a && !b) return -1
-            if (!a && b) return 1
-            continue
-          }
-          if (a.eq(b)) continue
-          if (direction === v1StructuredQueryDirection.ASCENDING) {
-            if (a.lt(b)) return -1
-            if (b.lt(a)) return 1
-          } else if (direction === v1StructuredQueryDirection.DESCENDING) {
-            if (a.lt(b)) return 1
-            if (b.lt(a)) return -1
-          }
+    docs = docs.slice().sort((aDocument, bDocument) => {
+      for (const { field, direction } of query.order_by) {
+        const a = aDocument.getField(field.field_path)
+        const b = bDocument.getField(field.field_path)
+        if (!a || !b) {
+          if (a && !b) return -1
+          if (!a && b) return 1
+          continue
         }
-        return 0
-      })
-    }
+        if (a.eq(b)) continue
+        if (direction === v1StructuredQueryDirection.ASCENDING) {
+          if (a.lt(b)) return -1
+          if (b.lt(a)) return 1
+        } else if (direction === v1StructuredQueryDirection.DESCENDING) {
+          if (a.lt(b)) return 1
+          if (b.lt(a)) return -1
+        }
+      }
+      return 0
+    })
 
     if (query.has_where) {
       if (query.where.has_field_filter) {
         const filter = query.where.field_filter
 
         docs = docs.filter((document) => {
-          if (!filter.field?.field_path) {
+          if (!filter.field.field_path) {
             throw new Error('field_path is required')
           }
           const field = document.getField(filter.field.field_path)
@@ -941,8 +955,8 @@ ${document
           callback(
             v1ListenResponse.fromObject({
               document_change: {
-                target_ids: [listen.add_target.target_id],
                 document: doc.toV1DocumentObject(),
+                target_ids: [listen.add_target.target_id],
               },
             }),
           )
@@ -950,18 +964,18 @@ ${document
         callback(
           v1ListenResponse.fromObject({
             target_change: {
-              target_ids: [listen.add_target.target_id],
-              target_change_type: v1TargetChangeTargetChangeType.CURRENT,
               read_time: TimestampFromNow().toObject(),
+              target_change_type: v1TargetChangeTargetChangeType.CURRENT,
+              target_ids: [listen.add_target.target_id],
             },
           }),
         )
         callback(
           v1ListenResponse.fromObject({
             target_change: {
-              target_ids: [],
-              target_change_type: v1TargetChangeTargetChangeType.NO_CHANGE,
               read_time: TimestampFromNow().toObject(),
+              target_change_type: v1TargetChangeTargetChangeType.NO_CHANGE,
+              target_ids: [],
             },
           }),
         )
@@ -1014,21 +1028,27 @@ ${document
           callback(
             v1ListenResponse.fromObject({
               target_change: {
-                target_ids: [listen.add_target.target_id],
-                target_change_type: v1TargetChangeTargetChangeType.RESET,
                 read_time: TimestampFromNow().toObject(),
+                target_change_type: v1TargetChangeTargetChangeType.RESET,
+                target_ids: [listen.add_target.target_id],
               },
             }),
           )
           currentDocumentsPaths = nextDocuments.map((v) => v.getPath())
           sendNewDocuments(nextDocuments)
         }
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         this.emitter.on('create-document', handleOnUpdate)
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onEnd(() => this.emitter.off('create-document', handleOnUpdate))
 
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         this.emitter.on('update-document', handleOnUpdate)
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onEnd(() => this.emitter.off('update-document', handleOnUpdate))
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         this.emitter.on('delete-document', handleOnUpdate)
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onEnd(() => this.emitter.off('delete-document', handleOnUpdate))
       } else if (listen.add_target.has_documents) {
         callback(
@@ -1068,9 +1088,9 @@ ${document
           callback(
             v1ListenResponse.fromObject({
               target_change: {
-                target_ids: [listen.add_target.target_id],
-                target_change_type: v1TargetChangeTargetChangeType.RESET,
                 read_time: TimestampFromNow().toObject(),
+                target_change_type: v1TargetChangeTargetChangeType.RESET,
+                target_ids: [listen.add_target.target_id],
               },
             }),
           )
@@ -1086,12 +1106,18 @@ ${document
               .filter(isNotNull),
           )
         }
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         this.emitter.on('create-document', handleOnUpdate)
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onEnd(() => this.emitter.off('create-document', handleOnUpdate))
 
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         this.emitter.on('update-document', handleOnUpdate)
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onEnd(() => this.emitter.off('update-document', handleOnUpdate))
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         this.emitter.on('delete-document', handleOnUpdate)
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onEnd(() => this.emitter.off('delete-document', handleOnUpdate))
       }
     }

@@ -1,8 +1,9 @@
-import { TestEnvironment } from 'jest-environment-node'
-import { EnvironmentContext } from '@jest/environment'
 import { FirestoreServer } from '@firestore-emulator/server'
-import { FirestoreEmulatorEnvironmentOptions } from '../types'
+import type { EnvironmentContext } from '@jest/environment'
 import { findFreePorts } from 'find-free-ports'
+import { TestEnvironment } from 'jest-environment-node'
+
+import type { FirestoreEmulatorEnvironmentOptions } from '../types'
 
 export default class FirestoreEmulatorEnvironment extends TestEnvironment {
   private server: FirestoreServer
@@ -18,23 +19,23 @@ export default class FirestoreEmulatorEnvironment extends TestEnvironment {
   override async setup() {
     await super.setup()
 
-    const tryCount = 0
+    let tryCount = 0
     while (tryCount < 50) {
       const [port] = await findFreePorts(1)
       if (!port) throw new Error('Could not find a free port')
       try {
         await this.server.start(port)
         this.global.emulator = {
-          state: this.server.state,
           host: `0.0.0.0:${port}`,
           port,
+          state: this.server.state,
         }
         return
       } catch (err) {
         if (!(err instanceof Error)) throw err
         if (!err.message.startsWith('No address added out of total')) throw err
-        continue
       }
+      tryCount++
     }
     throw new Error('Could not find a free port')
   }
