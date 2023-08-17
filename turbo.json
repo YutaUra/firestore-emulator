@@ -13,9 +13,15 @@
     },
     "format": {},
     "format:check": {},
-    "lint": {},
-    "lint:check": {},
-    "type:check": {},
+    "lint": {
+      "dependsOn": ["^build"]
+    },
+    "lint:check": {
+      "dependsOn": ["^build"]
+    },
+    "type:check": {
+      "dependsOn": ["^build"]
+    },
     "dev": {
       "cache": false,
       "persistent": true
