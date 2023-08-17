@@ -1,5 +1,7 @@
 {
   "name": "@shared/eslint-config",
+  "version": "0.0.14",
+  "license": "MIT",
   "main": "./.eslintrc.js",
   "scripts": {
     "format": "prettier --write .",
