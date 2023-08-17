@@ -4,8 +4,8 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "test": "jest",
-    "test:watch": "jest --watch"
+    "test": "firebase emulators:exec --only firestore \"pnpm exec jest\"",
+    "test:watch": "firebase emulators:exec --only firestore \"pnpm exec jest --watch\""
   },
   "dependencies": {
     "@firestore-emulator/jest": "workspace:*",
