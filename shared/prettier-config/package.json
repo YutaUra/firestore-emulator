@@ -1,5 +1,7 @@
 {
   "name": "@shared/prettier-config",
+  "version": "0.0.14",
+  "license": "MIT",
   "private": true,
   "main": ".prettierrc.js",
   "scripts": {
