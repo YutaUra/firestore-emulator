@@ -2,7 +2,17 @@
   "emulators": {
     "firestore": {
       "host": "0.0.0.0",
-      "port": "8082"
+      "port": 8082,
+      "websocketPort": 8052
+    },
+    "ui": {
+      "port": 4002,
+      "host": "0.0.0.0",
+      "enabled": false
+    },
+    "logging": {
+      "port": 4502,
+      "host": "0.0.0.0"
     }
   }
 }
