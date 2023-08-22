@@ -1,19 +1,20 @@
 {
-  "name": "@firestore-emulator/jest",
+  "name": "vitest-environment-firestore-emulator",
   "version": "0.0.14",
   "license": "MIT",
-  "main": "dist/index.js",
+  "type": "module",
+  "main": "dist/index.cjs",
   "types": "dist/index.d.ts",
   "module": "dist/index.js",
   "exports": {
     ".": {
-      "require": "./dist/index.js",
-      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
     "./*": {
-      "require": "./dist/*.js",
-      "import": "./dist/*.mjs",
+      "require": "./dist/*.cjs",
+      "import": "./dist/*.js",
       "types": "./dist/*.d.ts"
     }
   },
@@ -28,7 +29,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/YutaUra/firestore-emulator.git",
-    "directory": "packages/jest"
+    "directory": "packages/vitest"
   },
   "bugs": {
     "url": "https://github.com/YutaUra/firestore-emulator/issues/new"
@@ -38,7 +39,7 @@
     "firestore emulator",
     "firebase",
     "firebase admin",
-    "jest",
+    "vitest",
     "testing"
   ],
   "author": {
@@ -58,20 +59,16 @@
     "find-free-ports": "^3.1.1"
   },
   "devDependencies": {
-    "@jest/environment": "^29.6.2",
     "@shared/eslint-config": "workspace:^",
     "@shared/prettier-config": "workspace:^",
     "@shared/typescript-config": "workspace:^",
     "@tsconfig/strictest": "^2.0.1",
     "@types/node": "20",
-    "jest": "^29.6.2",
-    "jest-environment-node": "^29.6.2",
     "tsup": "^7.2.0",
-    "typescript": "^4.9.5"
+    "typescript": "^4.9.5",
+    "vitest": "^0.34.2"
   },
   "peerDependencies": {
-    "@jest/environment": "^29.6.2",
-    "jest": "^29.6.2",
-    "jest-environment-node": "^29.6.2"
+    "vitest": "^0.34.2"
   }
 }
