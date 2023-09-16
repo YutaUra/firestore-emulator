@@ -1,0 +1,50 @@
+name: "Create changeset for PR created by Renovate"
+on:
+  push:
+    branches:
+      - renovate/*
+      - feature/renovate-changeset
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  default:
+    runs-on: ubuntu-latest
+    if: github.event.pusher.name == 'renovate[bot]' || github.event.pusher.name == 'YutaUra'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20.5.1
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8.7.0
+      - name: Get pnpm store directory
+        shell: bash
+        id: pnpm-store
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
+      - uses: actions/cache@v3
+        name: Setup pnpm cache
+        with:
+          path: ${{ steps.pnpm-store.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build GitHub Actions
+        run: pnpm build-for-github-actions
+
+      - name: Get Git Diff
+        uses: technote-space/get-diff-action@v6
+        id: git-diff
+
+      - name: Create patch changeset
+        uses: ./.github/actions/create-changeset
+        with:
+          diff: ${{ steps.git-diff.outputs.diff }}
+          message: ${{ github.event.head_commit.message }}

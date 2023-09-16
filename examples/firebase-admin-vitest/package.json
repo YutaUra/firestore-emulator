@@ -22,7 +22,6 @@
     "@shared/eslint-config": "workspace:^",
     "@shared/prettier-config": "workspace:^",
     "@shared/typescript-config": "workspace:^",
-    "@tsconfig/strictest": "^2.0.1",
     "@types/node": "20",
     "@types/node-fetch": "2",
     "node-fetch": "^2.6.12",

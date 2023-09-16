@@ -1,0 +1,14 @@
+{
+  "extends": "@shared/typescript-config/tsconfig.json",
+  "compilerOptions": {
+    "module": "NodeNext",
+    "target": "ESNext",
+    "moduleResolution": "NodeNext",
+    "exactOptionalPropertyTypes": false,
+    "skipLibCheck": true,
+    "declaration": true,
+    "declarationMap": true,
+    "outDir": "dist"
+  },
+  "include": ["src"]
+}
