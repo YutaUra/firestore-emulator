@@ -1,5 +1,12 @@
 # @firestore-emulator/server
 
+## 0.0.16
+
+### Patch Changes
+
+- f76008e: Update dependency eslint-plugin-typescript-sort-keys to v3
+  - @firestore-emulator/proto@0.0.16
+
 ## 0.0.15
 
 ### Patch Changes
