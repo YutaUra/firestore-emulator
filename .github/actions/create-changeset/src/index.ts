@@ -23,13 +23,24 @@ const main = async () => {
 
   const workspaceYaml = await readPnpmWorkspace(PNPM_WORKSPACE_FILE_PATH)
 
-  const results = await buildPnpmWorkspaceTree(workspaceYaml)
+  const packages = await buildPnpmWorkspaceTree(workspaceYaml)
 
-  const affectedPackages = Object.entries(results).filter(
-    ([_, { dir, isPrivate: isPrivate }]) => {
-      return diff.some((d) => d.startsWith(`${dir}/`)) && !isPrivate
-    },
+  const changedPackages = Object.entries(packages)
+    .filter(([_, { dir }]) => {
+      return diff.some((d) => d.startsWith(`${dir}/`))
+    })
+    .map(([name]) => name)
+
+  const affectedPackages = Object.entries(packages).filter(
+    ([, { dependsOn, isPrivate }]) =>
+      changedPackages.some((cp) => dependsOn.includes(cp)) && !isPrivate,
   )
+
+  console.log('diff', diff)
+  console.log('workspaceYaml', workspaceYaml)
+  console.log('packages', packages)
+  console.log('changedPackages', changedPackages)
+  console.log('affectedPackages', affectedPackages)
 
   if (affectedPackages.length === 0) {
     console.log('no affected packages')
