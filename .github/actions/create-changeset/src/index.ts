@@ -25,9 +25,16 @@ const main = async () => {
 
   const results = await buildPnpmWorkspaceTree(workspaceYaml)
 
-  const affectedPackages = Object.entries(results).filter(([_, { dir }]) => {
-    return diff.some((d) => d.startsWith(`${dir}/`))
-  })
+  const affectedPackages = Object.entries(results).filter(
+    ([_, { dir, isPrivate: isPrivate }]) => {
+      return diff.some((d) => d.startsWith(`${dir}/`)) && !isPrivate
+    },
+  )
+
+  if (affectedPackages.length === 0) {
+    console.log('no affected packages')
+    return
+  }
 
   const filename = join(
     '.changeset',
@@ -35,13 +42,10 @@ const main = async () => {
   )
 
   const changeset = `---
-${affectedPackages
-  .filter(([_, v]) => !v.private)
-  .map(([name]) => `"${name}": patch`)
-  .join('\n')}
-  ---
-  
-  ${message}`
+${affectedPackages.map(([name]) => `"${name}": patch`).join('\n')}
+---
+
+${message}`
   console.log('changeset', changeset)
   await writeFile(filename, changeset)
 
