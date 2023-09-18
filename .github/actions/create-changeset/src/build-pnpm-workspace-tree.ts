@@ -69,9 +69,9 @@ export const buildPnpmWorkspaceTree = async (workspace: PnpmWorkspace) => {
                 v.startsWith('workspace:'),
               ),
             ),
+            isPrivate: packageJson.private,
             name: packageJson.name,
             path: packageJsonPath,
-            private: packageJson.private,
           }
         }),
       )
@@ -88,7 +88,7 @@ export const buildPnpmWorkspaceTree = async (workspace: PnpmWorkspace) => {
             ...Object.keys(pkg.devDependencies),
           ],
           dir: resolve(pkg.path, '..'),
-          private: pkg.private,
+          isPrivate: pkg.isPrivate,
         },
       ] as const
     }),
