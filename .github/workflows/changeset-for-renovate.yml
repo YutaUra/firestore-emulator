@@ -3,8 +3,6 @@ on:
   push:
     branches:
       - renovate/*
-      - feature/renovate-changeset
-  workflow_dispatch:
 
 permissions:
   contents: write
@@ -12,7 +10,7 @@ permissions:
 jobs:
   default:
     runs-on: ubuntu-latest
-    if: github.event.pusher.name == 'renovate[bot]' || github.event.pusher.name == 'YutaUra'
+    if: github.event.pusher.name == 'renovate[bot]'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v3

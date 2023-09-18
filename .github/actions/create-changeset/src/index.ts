@@ -35,10 +35,10 @@ const main = async () => {
   )
 
   const changeset = `---
-  ${affectedPackages
-    .filter(([_, v]) => !v.private)
-    .map(([name]) => `"${name}": patch`)
-    .join('\n')}
+${affectedPackages
+  .filter(([_, v]) => !v.private)
+  .map(([name]) => `"${name}": patch`)
+  .join('\n')}
   ---
   
   ${message}`
