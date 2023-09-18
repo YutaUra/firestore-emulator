@@ -62,7 +62,6 @@
     "@shared/eslint-config": "workspace:^",
     "@shared/prettier-config": "workspace:^",
     "@shared/typescript-config": "workspace:^",
-    "@tsconfig/strictest": "^2.0.1",
     "@types/node": "20",
     "tsup": "^7.2.0",
     "typescript": "^4.9.5",

@@ -1,15 +1,16 @@
-name: Check PR
-
+name: "Create changeset for PR created by Renovate"
 on:
-  pull_request:
+  push:
     branches:
-      - main
+      - renovate/*
 
-concurrency: ${{ github.workflow }}-${{ github.ref }}
+permissions:
+  contents: write
 
 jobs:
-  check-pr:
+  default:
     runs-on: ubuntu-latest
+    if: github.event.pusher.name == 'renovate[bot]'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v3
@@ -30,11 +31,18 @@ jobs:
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
-      - uses: actions/setup-java@v3
-        with:
-          distribution: "temurin"
-          java-version: "17"
+      - name: Install dependencies
+        run: pnpm install
 
-      - run: pnpm install
-      - run: pnpm add -g firebase-tools && firebase setup:emulators:firestore
-      - run: pnpm exec turbo run check test
+      - name: Build GitHub Actions
+        run: pnpm build-for-github-actions
+
+      - name: Get Git Diff
+        uses: technote-space/get-diff-action@v6
+        id: git-diff
+
+      - name: Create patch changeset
+        uses: ./.github/actions/create-changeset
+        with:
+          diff: ${{ steps.git-diff.outputs.diff }}
+          message: ${{ github.event.head_commit.message }}
