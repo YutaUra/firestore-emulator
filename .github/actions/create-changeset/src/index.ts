@@ -29,22 +29,21 @@ const main = async () => {
     return diff.some((d) => d.startsWith(`${dir}/`))
   })
 
-  console.log('diff', diff)
-  console.log('results', results)
-  console.log('affectedPackages', affectedPackages)
-
   const filename = join(
     '.changeset',
     message.replace(/\s/g, '-').replace(/\//g, '_').toLowerCase() + '.md',
   )
-  await writeFile(
-    filename,
-    `---
-${affectedPackages.map(([name]) => `"${name}": patch`).join('\n')}
----
 
-${message}`,
-  )
+  const changeset = `---
+  ${affectedPackages
+    .filter(([_, v]) => !v.private)
+    .map(([name]) => `"${name}": patch`)
+    .join('\n')}
+  ---
+  
+  ${message}`
+  console.log('changeset', changeset)
+  await writeFile(filename, changeset)
 
   await execAsync(`git config --global user.name github-actions[bot]`)
   await execAsync(
