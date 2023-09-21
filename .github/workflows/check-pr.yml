@@ -38,7 +38,7 @@ jobs:
           java-version: "17"
 
       - run: pnpm install
-      - run: pnpm add -g firebase-tools && firebase setup:emulators:firestore
+      - run: pnpm firebase setup:emulators:firestore
       - run: pnpm exec turbo run check test
         env:
           NODE_OPTIONS: --max-old-space-size=4096
