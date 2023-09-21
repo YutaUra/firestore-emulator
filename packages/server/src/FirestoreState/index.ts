@@ -725,12 +725,57 @@ export class FirestoreState {
 
   writeV1Document(date: Date, write: v1Write): v1WriteResult {
     const writeTime = TimestampFromDate(date)
-    if (write.delete) {
+    if (write.has_delete) {
       const document = this.getDocument(write.delete)
-      if (!document.metadata.hasExist) {
-        throw new Error("Invalid write: document doesn't exist")
+      if (write.has_current_document && write.current_document.has_exists) {
+        // 存在確認を行う
+        if (write.current_document.exists) {
+          if (!document.metadata.hasExist) {
+            throw new FirestoreEmulatorError(
+              Status.NOT_FOUND,
+              `no entity to update: app: "dev~${document.database.project.name}"
+path <
+${document
+  .iterateFromRoot()
+  .map(
+    (doc) =>
+      `  Element {
+    type: "${doc.parent.name}"
+    name: "${doc.name}"
+  }`,
+  )
+  .join('\n')}
+>
+`,
+            )
+          }
+        } else {
+          if (document.metadata.hasExist) {
+            throw new FirestoreEmulatorError(
+              Status.ALREADY_EXISTS,
+              `entity already exists: app: "dev~${
+                document.database.project.name
+              }"
+path <
+${document
+  .iterateFromRoot()
+  .map(
+    (doc) =>
+      `  Element {
+    type: "${doc.parent.name}"
+    name: "${doc.name}"
+  }`,
+  )
+  .join('\n')}
+>
+`,
+            )
+          }
+        }
       }
-      document.delete()
+      if (document.metadata.hasExist) {
+        document.delete()
+      }
       return v1WriteResult.fromObject({
         transform_results: [],
         update_time: writeTime,

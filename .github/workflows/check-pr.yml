@@ -38,5 +38,8 @@ jobs:
           java-version: "17"
 
       - run: pnpm install
-      - run: pnpm add -g firebase-tools && firebase setup:emulators:firestore
+      - run: pnpm firebase setup:emulators:firestore
       - run: pnpm exec turbo run check test
+      - if: failure()
+        run: |
+          find . -name "*.log" -not -path "*/node_modules/*" -exec sh -c 'echo "\n==================== $0 ===================="; cat $0; echo "\n"' {} \;

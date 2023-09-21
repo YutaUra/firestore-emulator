@@ -1301,3 +1301,87 @@ const resolveLater = () => {
   })
   return { getIsResolved: () => isResolved, promise, resolve }
 }
+
+describe('delete document with precondition', () => {
+  describe('without precondition', () => {
+    it('delete document which is not exist', async () => {
+      const [realResult, emulatorResult] = await testCase(async (db) => {
+        await db.collection('users').doc('alice').delete()
+      })
+      assert(realResult.status === 'fulfilled')
+      assert(emulatorResult.status === 'fulfilled')
+      expect(emulator.state.toJSON()).toMatchSnapshot()
+    })
+
+    it('delete document which is exist', async () => {
+      const [realResult, emulatorResult] = await testCase(
+        async (db, compare) => {
+          await db.collection('users').doc('alice').set({ name: 'Alice' })
+          await db.collection('users').doc('alice').delete()
+          const snapshot = await db.collection('users').doc('alice').get()
+          const doc = snapshot.data()
+          compare(doc)
+        },
+      )
+      assert(realResult.status === 'fulfilled')
+      assert(emulatorResult.status === 'fulfilled')
+      expect(emulator.state.toJSON()).toMatchSnapshot()
+    })
+  })
+
+  describe('with precondition', () => {
+    describe('must not be exist', () => {
+      it('delete document which is not exist', async () => {
+        const [realResult, emulatorResult] = await testCase(async (db) => {
+          await db.collection('users').doc('alice').delete({ exists: false })
+        })
+        assert(realResult.status === 'fulfilled')
+        assert(emulatorResult.status === 'fulfilled')
+        expect(emulator.state.toJSON()).toMatchSnapshot()
+      })
+
+      it('delete document which is exist', async () => {
+        const [realResult, emulatorResult] = await testCase(
+          async (db, compare) => {
+            await db.collection('users').doc('alice').set({ name: 'Alice' })
+            await db.collection('users').doc('alice').delete({ exists: false })
+            const snapshot = await db.collection('users').doc('alice').get()
+            const doc = snapshot.data()
+            compare(doc)
+          },
+        )
+        assert(realResult.status === 'rejected')
+        assert(emulatorResult.status === 'rejected')
+        expect(emulatorResult.reason).toEqual(realResult.reason)
+        expect(emulator.state.toJSON()).toMatchSnapshot()
+      })
+    })
+
+    describe('must be exist', () => {
+      it('delete document which is not exist', async () => {
+        const [realResult, emulatorResult] = await testCase(async (db) => {
+          await db.collection('users').doc('alice').delete({ exists: true })
+        })
+        assert(realResult.status === 'rejected')
+        assert(emulatorResult.status === 'rejected')
+        expect(emulatorResult.reason).toEqual(realResult.reason)
+        expect(emulator.state.toJSON()).toMatchSnapshot()
+      })
+
+      it('delete document which is exist', async () => {
+        const [realResult, emulatorResult] = await testCase(
+          async (db, compare) => {
+            await db.collection('users').doc('alice').set({ name: 'Alice' })
+            await db.collection('users').doc('alice').delete({ exists: true })
+            const snapshot = await db.collection('users').doc('alice').get()
+            const doc = snapshot.data()
+            compare(doc)
+          },
+        )
+        assert(realResult.status === 'fulfilled')
+        assert(emulatorResult.status === 'fulfilled')
+        expect(emulator.state.toJSON()).toMatchSnapshot()
+      })
+    })
+  })
+})
