@@ -1,5 +1,12 @@
 # @firestore-emulator/server
 
+## 0.0.17
+
+### Patch Changes
+
+- e4ec3c8: implementation of precondition for delete document
+  - @firestore-emulator/proto@0.0.17
+
 ## 0.0.16
 
 ### Patch Changes
