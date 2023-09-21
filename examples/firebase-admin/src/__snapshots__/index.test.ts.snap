@@ -298,6 +298,143 @@ exports[`can update document 1`] = `
 }
 `;
 
+exports[`delete document with precondition with precondition must be exist delete document which is exist 1`] = `
+{
+  "projects": {
+    "test-project": {
+      "databases": {
+        "(default)": {
+          "collections": {
+            "users": {
+              "documents": {},
+              "path": "projects/test-project/databases/(default)/documents/users",
+            },
+          },
+          "path": "projects/test-project/databases/(default)/documents",
+        },
+      },
+      "path": "projects/test-project",
+    },
+  },
+}
+`;
+
+exports[`delete document with precondition with precondition must be exist delete document which is not exist 1`] = `
+{
+  "projects": {
+    "test-project": {
+      "databases": {
+        "(default)": {
+          "collections": {
+            "users": {
+              "documents": {},
+              "path": "projects/test-project/databases/(default)/documents/users",
+            },
+          },
+          "path": "projects/test-project/databases/(default)/documents",
+        },
+      },
+      "path": "projects/test-project",
+    },
+  },
+}
+`;
+
+exports[`delete document with precondition with precondition must not be exist delete document which is exist 1`] = `
+{
+  "projects": {
+    "test-project": {
+      "databases": {
+        "(default)": {
+          "collections": {
+            "users": {
+              "documents": {
+                "alice": {
+                  "collections": {},
+                  "fields": {
+                    "name": {
+                      "type": "string_value",
+                      "value": "Alice",
+                    },
+                  },
+                  "path": "projects/test-project/databases/(default)/documents/users/alice",
+                },
+              },
+              "path": "projects/test-project/databases/(default)/documents/users",
+            },
+          },
+          "path": "projects/test-project/databases/(default)/documents",
+        },
+      },
+      "path": "projects/test-project",
+    },
+  },
+}
+`;
+
+exports[`delete document with precondition with precondition must not be exist delete document which is not exist 1`] = `
+{
+  "projects": {
+    "test-project": {
+      "databases": {
+        "(default)": {
+          "collections": {
+            "users": {
+              "documents": {},
+              "path": "projects/test-project/databases/(default)/documents/users",
+            },
+          },
+          "path": "projects/test-project/databases/(default)/documents",
+        },
+      },
+      "path": "projects/test-project",
+    },
+  },
+}
+`;
+
+exports[`delete document with precondition without precondition delete document which is exist 1`] = `
+{
+  "projects": {
+    "test-project": {
+      "databases": {
+        "(default)": {
+          "collections": {
+            "users": {
+              "documents": {},
+              "path": "projects/test-project/databases/(default)/documents/users",
+            },
+          },
+          "path": "projects/test-project/databases/(default)/documents",
+        },
+      },
+      "path": "projects/test-project",
+    },
+  },
+}
+`;
+
+exports[`delete document with precondition without precondition delete document which is not exist 1`] = `
+{
+  "projects": {
+    "test-project": {
+      "databases": {
+        "(default)": {
+          "collections": {
+            "users": {
+              "documents": {},
+              "path": "projects/test-project/databases/(default)/documents/users",
+            },
+          },
+          "path": "projects/test-project/databases/(default)/documents",
+        },
+      },
+      "path": "projects/test-project",
+    },
+  },
+}
+`;
+
 exports[`field type array 1`] = `
 {
   "projects": {
