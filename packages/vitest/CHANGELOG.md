@@ -1,5 +1,12 @@
 # vitest-environment-firestore-emulator
 
+## 0.0.17
+
+### Patch Changes
+
+- Updated dependencies [e4ec3c8]
+  - @firestore-emulator/server@0.0.17
+
 ## 0.0.16
 
 ### Patch Changes
