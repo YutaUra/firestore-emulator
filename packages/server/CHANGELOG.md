@@ -1,5 +1,11 @@
 # @firestore-emulator/server
 
+## 0.0.19
+
+### Patch Changes
+
+- @firestore-emulator/proto@0.0.19
+
 ## 0.0.18
 
 ### Patch Changes
