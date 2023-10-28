@@ -1,5 +1,13 @@
 # vitest-environment-firestore-emulator
 
+## 0.0.18
+
+### Patch Changes
+
+- 05cfd59: Update dependency @google-cloud/firestore to v7
+- Updated dependencies [05cfd59]
+  - @firestore-emulator/server@0.0.18
+
 ## 0.0.17
 
 ### Patch Changes
