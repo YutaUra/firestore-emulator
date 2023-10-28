@@ -1,3 +1,1 @@
-import type { JestEnvironmentConfig } from '@jest/environment'
-
-export type FirestoreEmulatorEnvironmentOptions = JestEnvironmentConfig
+export type FirestoreEmulatorEnvironmentConfig = Record<string, never>
