@@ -1,5 +1,14 @@
 # @firestore-emulator/jest
 
+## 0.0.18
+
+### Patch Changes
+
+- a186673: add @quramy/jest-prisma support
+- 05cfd59: Update dependency @google-cloud/firestore to v7
+- Updated dependencies [05cfd59]
+  - @firestore-emulator/server@0.0.18
+
 ## 0.0.17
 
 ### Patch Changes
