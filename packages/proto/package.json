@@ -40,7 +40,7 @@
     "google-protobuf": "^3.21.2"
   },
   "devDependencies": {
-    "@google-cloud/firestore": "^6.7.0",
+    "@google-cloud/firestore": "^7.0.0",
     "@types/google-protobuf": "^3.15.6",
     "@types/node": "20",
     "grpc-tools": "^1.12.4",
