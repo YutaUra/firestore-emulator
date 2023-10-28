@@ -14,8 +14,9 @@ configure your `jest.config.js`:
 
 ```js
 module.exports = {
-  testEnvironment: "@firestore-emulator/jest/environment/node",,
-};
+  testEnvironment: '@firestore-emulator/jest/environment/node',
+  // or "@firestore-emulator/jest/environment/quramy__jest-prisma" if you use prisma. you should install "@quramy/jest-prisma" too.
+}
 ```
 
 currently, other environments like `jsdom` are not supported yet.

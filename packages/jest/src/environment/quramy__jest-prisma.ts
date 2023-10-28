@@ -3,12 +3,12 @@ import type {
   EnvironmentContext,
   JestEnvironmentConfig,
 } from '@jest/environment'
+import PrismaEnvironment from '@quramy/jest-prisma/environment'
 import { findFreePorts } from 'find-free-ports'
-import { TestEnvironment } from 'jest-environment-node'
 
 import type { FirestoreEmulatorEnvironmentConfig } from '../types'
 
-export default class FirestoreEmulatorEnvironment extends TestEnvironment {
+export default class FirestoreEmulatorPrismaEnvironment extends PrismaEnvironment {
   private server: FirestoreServer
 
   constructor(
