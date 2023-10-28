@@ -3,7 +3,7 @@ import type {
   EnvironmentContext,
   JestEnvironmentConfig,
 } from '@jest/environment'
-import PrismaEnvironment from '@quramy/jest-prisma/environment'
+import PrismaEnvironment from '@quramy/jest-prisma-node/environment'
 import { findFreePorts } from 'find-free-ports'
 
 import type { FirestoreEmulatorEnvironmentConfig } from '../types'
