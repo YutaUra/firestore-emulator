@@ -1,5 +1,12 @@
 # @firestore-emulator/jest
 
+## 0.0.19
+
+### Patch Changes
+
+- 85f4afc: use @quramy/jest-prisma-node instead of @quramy/jest-prisma
+  - @firestore-emulator/server@0.0.19
+
 ## 0.0.18
 
 ### Patch Changes
