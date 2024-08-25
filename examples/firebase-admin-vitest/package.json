@@ -24,7 +24,7 @@
     "@shared/typescript-config": "workspace:^",
     "@types/node": "20.16.1",
     "@types/node-fetch": "2.6.11",
-    "node-fetch": "2.7.0",
+    "node-fetch": "3.3.2",
     "typescript": "4.9.5",
     "vitest": "2.0.5"
   }
