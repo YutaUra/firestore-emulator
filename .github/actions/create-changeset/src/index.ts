@@ -20,6 +20,7 @@ const main = async () => {
     .split(' ')
     .map((v) => resolve(v.replace(/^'|'$/g, '')))
   const message = getInput('message', { required: true })
+  const dryRun = getInput('dry-run', { required: true }) === 'true'
 
   const workspaceYaml = await readPnpmWorkspace(PNPM_WORKSPACE_FILE_PATH)
 
@@ -58,11 +59,24 @@ ${affectedPackages.map(([name]) => `"${name}": patch`).join('\n')}
 
 ${message}`
   console.log('changeset', changeset)
-  await writeFile(filename, changeset)
 
-  await execAsync(`git add ${filename}`)
-  await execAsync(`git commit -m "create changeset for renovate"`)
-  await execAsync(`git push`)
+  if (!dryRun) {
+    await writeFile(filename, changeset)
+
+    await execAsync(`git add ${filename}`)
+    await execAsync(`git commit -m "create changeset for renovate"`)
+    await execAsync(`git push`)
+  } else {
+    console.log('dry run')
+    console.log(`write file → ${filename}`)
+    console.log('='.repeat(40))
+    console.log(changeset)
+    console.log('='.repeat(40))
+
+    console.log(`exec $ git add ${filename}`)
+    console.log(`exec $ git commit -m "create changeset for renovate"`)
+    console.log(`exec $ git push`)
+  }
 }
 
 void main()
