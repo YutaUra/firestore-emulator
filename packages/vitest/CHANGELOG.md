@@ -1,5 +1,22 @@
 # vitest-environment-firestore-emulator
 
+## 0.1.0
+
+### Patch Changes
+
+- 7bb9e7d: Pin dependencies
+- 3ed770d: Update all non-major dependencies
+- 2d49449: Update dependency eslint-plugin-unused-imports to v4
+- 59c4970: Update dependency tsup to v8
+- e2d4413: Update dependency typescript to v5
+- 5e09e59: Update dependency vitest to v2
+- Updated dependencies [03e70ca]
+- Updated dependencies [3ed770d]
+- Updated dependencies [2d49449]
+- Updated dependencies [59c4970]
+- Updated dependencies [e2d4413]
+  - @firestore-emulator/server@0.1.0
+
 ## 0.0.19
 
 ### Patch Changes

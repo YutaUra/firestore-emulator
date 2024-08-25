@@ -1,5 +1,22 @@
 # @firestore-emulator/server
 
+## 0.1.0
+
+### Minor Changes
+
+- 03e70ca: deal with firestore-tools@13
+
+### Patch Changes
+
+- 3ed770d: Update all non-major dependencies
+- 2d49449: Update dependency eslint-plugin-unused-imports to v4
+- 59c4970: Update dependency tsup to v8
+- e2d4413: Update dependency typescript to v5
+- Updated dependencies [3ed770d]
+- Updated dependencies [59c4970]
+- Updated dependencies [e2d4413]
+  - @firestore-emulator/proto@0.1.0
+
 ## 0.0.19
 
 ### Patch Changes
