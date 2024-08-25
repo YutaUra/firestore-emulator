@@ -24,6 +24,7 @@ jobs:
       - uses: ./.github/actions/setup
         with:
           token: ${{ steps.app-token.outputs.token }}
+          bot-app-slug: ${{ steps.app-token.outputs.app-slug }}
 
       - uses: actions/setup-java@6a0805fcefea3d4657a47ac4c165951e33482018 # v4
         with:

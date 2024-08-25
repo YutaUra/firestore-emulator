@@ -7,6 +7,9 @@ inputs:
   token:
     description: The token to use for the setup.
     required: true
+  bot-app-slug:
+    description: The app slug for the bot.
+    required: true
 
 runs:
   using: composite
@@ -14,8 +17,8 @@ runs:
     - name: Setup Git User
       shell: bash
       run: |
-        git config --global user.name '${{ steps.app-token.outputs.app-slug }}[bot]'
-        git config --global user.email '$(gh api "/users/${{ steps.app-token.outputs.app-slug }}[bot]" --jq .id)+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com'
+        git config --global user.name '${{ inputs.bot-app-slug }}[bot]'
+        git config --global user.email '$(gh api "/users/${{ inputs.bot-app-slug }}[bot]" --jq .id)+${{ inputs.bot-app-slug }}[bot]@users.noreply.github.com'
       env:
         GH_TOKEN: ${{ inputs.token }}
     - uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4
