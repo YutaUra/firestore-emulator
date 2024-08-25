@@ -50,7 +50,7 @@
     "typesafe-event-emitter": "1.1.0"
   },
   "devDependencies": {
-    "@google-cloud/firestore": "7.1.0",
+    "@google-cloud/firestore": "7.9.0",
     "@shared/eslint-config": "workspace:^",
     "@shared/prettier-config": "workspace:^",
     "@shared/typescript-config": "workspace:^",
