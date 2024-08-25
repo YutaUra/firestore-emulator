@@ -17,8 +17,11 @@ runs:
     - name: Setup Git User
       shell: bash
       run: |
-        git config --global user.name '${{ inputs.bot-app-slug }}[bot]'
-        git config --global user.email '$(gh api "/users/${{ inputs.bot-app-slug }}[bot]" --jq .id)+${{ inputs.bot-app-slug }}[bot]@users.noreply.github.com'
+        user_name=${{ inputs.bot-app-slug }}[bot]
+        user_email=$(gh api "/users/${{ inputs.bot-app-slug }}[bot]" --jq .id)+${{ inputs.bot-app-slug }}[bot]@users.noreply.github.com
+        echo "Setting up git user: $user_name <$user_email>"
+        git config --global user.name $user_name
+        git config --global user.email $user_email
       env:
         GH_TOKEN: ${{ inputs.token }}
     - uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4
