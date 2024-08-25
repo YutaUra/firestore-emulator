@@ -18,7 +18,7 @@ runs:
         git config --global user.email '$(gh api "/users/${{ steps.app-token.outputs.app-slug }}[bot]" --jq .id)+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com'
       env:
         GH_TOKEN: ${{ inputs.token }}
-    - uses: actions/setup-node@v4
+    - uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4
       with:
         node-version-file: .node-version
     - name: Setup pnpm
