@@ -30,3 +30,5 @@ runs:
     - name: Setup pnpm
       shell: bash
       run: corepack enable pnpm
+    
+    - uses: rharkor/caching-for-turbo@v1.5
