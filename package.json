@@ -4,7 +4,7 @@
     "build": "turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "format": "prettier --write \"**/*.{ts,tsx,md,json}\" \"!.changeset/**/*\" \"!**/dist/**/*\"",
     "publish-packages": "turbo run build --filter='./packages/*' && changeset version && changeset publish",
     "build-for-github-actions": "turbo run build --filter='./.github/actions/*'"
   },
@@ -12,7 +12,7 @@
     "@changesets/cli": "2.27.7",
     "@turbo/gen": "1.13.4",
     "firebase-tools": "13.15.4",
-    "turbo": "latest"
+    "turbo": "2.0.14"
   },
   "packageManager": "pnpm@8.15.9",
   "name": "firestore-emulator"
