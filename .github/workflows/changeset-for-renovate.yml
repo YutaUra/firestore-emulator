@@ -8,6 +8,7 @@ on:
       - main
     paths:
       - .github/workflows/changeset-for-renovate.yml
+      - .github/actions/setup/**
       - .github/actions/create-changeset/**
 
 jobs:
