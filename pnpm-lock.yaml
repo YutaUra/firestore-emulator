@@ -351,7 +351,7 @@ importers:
     dependencies:
       '@tsconfig/strictest':
         specifier: ^2.0.1
-        version: 2.0.1
+        version: 2.0.5
     devDependencies:
       typescript:
         specifier: ^4.9.5
@@ -1915,8 +1915,8 @@ packages:
     resolution: {integrity: sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==}
     dev: true
 
-  /@tsconfig/strictest@2.0.1:
-    resolution: {integrity: sha512-7JHHCbyCsGUxLd0pDbp24yz3zjxw2t673W5oAP6HCEdr/UUhaRhYd3SSnUsGCk+VnPVJVA4mXROzbhI+nyIk+w==}
+  /@tsconfig/strictest@2.0.5:
+    resolution: {integrity: sha512-ec4tjL2Rr0pkZ5hww65c+EEPYwxOi4Ryv+0MtjeaSQRJyq322Q27eOQiFbuNgw2hpL4hB1/W/HBGk3VKS43osg==}
     dev: false
 
   /@turbo/gen@1.9.7(@types/node@22.5.0)(typescript@5.5.4):
