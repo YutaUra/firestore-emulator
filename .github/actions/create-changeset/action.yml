@@ -12,6 +12,10 @@ inputs:
     description: |
       The message to use for the changeset.
     required: true
+  dry-run:
+    description: |
+      Whether to run in dry-run mode.
+    default: "false"
 
 runs:
   using: node20

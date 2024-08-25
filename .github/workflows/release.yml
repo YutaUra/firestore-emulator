@@ -4,6 +4,11 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
+    paths:
+      - .github/workflows/release.yml
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
@@ -21,8 +26,9 @@ jobs:
         with:
           app-id: ${{ secrets.BOT_APP_ID }}
           private-key: ${{ secrets.BOT_PRIVATE_KEY }}
-      - name: Checkout Repo
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ steps.app-token.outputs.token }}
       - uses: actions/setup-node@v4
         with:
           node-version-file: .node-version
@@ -33,6 +39,7 @@ jobs:
 
       - name: Create Release Pull Request or Publish to npm
         id: changesets
+        if: github.event_name == 'push'
         uses: changesets/action@v1
         with:
           # This expects you to have a script called release which does a build for your packages and calls changeset publish
