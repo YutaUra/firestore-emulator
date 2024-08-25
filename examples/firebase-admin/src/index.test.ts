@@ -14,7 +14,6 @@ import {
   FieldValue,
   setLogFunction,
 } from 'firebase-admin/firestore'
-import fetch from 'node-fetch'
 
 const LOGGING = false as boolean
 
