@@ -60,10 +60,6 @@ ${message}`
   console.log('changeset', changeset)
   await writeFile(filename, changeset)
 
-  await execAsync(`git config --global user.name github-actions[bot]`)
-  await execAsync(
-    `git config --global user.email 41898282+github-actions[bot]@users.noreply.github.com`,
-  )
   await execAsync(`git add ${filename}`)
   await execAsync(`git commit -m "create changeset for renovate"`)
   await execAsync(`git push`)
