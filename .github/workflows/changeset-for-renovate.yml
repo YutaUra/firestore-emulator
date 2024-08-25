@@ -1,4 +1,4 @@
-name: "Create changeset for PR created by Renovate"
+name: create_changeset_for_PR_created_by_Renovate
 on:
   push:
     branches:
