@@ -9,8 +9,8 @@
     "build-for-github-actions": "turbo run build --filter='./.github/actions/*'"
   },
   "devDependencies": {
-    "@changesets/cli": "2.26.2",
-    "@turbo/gen": "1.9.7",
+    "@changesets/cli": "2.27.7",
+    "@turbo/gen": "1.13.4",
     "firebase-tools": "13.15.4",
     "turbo": "latest"
   },
