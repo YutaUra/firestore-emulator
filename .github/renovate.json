@@ -6,6 +6,7 @@
     "npm:unpublishSafe",
     "packages:linters",
     "packages:jsTest",
+    "group:allNonMajor",
     "replacements:all",
     ":pinVersions"
   ],
