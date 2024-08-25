@@ -288,6 +288,10 @@ export class FirestoreStateDocument implements HasCollections {
     return `${this.parent.getPath()}/${this.name}`
   }
 
+  getDocumentPath(): string {
+    return `${this.parent.getDocumentPath()}/${this.name}`
+  }
+
   v1Transform(date: Date, transforms: v1DocumentTransformFieldTransform[]) {
     transforms.forEach((transform) => {
       const field = this.getField(transform.field_path)
@@ -418,7 +422,7 @@ export class FirestoreStateCollection {
   constructor(
     private emitter: TypeSafeEventEmitter<Events>,
     readonly database: FirestoreStateDatabase,
-    readonly parent: HasCollections,
+    readonly parent: FirestoreStateDocument | FirestoreStateDatabase,
     readonly name: string,
     private documents: Record<string, FirestoreStateDocument>,
   ) {}
@@ -472,6 +476,11 @@ export class FirestoreStateCollection {
 
   getPath(): string {
     return `${this.parent.getPath()}/${this.name}`
+  }
+
+  getDocumentPath(): string {
+    if (this.parent instanceof FirestoreStateDatabase) return this.name
+    return `${this.parent.getDocumentPath()}/${this.name}`
   }
 }
 
@@ -753,22 +762,9 @@ ${document
           if (document.metadata.hasExist) {
             throw new FirestoreEmulatorError(
               Status.ALREADY_EXISTS,
-              `entity already exists: app: "dev~${
+              `entity already exists: EntityRef{partitionRef=dev~${
                 document.database.project.name
-              }"
-path <
-${document
-  .iterateFromRoot()
-  .map(
-    (doc) =>
-      `  Element {
-    type: "${doc.parent.name}"
-    name: "${doc.name}"
-  }`,
-  )
-  .join('\n')}
->
-`,
+              }, path=${document.getDocumentPath()}}`,
             )
           }
         }
@@ -795,22 +791,9 @@ ${document
           if (document.metadata.hasExist) {
             throw new FirestoreEmulatorError(
               Status.ALREADY_EXISTS,
-              `entity already exists: app: "dev~${
+              `entity already exists: EntityRef{partitionRef=dev~${
                 document.database.project.name
-              }"
-path <
-${document
-  .iterateFromRoot()
-  .map(
-    (doc) =>
-      `  Element {
-    type: "${doc.parent.name}"
-    name: "${doc.name}"
-  }`,
-  )
-  .join('\n')}
->
-`,
+              }, path=${document.getDocumentPath()}}`,
             )
           }
 
