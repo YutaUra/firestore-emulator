@@ -14,7 +14,6 @@ import {
   FieldValue,
   setLogFunction,
 } from 'firebase-admin/firestore'
-import fetch from 'node-fetch'
 import { expect, describe, it, beforeAll, beforeEach, afterAll } from 'vitest'
 
 const LOGGING = false as boolean
