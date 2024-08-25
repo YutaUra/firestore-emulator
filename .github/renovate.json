@@ -1,8 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:recommended",
-    "helpers:pinGitHubActionDigests",
+    "config:best-practices",
     "npm:unpublishSafe",
     "packages:linters",
     "packages:jsTest",
@@ -13,5 +12,6 @@
   "gitIgnoredAuthors": [
     "41898282+github-actions[bot]@users.noreply.github.com",
     "179370226+yutaura-bot[bot]@users.noreply.github.com"
-  ]
+  ],
+  "rebaseWhen": "behind-base-branch"
 }
