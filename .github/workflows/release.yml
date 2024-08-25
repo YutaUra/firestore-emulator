@@ -9,6 +9,7 @@ on:
       - main
     paths:
       - .github/workflows/release.yml
+      - .github/actions/setup/**
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
