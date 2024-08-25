@@ -9,12 +9,12 @@
     "format:check": "prettier --check ."
   },
   "dependencies": {
-    "@tsconfig/strictest": "^2.0.1"
+    "@tsconfig/strictest": "2.0.5"
   },
   "devDependencies": {
-    "typescript": "^4.9.5"
+    "typescript": "4.9.5"
   },
   "peerDependencies": {
-    "typescript": "^4.9.5"
+    "typescript": "4.9.5"
   }
 }
