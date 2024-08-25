@@ -13,5 +13,6 @@
     "41898282+github-actions[bot]@users.noreply.github.com",
     "179370226+yutaura-bot[bot]@users.noreply.github.com"
   ],
+  "ignorePaths": ["!**/examples/**"],
   "rebaseWhen": "behind-base-branch"
 }
