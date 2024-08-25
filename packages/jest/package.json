@@ -7,14 +7,14 @@
   "module": "dist/index.js",
   "exports": {
     ".": {
-      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/index.js"
     },
     "./*": {
-      "require": "./dist/*.js",
+      "types": "./dist/*.d.ts",
       "import": "./dist/*.mjs",
-      "types": "./dist/*.d.ts"
+      "require": "./dist/*.js"
     }
   },
   "private": false,
