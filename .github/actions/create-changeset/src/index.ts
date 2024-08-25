@@ -33,8 +33,9 @@ const main = async () => {
     .map(([name]) => name)
 
   const affectedPackages = Object.entries(packages).filter(
-    ([, { dependsOn, isPrivate }]) =>
-      changedPackages.some((cp) => dependsOn.includes(cp)) && !isPrivate,
+    ([name, { dependsOn, isPrivate }]) =>
+      changedPackages.some((cp) => cp === name || dependsOn.includes(cp)) &&
+      !isPrivate,
   )
 
   console.log('diff', diff)
