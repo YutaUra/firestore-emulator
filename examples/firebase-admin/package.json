@@ -15,7 +15,7 @@
   "dependencies": {
     "@firestore-emulator/jest": "workspace:*",
     "date-fns": "3.6.0",
-    "firebase-admin": "11.11.1",
+    "firebase-admin": "12.4.0",
     "firebase-tools": "13.15.4"
   },
   "devDependencies": {
