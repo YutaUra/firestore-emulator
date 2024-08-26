@@ -1,5 +1,13 @@
 # @firestore-emulator/proto
 
+## 0.1.0
+
+### Patch Changes
+
+- 3ed770d: Update all non-major dependencies
+- 59c4970: Update dependency tsup to v8
+- e2d4413: Update dependency typescript to v5
+
 ## 0.0.19
 
 ## 0.0.18
