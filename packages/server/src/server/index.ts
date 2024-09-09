@@ -27,7 +27,6 @@ export class FirestoreServer {
             reject(err)
             return
           }
-          this.server.start()
           resolve(undefined)
         },
       )

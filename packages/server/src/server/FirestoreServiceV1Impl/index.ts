@@ -86,6 +86,16 @@ export class FirestoreServiceV1Impl extends UnimplementedFirestoreService {
     >,
   ): void {
     const date = TimestampFromNow()
+    const tx = call.request.has_new_transaction
+      ? Uint8Array.from([17, 2, 0, 0, 0, 0, 0, 0, 0])
+      : null
+    if (tx) {
+      call.write(
+        BatchGetDocumentsResponse.fromObject({
+          transaction: tx,
+        }),
+      )
+    }
     call.request.documents.forEach((documentPath) => {
       const document = this.#state.getDocument(documentPath)
       call.write(
@@ -105,8 +115,15 @@ export class FirestoreServiceV1Impl extends UnimplementedFirestoreService {
     _call: ServerUnaryCall<BeginTransactionRequest, BeginTransactionResponse>,
     callback: sendUnaryData<BeginTransactionResponse>,
   ): void {
-    callback(null, BeginTransactionResponse.fromObject({}))
+    callback(
+      null,
+      BeginTransactionResponse.fromObject({
+        // dummy transaction id
+        transaction: Uint8Array.from([17, 2, 0, 0, 0, 0, 0, 0, 0]),
+      }),
+    )
   }
+
   override Commit(
     call: ServerUnaryCall<CommitRequest, CommitResponse>,
     callback: sendUnaryData<CommitResponse>,
@@ -162,17 +179,28 @@ export class FirestoreServiceV1Impl extends UnimplementedFirestoreService {
       call.request.structured_query,
     )
 
-    results.forEach((result, i, arr) => {
+    if (results.length > 0) {
+      results.forEach((result, i, arr) => {
+        call.write(
+          RunQueryResponse.fromObject({
+            document: result.toV1DocumentObject(),
+            done: i === arr.length - 1,
+            read_time: TimestampFromDate(date),
+            skipped_results: 0,
+            transaction: call.request.transaction,
+          }),
+        )
+      })
+    } else {
       call.write(
         RunQueryResponse.fromObject({
-          document: result.toV1DocumentObject(),
-          done: i === arr.length - 1,
+          done: true,
           read_time: TimestampFromDate(date),
           skipped_results: 0,
           transaction: call.request.transaction,
         }),
       )
-    })
+    }
 
     call.end()
   }

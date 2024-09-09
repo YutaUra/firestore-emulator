@@ -3,7 +3,7 @@ import {
   type FirestoreState,
 } from '@firestore-emulator/server'
 import { findFreePorts } from 'find-free-ports'
-import type { Environment } from 'vitest'
+import type { Environment } from 'vitest/environments'
 import { builtinEnvironments } from 'vitest/environments'
 
 declare global {
@@ -55,4 +55,4 @@ export default {
     throw new Error('Could not find a free port')
   },
   transformMode: 'ssr',
-} as Environment
+} satisfies Environment
