@@ -1,8 +1,9 @@
 {
-  "extends": "@tsconfig/strictest/tsconfig.json",
-  "compilerOptions": {
-    "module": "NodeNext",
-    "target": "ESNext",
-    "moduleResolution": "NodeNext"
-  }
+	"extends": "@tsconfig/strictest/tsconfig.json",
+	"compilerOptions": {
+		"module": "NodeNext",
+		"target": "ESNext",
+		"moduleResolution": "NodeNext",
+		"noPropertyAccessFromIndexSignature": false
+	}
 }

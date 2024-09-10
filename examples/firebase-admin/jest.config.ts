@@ -1,16 +1,16 @@
-import type { JestConfigWithTsJest } from 'ts-jest'
+import type { JestConfigWithTsJest } from "ts-jest";
 
 export default {
-  testEnvironment: '@firestore-emulator/jest/environment/node',
+  testEnvironment: "@firestore-emulator/jest/environment/node",
   transform: {
-    '^.+\\.test.ts?$': [
-      'ts-jest',
+    "^.+\\.test.ts?$": [
+      "ts-jest",
       {
         diagnostics: {
-          exclude: ['**'],
+          exclude: ["**"],
         },
       },
     ],
   },
   watchman: false,
-} satisfies JestConfigWithTsJest
+} satisfies JestConfigWithTsJest;

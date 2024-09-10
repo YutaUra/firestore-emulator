@@ -5,19 +5,11 @@
     "build": {
       "dependsOn": ["^build"]
     },
-    "fix": {
-      "dependsOn": ["^format", "^lint"]
+    "check:fix": {
+      "dependsOn": ["^build"]
     },
     "check": {
-      "dependsOn": ["^format:check", "^lint:check", "^type:check"]
-    },
-    "format": {},
-    "format:check": {},
-    "lint": {
-      "dependsOn": ["^build"]
-    },
-    "lint:check": {
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build", "^type:check"]
     },
     "type:check": {
       "dependsOn": ["^build"]

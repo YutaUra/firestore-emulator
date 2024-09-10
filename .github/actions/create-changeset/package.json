@@ -6,18 +6,15 @@
   "private": true,
   "scripts": {
     "build": "tsup ./src/ --sourcemap --clean --format esm,cjs --no-splitting && tsc --emitDeclarationOnly",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "lint": "eslint --fix .",
-    "lint:check": "eslint .",
+    "check": "biome check .",
+    "check:fix": "biome check --write .",
     "type:check": "tsc --noEmit"
   },
   "keywords": [],
   "author": "YutaUra",
   "license": "ISC",
   "devDependencies": {
-    "@shared/eslint-config": "workspace:^",
-    "@shared/prettier-config": "workspace:^",
+    "@shared/biome-config": "workspace:^",
     "@shared/typescript-config": "workspace:^",
     "@types/js-yaml": "4.0.9",
     "@types/node": "20.16.1",

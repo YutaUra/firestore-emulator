@@ -1,12 +1,12 @@
-import { readFile } from 'node:fs/promises'
-import { join, resolve } from 'node:path'
+import { readFile } from "node:fs/promises";
+import { join, resolve } from "node:path";
 
-import { glob } from 'glob'
-import { z } from 'zod'
+import { glob } from "glob";
+import { z } from "zod";
 
-import type { PnpmWorkspace } from './read-pnpm-workspace'
+import type { PnpmWorkspace } from "./read-pnpm-workspace";
 
-const PACKAGE_ROOT = resolve(join(__dirname, '../../../../'))
+const PACKAGE_ROOT = resolve(join(__dirname, "../../../../"));
 
 const packageJsonSchema = z
   .object({
@@ -15,26 +15,26 @@ const packageJsonSchema = z
     name: z.string(),
     private: z.boolean().default(false),
   })
-  .strip()
+  .strip();
 
 const getAllDependencies = (
   allDependencies: Record<string, string[]>,
   packagesTree: Record<
     string,
     {
-      readonly dependsOn: readonly string[]
+      readonly dependsOn: readonly string[];
     }
   >,
   packageName: string,
 ): string[] => {
-  const pkg = packagesTree[packageName]
-  if (!pkg) throw new Error(`Package ${packageName} not found in workspace`)
+  const pkg = packagesTree[packageName];
+  if (!pkg) throw new Error(`Package ${packageName} not found in workspace`);
   if (allDependencies[packageName]) {
-    return allDependencies[packageName] ?? []
+    return allDependencies[packageName] ?? [];
   }
   if (pkg.dependsOn.length === 0) {
-    allDependencies[packageName] = []
-    return []
+    allDependencies[packageName] = [];
+    return [];
   }
   allDependencies[packageName] = Array.from(
     new Set([
@@ -43,40 +43,40 @@ const getAllDependencies = (
         getAllDependencies(allDependencies, packagesTree, dep),
       ),
     ]),
-  )
-  return allDependencies[packageName] ?? []
-}
+  );
+  return allDependencies[packageName] ?? [];
+};
 
 export const buildPnpmWorkspaceTree = async (workspace: PnpmWorkspace) => {
   const packages = await Promise.all(
     workspace.packages.map(async (packagePath) => {
-      const files = await glob(`${PACKAGE_ROOT}/${packagePath}/package.json`)
+      const files = await glob(`${PACKAGE_ROOT}/${packagePath}/package.json`);
 
       return await Promise.all(
         files.map(async (packageJsonPath) => {
           const packageJson = packageJsonSchema.parse(
-            JSON.parse(await readFile(packageJsonPath, 'utf-8')),
-          )
+            JSON.parse(await readFile(packageJsonPath, "utf-8")),
+          );
 
           return {
             dependencies: Object.fromEntries(
               Object.entries(packageJson.dependencies).filter(([_, v]) =>
-                v.startsWith('workspace:'),
+                v.startsWith("workspace:"),
               ),
             ),
             devDependencies: Object.fromEntries(
               Object.entries(packageJson.devDependencies).filter(([_, v]) =>
-                v.startsWith('workspace:'),
+                v.startsWith("workspace:"),
               ),
             ),
             isPrivate: packageJson.private,
             name: packageJson.name,
             path: packageJsonPath,
-          }
+          };
         }),
-      )
+      );
     }),
-  ).then((v) => v.flat())
+  ).then((v) => v.flat());
 
   const packagesTree = Object.fromEntries(
     packages.map((pkg) => {
@@ -87,14 +87,14 @@ export const buildPnpmWorkspaceTree = async (workspace: PnpmWorkspace) => {
             ...Object.keys(pkg.dependencies),
             ...Object.keys(pkg.devDependencies),
           ],
-          dir: resolve(pkg.path, '..'),
+          dir: resolve(pkg.path, ".."),
           isPrivate: pkg.isPrivate,
         },
-      ] as const
+      ] as const;
     }),
-  )
+  );
 
-  const allDependencies: Record<string, string[]> = {}
+  const allDependencies: Record<string, string[]> = {};
 
   return Object.fromEntries(
     Object.entries(packagesTree).map(([name, pkg]) => {
@@ -104,7 +104,7 @@ export const buildPnpmWorkspaceTree = async (workspace: PnpmWorkspace) => {
           ...pkg,
           dependsOn: getAllDependencies(allDependencies, packagesTree, name),
         },
-      ] as const
+      ] as const;
     }),
-  )
-}
+  );
+};

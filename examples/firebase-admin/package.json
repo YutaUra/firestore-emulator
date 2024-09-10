@@ -6,10 +6,8 @@
   "scripts": {
     "test": "firebase emulators:exec --only firestore \"pnpm exec jest\"",
     "test:watch": "firebase emulators:exec --only firestore \"pnpm exec jest --watch\"",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "lint": "eslint --fix .",
-    "lint:check": "eslint .",
+    "check": "biome check .",
+    "check:fix": "biome check --write .",
     "type:check": "tsc --noEmit"
   },
   "dependencies": {
@@ -19,8 +17,7 @@
     "firebase-tools": "13.15.4"
   },
   "devDependencies": {
-    "@shared/eslint-config": "workspace:^",
-    "@shared/prettier-config": "workspace:^",
+    "@shared/biome-config": "workspace:^",
     "@shared/typescript-config": "workspace:^",
     "@types/jest": "29.5.12",
     "@types/node": "20.16.1",

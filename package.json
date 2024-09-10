@@ -3,8 +3,7 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
-    "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md,json}\" \"!.changeset/**/*\" \"!**/{dist,generated}/**/*\"",
+    "check": "turbo run check",
     "publish-packages": "turbo run build --filter='./packages/*' && changeset version && changeset publish",
     "build-for-github-actions": "turbo run build --filter='./.github/actions/*'"
   },
