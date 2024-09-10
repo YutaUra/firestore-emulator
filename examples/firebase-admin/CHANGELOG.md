@@ -1,5 +1,16 @@
 # example-jest
 
+## 0.0.21
+
+### Patch Changes
+
+- 5a4d749: migrate biome from eslint and prettier
+- d80a908: fix tsconfig.json
+- Updated dependencies [5a4d749]
+- Updated dependencies [d80a908]
+- Updated dependencies [9ed99d3]
+  - @firestore-emulator/jest@0.2.0
+
 ## 0.0.20
 
 ### Patch Changes

@@ -1,5 +1,19 @@
 # vitest-environment-firestore-emulator
 
+## 0.2.0
+
+### Patch Changes
+
+- 5a4d749: migrate biome from eslint and prettier
+- d80a908: fix tsconfig.json
+- 9ed99d3: Update all non-major dependencies
+- Updated dependencies [5a4d749]
+- Updated dependencies [d80a908]
+- Updated dependencies [458de68]
+- Updated dependencies [9ed99d3]
+- Updated dependencies [91af5d5]
+  - @firestore-emulator/server@0.2.0
+
 ## 0.1.0
 
 ### Patch Changes
