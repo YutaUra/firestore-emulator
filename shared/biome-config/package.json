@@ -1,0 +1,16 @@
+{
+  "name": "@shared/biome-config",
+  "version": "0.0.14",
+  "license": "MIT",
+  "private": true,
+  "bin": {
+    "biome": "./node_modules/.bin/biome"
+  },
+  "scripts": {
+    "check": "biome check .",
+    "check:fix": "biome check --write ."
+  },
+  "dependencies": {
+    "@biomejs/biome": "1.8.3"
+  }
+}

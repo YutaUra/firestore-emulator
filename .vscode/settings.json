@@ -1,4 +1,4 @@
 {
   "cSpell.words": ["hono", "immer", "protobuf"],
-  "eslint.workingDirectories": [{ "mode": "auto" }]
+  "biome.lspBin": "./shared/biome-config/node_modules/.bin/biome"
 }

@@ -22,10 +22,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "files": [
-    "dist",
-    "src"
-  ],
+  "files": ["dist", "src"],
   "repository": {
     "type": "git",
     "url": "https://github.com/YutaUra/firestore-emulator.git",
@@ -48,10 +45,8 @@
   },
   "scripts": {
     "build": "tsup ./src/ --sourcemap --clean --format esm,cjs --no-splitting && tsc --emitDeclarationOnly",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "lint": "eslint --fix .",
-    "lint:check": "eslint .",
+    "check": "biome check .",
+    "check:fix": "biome check --write .",
     "type:check": "tsc --noEmit"
   },
   "dependencies": {
@@ -59,8 +54,7 @@
     "find-free-ports": "3.1.1"
   },
   "devDependencies": {
-    "@shared/eslint-config": "workspace:^",
-    "@shared/prettier-config": "workspace:^",
+    "@shared/biome-config": "workspace:^",
     "@shared/typescript-config": "workspace:^",
     "@types/node": "20.16.1",
     "tsup": "8.2.4",

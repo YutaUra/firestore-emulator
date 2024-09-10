@@ -1,2 +1,2 @@
-export * from './FirestoreState'
-export * from './server'
+export * from "./FirestoreState";
+export * from "./server";

@@ -1,1 +1,1 @@
-export type FirestoreEmulatorEnvironmentConfig = Record<string, never>
+export type FirestoreEmulatorEnvironmentConfig = Record<string, never>;

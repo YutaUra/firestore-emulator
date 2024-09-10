@@ -1,262 +1,262 @@
-import type { Value as v1Value } from '@firestore-emulator/proto/dist/google/firestore/v1/document'
-import { NullValue } from '@firestore-emulator/proto/dist/google/protobuf/struct'
+import type { Value as v1Value } from "@firestore-emulator/proto/dist/google/firestore/v1/document";
+import { NullValue } from "@firestore-emulator/proto/dist/google/protobuf/struct";
 
-export type ValueObjectType = ReturnType<typeof v1Value.prototype.toObject>
+export type ValueObjectType = ReturnType<typeof v1Value.prototype.toObject>;
 export interface FirestoreStateDocumentBaseField {
-  eq(other: FirestoreStateDocumentFields): boolean
-  gt(other: FirestoreStateDocumentFields): boolean
-  gte(other: FirestoreStateDocumentFields): boolean
-  lt(other: FirestoreStateDocumentFields): boolean
-  lte(other: FirestoreStateDocumentFields): boolean
-  toJSON(): { type: string; value: unknown }
-  toV1ValueObject(): ValueObjectType
+  eq(other: FirestoreStateDocumentFields): boolean;
+  gt(other: FirestoreStateDocumentFields): boolean;
+  gte(other: FirestoreStateDocumentFields): boolean;
+  lt(other: FirestoreStateDocumentFields): boolean;
+  lte(other: FirestoreStateDocumentFields): boolean;
+  toJSON(): { type: string; value: unknown };
+  toV1ValueObject(): ValueObjectType;
 }
 
 export class FirestoreStateDocumentStringField
   implements FirestoreStateDocumentBaseField
 {
-  type = 'string_value' as const
+  type = "string_value" as const;
   constructor(readonly value: string) {}
 
   toJSON() {
-    return { type: this.type, value: this.value }
+    return { type: this.type, value: this.value };
   }
 
   toV1ValueObject(): ValueObjectType {
-    return { string_value: this.value }
+    return { string_value: this.value };
   }
 
   eq(other: FirestoreStateDocumentFields): boolean {
     return (
       other instanceof FirestoreStateDocumentStringField &&
       this.value === other.value
-    )
+    );
   }
 
   lt(other: FirestoreStateDocumentFields): boolean {
     return (
       other instanceof FirestoreStateDocumentStringField &&
       this.value < other.value
-    )
+    );
   }
 
   lte(other: FirestoreStateDocumentFields): boolean {
     return (
       other instanceof FirestoreStateDocumentStringField &&
       this.value <= other.value
-    )
+    );
   }
 
   gt(other: FirestoreStateDocumentFields): boolean {
     return (
       other instanceof FirestoreStateDocumentStringField &&
       this.value > other.value
-    )
+    );
   }
 
   gte(other: FirestoreStateDocumentFields): boolean {
     return (
       other instanceof FirestoreStateDocumentStringField &&
       this.value >= other.value
-    )
+    );
   }
 }
 
 export class FirestoreStateDocumentNullField
   implements FirestoreStateDocumentBaseField
 {
-  type = 'null_value' as const
-  value = null
+  type = "null_value" as const;
+  value = null;
   toJSON() {
-    return { type: this.type, value: null } as const
+    return { type: this.type, value: null } as const;
   }
 
   toV1ValueObject(): ValueObjectType {
-    return { null_value: NullValue.NULL_VALUE }
+    return { null_value: NullValue.NULL_VALUE };
   }
 
   eq(other: FirestoreStateDocumentFields): boolean {
-    return other.type === this.type
+    return other.type === this.type;
   }
 
   lt(_other: FirestoreStateDocumentFields): boolean {
-    return false
+    return false;
   }
 
   lte(_other: FirestoreStateDocumentFields): boolean {
-    return false
+    return false;
   }
 
   gt(_other: FirestoreStateDocumentFields): boolean {
-    return false
+    return false;
   }
 
   gte(_other: FirestoreStateDocumentFields): boolean {
-    return false
+    return false;
   }
 }
 
 export class FirestoreStateDocumentBooleanField
   implements FirestoreStateDocumentBaseField
 {
-  type = 'boolean_value' as const
+  type = "boolean_value" as const;
   constructor(readonly value: boolean) {}
 
   toJSON() {
-    return { type: this.type, value: this.value }
+    return { type: this.type, value: this.value };
   }
 
   toV1ValueObject(): ValueObjectType {
-    return { boolean_value: this.value }
+    return { boolean_value: this.value };
   }
 
   eq(other: FirestoreStateDocumentFields): boolean {
     return (
       other instanceof FirestoreStateDocumentBooleanField &&
       this.value === other.value
-    )
+    );
   }
 
   lt(_other: FirestoreStateDocumentFields): boolean {
-    return false
+    return false;
   }
 
   lte(_other: FirestoreStateDocumentFields): boolean {
-    return false
+    return false;
   }
 
   gt(_other: FirestoreStateDocumentFields): boolean {
-    return false
+    return false;
   }
 
   gte(_other: FirestoreStateDocumentFields): boolean {
-    return false
+    return false;
   }
 }
 
 export class FirestoreStateDocumentIntegerField
   implements FirestoreStateDocumentBaseField
 {
-  type = 'integer_value' as const
+  type = "integer_value" as const;
   constructor(readonly value: number) {
     if (!Number.isInteger(value)) {
-      throw new Error(`value must be integer. value=${value}`)
+      throw new Error(`value must be integer. value=${value}`);
     }
   }
 
   toJSON() {
-    return { type: this.type, value: this.value }
+    return { type: this.type, value: this.value };
   }
 
   toV1ValueObject(): ValueObjectType {
-    return { integer_value: this.value }
+    return { integer_value: this.value };
   }
 
   eq(other: FirestoreStateDocumentFields): boolean {
     return (
       other instanceof FirestoreStateDocumentIntegerField &&
       this.value === other.value
-    )
+    );
   }
 
   lt(other: FirestoreStateDocumentFields): boolean {
     return (
       other instanceof FirestoreStateDocumentIntegerField &&
       this.value < other.value
-    )
+    );
   }
 
   lte(other: FirestoreStateDocumentFields): boolean {
     return (
       other instanceof FirestoreStateDocumentIntegerField &&
       this.value <= other.value
-    )
+    );
   }
 
   gt(other: FirestoreStateDocumentFields): boolean {
     return (
       other instanceof FirestoreStateDocumentIntegerField &&
       this.value > other.value
-    )
+    );
   }
 
   gte(other: FirestoreStateDocumentFields): boolean {
     return (
       other instanceof FirestoreStateDocumentIntegerField &&
       this.value >= other.value
-    )
+    );
   }
 }
 
 export class FirestoreStateDocumentDoubleField
   implements FirestoreStateDocumentBaseField
 {
-  type = 'double_value' as const
+  type = "double_value" as const;
   constructor(readonly value: number) {}
 
   toJSON() {
-    return { type: this.type, value: this.value }
+    return { type: this.type, value: this.value };
   }
 
   toV1ValueObject(): ValueObjectType {
-    return { double_value: this.value }
+    return { double_value: this.value };
   }
 
   eq(other: FirestoreStateDocumentFields): boolean {
     return (
       other instanceof FirestoreStateDocumentDoubleField &&
       this.value === other.value
-    )
+    );
   }
 
   lt(other: FirestoreStateDocumentFields): boolean {
     return (
       other instanceof FirestoreStateDocumentDoubleField &&
       this.value < other.value
-    )
+    );
   }
 
   lte(other: FirestoreStateDocumentFields): boolean {
     return (
       other instanceof FirestoreStateDocumentDoubleField &&
       this.value <= other.value
-    )
+    );
   }
 
   gt(other: FirestoreStateDocumentFields): boolean {
     return (
       other instanceof FirestoreStateDocumentDoubleField &&
       this.value > other.value
-    )
+    );
   }
 
   gte(other: FirestoreStateDocumentFields): boolean {
     return (
       other instanceof FirestoreStateDocumentDoubleField &&
       this.value >= other.value
-    )
+    );
   }
 }
 
 export class FirestoreStateDocumentTimestampField
   implements FirestoreStateDocumentBaseField
 {
-  type = 'timestamp_value' as const
+  type = "timestamp_value" as const;
   constructor(readonly value: { nanos: number; seconds: number }) {}
 
   static fromDate(date: Date) {
     return new FirestoreStateDocumentTimestampField({
       nanos: (date.getTime() % 1000) * 1000000,
       seconds: Math.floor(date.getTime() / 1000),
-    })
+    });
   }
 
   toJSON() {
-    return { type: this.type, value: this.value } as const
+    return { type: this.type, value: this.value } as const;
   }
 
   toV1ValueObject(): ValueObjectType {
-    return { timestamp_value: this.value }
+    return { timestamp_value: this.value };
   }
 
   eq(other: FirestoreStateDocumentFields): boolean {
@@ -264,7 +264,7 @@ export class FirestoreStateDocumentTimestampField
       other instanceof FirestoreStateDocumentTimestampField &&
       this.value.seconds === other.value.seconds &&
       this.value.nanos === other.value.nanos
-    )
+    );
   }
 
   lt(other: FirestoreStateDocumentFields): boolean {
@@ -273,7 +273,7 @@ export class FirestoreStateDocumentTimestampField
       (this.value.seconds < other.value.seconds ||
         (this.value.seconds === other.value.seconds &&
           this.value.nanos < other.value.nanos))
-    )
+    );
   }
 
   lte(other: FirestoreStateDocumentFields): boolean {
@@ -282,7 +282,7 @@ export class FirestoreStateDocumentTimestampField
       (this.value.seconds < other.value.seconds ||
         (this.value.seconds === other.value.seconds &&
           this.value.nanos <= other.value.nanos))
-    )
+    );
   }
 
   gt(other: FirestoreStateDocumentFields): boolean {
@@ -291,7 +291,7 @@ export class FirestoreStateDocumentTimestampField
       (this.value.seconds > other.value.seconds ||
         (this.value.seconds === other.value.seconds &&
           this.value.nanos > other.value.nanos))
-    )
+    );
   }
 
   gte(other: FirestoreStateDocumentFields): boolean {
@@ -300,110 +300,110 @@ export class FirestoreStateDocumentTimestampField
       (this.value.seconds > other.value.seconds ||
         (this.value.seconds === other.value.seconds &&
           this.value.nanos >= other.value.nanos))
-    )
+    );
   }
 }
 
 export class FirestoreStateDocumentBytesField
   implements FirestoreStateDocumentBaseField
 {
-  type = 'bytes_value' as const
+  type = "bytes_value" as const;
   constructor(readonly value: Uint8Array) {}
 
   toJSON() {
-    return { type: this.type, value: this.value } as const
+    return { type: this.type, value: this.value } as const;
   }
 
   toV1ValueObject(): ValueObjectType {
-    return { bytes_value: this.value }
+    return { bytes_value: this.value };
   }
 
   eq(other: FirestoreStateDocumentFields): boolean {
     return (
       other instanceof FirestoreStateDocumentBytesField &&
       this.value.toString() === other.value.toString()
-    )
+    );
   }
 
   lt(other: FirestoreStateDocumentFields): boolean {
     return (
       other instanceof FirestoreStateDocumentBytesField &&
       this.value.toString() < other.value.toString()
-    )
+    );
   }
 
   lte(other: FirestoreStateDocumentFields): boolean {
     return (
       other instanceof FirestoreStateDocumentBytesField &&
       this.value.toString() <= other.value.toString()
-    )
+    );
   }
 
   gt(other: FirestoreStateDocumentFields): boolean {
     return (
       other instanceof FirestoreStateDocumentBytesField &&
       this.value.toString() > other.value.toString()
-    )
+    );
   }
 
   gte(other: FirestoreStateDocumentFields): boolean {
     return (
       other instanceof FirestoreStateDocumentBytesField &&
       this.value.toString() >= other.value.toString()
-    )
+    );
   }
 }
 
 export class FirestoreStateDocumentReferenceField
   implements FirestoreStateDocumentBaseField
 {
-  type = 'reference_value' as const
+  type = "reference_value" as const;
   constructor(readonly value: string) {}
 
   toJSON() {
-    return { type: this.type, value: this.value }
+    return { type: this.type, value: this.value };
   }
 
   toV1ValueObject(): ValueObjectType {
-    return { reference_value: this.value }
+    return { reference_value: this.value };
   }
 
   eq(other: FirestoreStateDocumentFields): boolean {
     return (
       other instanceof FirestoreStateDocumentReferenceField &&
       this.value === other.value
-    )
+    );
   }
 
   lt(_other: FirestoreStateDocumentFields): boolean {
-    return false
+    return false;
   }
 
   lte(_other: FirestoreStateDocumentFields): boolean {
-    return false
+    return false;
   }
 
   gt(_other: FirestoreStateDocumentFields): boolean {
-    return false
+    return false;
   }
 
   gte(_other: FirestoreStateDocumentFields): boolean {
-    return false
+    return false;
   }
 }
 
 export class FirestoreStateDocumentGeoPointField
   implements FirestoreStateDocumentBaseField
 {
-  type = 'geo_point_value' as const
+  type = "geo_point_value" as const;
   constructor(readonly value: { latitude: number; longitude: number }) {}
 
   toJSON() {
-    return { type: this.type, value: this.value }
+    return { type: this.type, value: this.value };
   }
 
   toV1ValueObject(): ValueObjectType {
-    return { geo_point_value: this.value }
+    return { geo_point_value: this.value };
   }
 
   eq(other: FirestoreStateDocumentFields): boolean {
@@ -411,7 +411,7 @@ export class FirestoreStateDocumentGeoPointField
       other instanceof FirestoreStateDocumentGeoPointField &&
       this.value.latitude === other.value.latitude &&
       this.value.longitude === other.value.longitude
-    )
+    );
   }
 
   lt(other: FirestoreStateDocumentFields): boolean {
@@ -419,7 +419,7 @@ export class FirestoreStateDocumentGeoPointField
       other instanceof FirestoreStateDocumentGeoPointField &&
       (this.value.latitude < other.value.latitude ||
         this.value.longitude < other.value.longitude)
-    )
+    );
   }
 
   lte(other: FirestoreStateDocumentFields): boolean {
@@ -427,7 +427,7 @@ export class FirestoreStateDocumentGeoPointField
       other instanceof FirestoreStateDocumentGeoPointField &&
       (this.value.latitude <= other.value.latitude ||
         this.value.longitude <= other.value.longitude)
-    )
+    );
   }
 
   gt(other: FirestoreStateDocumentFields): boolean {
@@ -435,7 +435,7 @@ export class FirestoreStateDocumentGeoPointField
       other instanceof FirestoreStateDocumentGeoPointField &&
       (this.value.latitude > other.value.latitude ||
         this.value.longitude > other.value.longitude)
-    )
+    );
   }
 
   gte(other: FirestoreStateDocumentFields): boolean {
@@ -443,27 +443,27 @@ export class FirestoreStateDocumentGeoPointField
       other instanceof FirestoreStateDocumentGeoPointField &&
       (this.value.latitude >= other.value.latitude ||
         this.value.longitude >= other.value.longitude)
-    )
+    );
   }
 }
 
 export class FirestoreStateDocumentArrayField
   implements FirestoreStateDocumentBaseField
 {
-  type = 'array_value' as const
+  type = "array_value" as const;
   constructor(readonly value: FirestoreStateDocumentFields[]) {}
 
   toJSON(): { type: string; value: unknown } {
     return {
       type: this.type,
       value: this.value.map((v) => v.toJSON()),
-    }
+    };
   }
 
   toV1ValueObject(): ValueObjectType {
     return {
       array_value: { values: this.value.map((v) => v.toV1ValueObject()) },
-    }
+    };
   }
 
   eq(other: FirestoreStateDocumentFields): boolean {
@@ -471,34 +471,34 @@ export class FirestoreStateDocumentArrayField
       other instanceof FirestoreStateDocumentArrayField &&
       this.value.length === other.value.length &&
       this.value.every((v, i) => {
-        const item = other.value[i]
-        if (!item) return false
-        return item.eq(v)
+        const item = other.value[i];
+        if (!item) return false;
+        return item.eq(v);
       })
-    )
+    );
   }
 
   lt(_other: FirestoreStateDocumentFields): boolean {
-    return false
+    return false;
   }
 
   lte(_other: FirestoreStateDocumentFields): boolean {
-    return false
+    return false;
   }
 
   gt(_other: FirestoreStateDocumentFields): boolean {
-    return false
+    return false;
   }
 
   gte(_other: FirestoreStateDocumentFields): boolean {
-    return false
+    return false;
   }
 }
 
 export class FirestoreStateDocumentMapField
   implements FirestoreStateDocumentBaseField
 {
-  type = 'map_value' as const
+  type = "map_value" as const;
   constructor(readonly value: Record<string, FirestoreStateDocumentFields>) {}
 
   toJSON(): { type: string; value: unknown } {
@@ -507,7 +507,7 @@ export class FirestoreStateDocumentMapField
       value: Object.fromEntries(
         Object.entries(this.value).map(([k, v]) => [k, v.toJSON()]),
       ),
-    }
+    };
   }
 
   toV1ValueObject(): ValueObjectType {
@@ -517,7 +517,7 @@ export class FirestoreStateDocumentMapField
           Object.entries(this.value).map(([k, v]) => [k, v.toV1ValueObject()]),
         ),
       },
-    }
+    };
   }
 
   eq(other: FirestoreStateDocumentFields): boolean {
@@ -525,27 +525,27 @@ export class FirestoreStateDocumentMapField
       other instanceof FirestoreStateDocumentMapField &&
       Object.keys(this.value).length === Object.keys(other.value).length &&
       Object.entries(this.value).every(([k, v]) => {
-        const item = other.value[k]
-        if (!item) return false
-        return item.eq(v)
+        const item = other.value[k];
+        if (!item) return false;
+        return item.eq(v);
       })
-    )
+    );
   }
 
   lt(_other: FirestoreStateDocumentFields): boolean {
-    return false
+    return false;
   }
 
   lte(_other: FirestoreStateDocumentFields): boolean {
-    return false
+    return false;
   }
 
   gt(_other: FirestoreStateDocumentFields): boolean {
-    return false
+    return false;
   }
 
   gte(_other: FirestoreStateDocumentFields): boolean {
-    return false
+    return false;
   }
 }
 
@@ -560,38 +560,38 @@ export type FirestoreStateDocumentFields =
   | FirestoreStateDocumentReferenceField
   | FirestoreStateDocumentGeoPointField
   | FirestoreStateDocumentArrayField
-  | FirestoreStateDocumentMapField
+  | FirestoreStateDocumentMapField;
 
 export const convertV1DocumentField = (
   field: v1Value,
 ): FirestoreStateDocumentFields => {
   if (field.has_string_value)
-    return new FirestoreStateDocumentStringField(field.string_value)
-  if (field.has_null_value) return new FirestoreStateDocumentNullField()
+    return new FirestoreStateDocumentStringField(field.string_value);
+  if (field.has_null_value) return new FirestoreStateDocumentNullField();
   if (field.has_boolean_value)
-    return new FirestoreStateDocumentBooleanField(field.boolean_value)
+    return new FirestoreStateDocumentBooleanField(field.boolean_value);
   if (field.has_integer_value)
-    return new FirestoreStateDocumentIntegerField(field.integer_value)
+    return new FirestoreStateDocumentIntegerField(field.integer_value);
   if (field.has_double_value)
-    return new FirestoreStateDocumentDoubleField(field.double_value)
+    return new FirestoreStateDocumentDoubleField(field.double_value);
   if (field.has_timestamp_value)
     return new FirestoreStateDocumentTimestampField({
       nanos: field.timestamp_value.nanos,
       seconds: field.timestamp_value.seconds,
-    })
+    });
   if (field.has_bytes_value)
-    return new FirestoreStateDocumentBytesField(field.bytes_value)
+    return new FirestoreStateDocumentBytesField(field.bytes_value);
   if (field.has_reference_value)
-    return new FirestoreStateDocumentReferenceField(field.reference_value)
+    return new FirestoreStateDocumentReferenceField(field.reference_value);
   if (field.has_geo_point_value)
     return new FirestoreStateDocumentGeoPointField({
       latitude: field.geo_point_value.latitude,
       longitude: field.geo_point_value.longitude,
-    })
+    });
   if (field.has_array_value)
     return new FirestoreStateDocumentArrayField(
       field.array_value.values.map(convertV1DocumentField),
-    )
+    );
   if (field.has_map_value)
     return new FirestoreStateDocumentMapField(
       Object.fromEntries(
@@ -600,12 +600,12 @@ export const convertV1DocumentField = (
           convertV1DocumentField(v),
         ]),
       ),
-    )
-  throw new Error(`unknown field type. field=${JSON.stringify(field)}`)
-}
+    );
+  throw new Error(`unknown field type. field=${JSON.stringify(field)}`);
+};
 
 export const convertV1Value = (
   value: v1Value,
 ): ReturnType<typeof v1Value.prototype.toObject> => {
-  return convertV1DocumentField(value).toV1ValueObject()
-}
+  return convertV1DocumentField(value).toV1ValueObject();
+};
