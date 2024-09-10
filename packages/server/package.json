@@ -38,18 +38,18 @@
   },
   "dependencies": {
     "@firestore-emulator/proto": "workspace:*",
-    "@grpc/grpc-js": "1.11.1",
+    "@grpc/grpc-js": "1.11.2",
     "assert-never": "1.3.0",
     "google-protobuf": "3.21.4",
     "immer": "10.1.1",
     "typesafe-event-emitter": "1.1.0"
   },
   "devDependencies": {
-    "@google-cloud/firestore": "7.9.0",
+    "@google-cloud/firestore": "7.10.0",
     "@shared/biome-config": "workspace:^",
     "@shared/typescript-config": "workspace:^",
     "@types/google-protobuf": "3.15.12",
-    "@types/node": "20.16.1",
+    "@types/node": "20.16.5",
     "grpc-tools": "1.12.4",
     "protoc-gen-ts": "0.8.7",
     "tsup": "8.2.4",

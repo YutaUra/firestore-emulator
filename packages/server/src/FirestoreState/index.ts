@@ -768,7 +768,7 @@ ${document
               Status.ALREADY_EXISTS,
               `entity already exists: EntityRef{partitionRef=dev~${
                 document.database.project.name
-              }, path=${document.getDocumentPath()}}`,
+              }, path=/${document.getDocumentPath()}}`,
             );
           }
         }
@@ -797,7 +797,7 @@ ${document
               Status.ALREADY_EXISTS,
               `entity already exists: EntityRef{partitionRef=dev~${
                 document.database.project.name
-              }, path=${document.getDocumentPath()}}`,
+              }, path=/${document.getDocumentPath()}}`,
             );
           }
 
