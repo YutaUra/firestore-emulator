@@ -1,5 +1,20 @@
 # @firestore-emulator/server
 
+## 0.2.0
+
+### Minor Changes
+
+- 91af5d5: firebase-admin v12
+
+### Patch Changes
+
+- 5a4d749: migrate biome from eslint and prettier
+- d80a908: fix tsconfig.json
+- 458de68: fix error message
+- 9ed99d3: Update all non-major dependencies
+- Updated dependencies [9ed99d3]
+  - @firestore-emulator/proto@0.2.0
+
 ## 0.1.0
 
 ### Minor Changes
