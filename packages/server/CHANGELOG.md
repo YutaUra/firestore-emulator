@@ -1,5 +1,13 @@
 # @firestore-emulator/server
 
+## 0.2.1
+
+### Patch Changes
+
+- 3f3feb5: Update all non-major dependencies
+- Updated dependencies [3f3feb5]
+  - @firestore-emulator/proto@0.2.1
+
 ## 0.2.0
 
 ### Minor Changes
