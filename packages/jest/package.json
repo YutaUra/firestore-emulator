@@ -1,6 +1,6 @@
 {
   "name": "@firestore-emulator/jest",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -21,7 +21,10 @@
   "publishConfig": {
     "access": "public"
   },
-  "files": ["dist", "src"],
+  "files": [
+    "dist",
+    "src"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/YutaUra/firestore-emulator.git",
