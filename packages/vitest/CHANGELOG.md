@@ -1,5 +1,13 @@
 # vitest-environment-firestore-emulator
 
+## 0.2.2
+
+### Patch Changes
+
+- b6a573a: Update all non-major dependencies
+- Updated dependencies [b6a573a]
+  - @firestore-emulator/server@0.2.2
+
 ## 0.2.1
 
 ### Patch Changes
