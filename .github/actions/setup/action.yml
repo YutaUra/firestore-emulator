@@ -18,7 +18,7 @@ runs:
       shell: bash
       run: |
         user_name=${{ inputs.bot-app-slug }}[bot]
-        user_email=$(gh api "/users/${{ inputs.bot-app-slug }}[bot]" --jq .id)+${{ inputs.bot-app-slug }}[bot]@users.noreply.github.com
+        user_email=$(gh api "/apps/${{ inputs.bot-app-slug }}" --jq .id)+${{ inputs.bot-app-slug }}[bot]@users.noreply.github.com
         echo "Setting up git user: $user_name <$user_email>"
         git config --global user.name $user_name
         git config --global user.email $user_email
