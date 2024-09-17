@@ -1,5 +1,12 @@
 # vitest-environment-firestore-emulator
 
+## 0.2.3
+
+### Patch Changes
+
+- 8270cc2: Update dependency vitest to v2.1.1
+  - @firestore-emulator/server@0.2.3
+
 ## 0.2.2
 
 ### Patch Changes
