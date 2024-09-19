@@ -11,7 +11,7 @@
     "type:check": "tsc --noEmit"
   },
   "dependencies": {
-    "date-fns": "3.6.0",
+    "date-fns": "4.0.0",
     "vitest-environment-firestore-emulator": "workspace:*",
     "firebase-admin": "12.5.0",
     "firebase-tools": "13.17.0"
