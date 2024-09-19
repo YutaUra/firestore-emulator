@@ -1,5 +1,12 @@
 # @firestore-emulator/server
 
+## 0.2.4
+
+### Patch Changes
+
+- 086d236: Update dependency @biomejs/biome to v1.9.1
+  - @firestore-emulator/proto@0.2.4
+
 ## 0.2.3
 
 ### Patch Changes
