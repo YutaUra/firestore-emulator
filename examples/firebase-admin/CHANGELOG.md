@@ -1,5 +1,12 @@
 # example-jest
 
+## 0.0.25
+
+### Patch Changes
+
+- Updated dependencies [086d236]
+  - @firestore-emulator/jest@0.2.4
+
 ## 0.0.24
 
 ### Patch Changes
