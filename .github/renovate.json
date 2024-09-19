@@ -14,5 +14,12 @@
     "179370226+yutaura-bot[bot]@users.noreply.github.com"
   ],
   "ignorePaths": ["**/node_modules/**", "**/bower_components/**"],
-  "rebaseWhen": "behind-base-branch"
+  "rebaseWhen": "behind-base-branch",
+  "platformAutomerge": true,
+  "packageRules": [
+    {
+			"matchUpdateTypes": ["minor", "patch"],
+			"automerge": true
+		}
+  ]
 }
