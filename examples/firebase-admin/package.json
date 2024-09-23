@@ -12,9 +12,9 @@
   },
   "dependencies": {
     "@firestore-emulator/jest": "workspace:*",
-    "date-fns": "4.0.0",
+    "date-fns": "4.1.0",
     "firebase-admin": "12.5.0",
-    "firebase-tools": "13.17.0"
+    "firebase-tools": "13.18.0"
   },
   "devDependencies": {
     "@shared/biome-config": "workspace:^",

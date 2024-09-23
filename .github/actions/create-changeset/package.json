@@ -18,7 +18,7 @@
     "@shared/typescript-config": "workspace:^",
     "@types/js-yaml": "4.0.9",
     "@types/node": "20.16.5",
-    "tsup": "8.2.4",
+    "tsup": "8.3.0",
     "typescript": "5.6.2",
     "vitest": "2.1.1"
   },
