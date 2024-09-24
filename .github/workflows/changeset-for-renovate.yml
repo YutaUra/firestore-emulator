@@ -1,26 +1,19 @@
-name: create_changeset_for_PR_created_by_Renovate
 on:
   push:
     branches:
       - renovate/*
-  pull_request:
-    branches:
-      - main
-    paths:
-      - .github/workflows/changeset-for-renovate.yml
-      - .github/actions/setup/**
-      - .github/actions/create-changeset/**
 
 jobs:
-  default:
+  build:
     runs-on: ubuntu-latest
+    if: github.event.head_commit.author.username == 'renovate[bot]'
     steps:
       - uses: actions/create-github-app-token@5d869da34e18e7287c1daad50e0b8ea0f506ce69 # v1.11.0
         id: app-token
         with:
           app-id: ${{ secrets.BOT_APP_ID }}
           private-key: ${{ secrets.BOT_PRIVATE_KEY }}
-      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
         with:
           token: ${{ steps.app-token.outputs.token }}
       - uses: ./.github/actions/setup
@@ -28,19 +21,8 @@ jobs:
           token: ${{ steps.app-token.outputs.token }}
           bot-app-slug: ${{ steps.app-token.outputs.app-slug }}
 
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Build GitHub Actions
-        run: pnpm build-for-github-actions
-
-      - name: Get Git Diff
-        uses: technote-space/get-diff-action@f27caffdd0fb9b13f4fc191c016bb4e0632844af # v6
-        id: git-diff
-
-      - name: Create patch changeset
-        uses: ./.github/actions/create-changeset
+      - uses: YutaUra/renovate-changeset-action@v0.0.7
         with:
-          diff: ${{ steps.git-diff.outputs.diff }}
-          message: ${{ github.event_name == 'push' && github.event.head_commit.message || github.event.pull_request.title }}
-          dry-run: ${{ github.event_name == 'push' && github.event.pusher.name == 'renovate[bot]' && 'false' || 'true' }}
+          message: ${{ github.event.head_commit.message }}
+          setup-git-user: "false"
+          pnpm-workspace: "true"

@@ -1,26 +1,9 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:best-practices",
-    "npm:unpublishSafe",
-    "packages:linters",
-    "packages:jsTest",
-    "group:allNonMajor",
-    "replacements:all",
-    ":pinVersions",
-    "schedule:weekly"
-  ],
+  "extends": ["github>yutaura/renovate-oss-base"],
   "gitIgnoredAuthors": [
+    "github-actions[bot]@users.noreply.github.com",
     "41898282+github-actions[bot]@users.noreply.github.com",
+    "yutaura-bot[bot]@users.noreply.github.com",
     "179370226+yutaura-bot[bot]@users.noreply.github.com"
-  ],
-  "ignorePaths": ["**/node_modules/**", "**/bower_components/**"],
-  "rebaseWhen": "behind-base-branch",
-  "platformAutomerge": true,
-  "packageRules": [
-    {
-			"matchUpdateTypes": ["minor", "patch"],
-			"automerge": true
-		}
   ]
 }
