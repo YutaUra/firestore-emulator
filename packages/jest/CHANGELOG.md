@@ -1,5 +1,13 @@
 # @firestore-emulator/jest
 
+## 0.2.6
+
+### Patch Changes
+
+- 26655d4: Update all non-major dependencies
+- Updated dependencies [26655d4]
+  - @firestore-emulator/server@0.2.6
+
 ## 0.2.5
 
 ### Patch Changes
