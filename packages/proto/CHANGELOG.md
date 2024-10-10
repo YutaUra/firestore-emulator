@@ -1,5 +1,11 @@
 # @firestore-emulator/proto
 
+## 0.2.6
+
+### Patch Changes
+
+- 26655d4: Update all non-major dependencies
+
 ## 0.2.5
 
 ### Patch Changes
