@@ -49,3 +49,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - if: ${{ steps.changeset.outputs.pullRequestNumber != '' }}
+        run: gh pr merge --merge --auto "${{ steps.changeset.outputs.pullRequestNumber}}"
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
