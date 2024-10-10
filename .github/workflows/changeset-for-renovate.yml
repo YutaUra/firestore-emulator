@@ -1,12 +1,15 @@
+name: create changeset for PR created by Renovate
+
 on:
-  push:
+  pull_request:
     branches:
-      - renovate/*
+      - main
 
 jobs:
-  build:
+  default:
     runs-on: ubuntu-latest
-    if: github.event.head_commit.author.username == 'renovate[bot]'
+    # commit author should be renovate[bot]
+    if: startsWith(github.head_ref, 'renovate/') && github.event.pull_request.user.login == 'renovate[bot]' && github.actor == 'renovate[bot]'
     steps:
       - uses: actions/create-github-app-token@5d869da34e18e7287c1daad50e0b8ea0f506ce69 # v1.11.0
         id: app-token
@@ -20,9 +23,7 @@ jobs:
         with:
           token: ${{ steps.app-token.outputs.token }}
           bot-app-slug: ${{ steps.app-token.outputs.app-slug }}
-
-      - uses: YutaUra/renovate-changeset-action@3e29678933d88bfa95056be86f1b6bc2bc34fbed # v0.0.7
+      - uses: YutaUra/actions/renovate-changeset@7b5494b1dbff5ee9b4dd4610ee3daf807b473149 # v0.0.5
         with:
-          message: ${{ github.event.head_commit.message }}
-          setup-git-user: "false"
-          pnpm-workspace: "true"
+          token: ${{ steps.app-token.outputs.token }}
+          setup-git-user: false
