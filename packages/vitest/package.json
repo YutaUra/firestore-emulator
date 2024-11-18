@@ -59,9 +59,9 @@
     "@types/node": "20.17.6",
     "tsup": "8.3.5",
     "typescript": "5.6.3",
-    "vitest": "2.1.4"
+    "vitest": "2.1.5"
   },
   "peerDependencies": {
-    "vitest": "2.1.4"
+    "vitest": "2.1.5"
   }
 }
