@@ -8,11 +8,11 @@
     "build-for-github-actions": "turbo run build --filter='./.github/actions/*'"
   },
   "devDependencies": {
-    "@changesets/cli": "2.27.9",
-    "@turbo/gen": "2.3.0",
-    "firebase-tools": "13.25.0",
-    "turbo": "2.3.0"
+    "@changesets/cli": "2.27.10",
+    "@turbo/gen": "2.3.1",
+    "firebase-tools": "13.27.0",
+    "turbo": "2.3.1"
   },
-  "packageManager": "pnpm@9.13.2",
+  "packageManager": "pnpm@9.14.2",
   "name": "firestore-emulator"
 }
