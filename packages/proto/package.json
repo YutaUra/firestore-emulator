@@ -36,11 +36,11 @@
     "generate": "rm -rf generated && mkdir -p generated && grpc_tools_node_protoc --plugin=protoc-gen-ts=./node_modules/.bin/protoc-gen-ts --ts_out=explicit_override,no_namespace:./generated -I ./node_modules/@google-cloud/firestore/build/protos $(find ./node_modules/@google-cloud/firestore/build/protos -name \"*.proto\")"
   },
   "dependencies": {
-    "@grpc/grpc-js": "1.12.2",
+    "@grpc/grpc-js": "1.12.4",
     "google-protobuf": "3.21.4"
   },
   "devDependencies": {
-    "@google-cloud/firestore": "7.10.0",
+    "@google-cloud/firestore": "7.11.0",
     "@types/google-protobuf": "3.15.12",
     "@types/node": "20.17.9",
     "grpc-tools": "1.12.4",
