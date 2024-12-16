@@ -1,5 +1,13 @@
 # @firestore-emulator/server
 
+## 0.2.11
+
+### Patch Changes
+
+- 69c111e: chore(deps): update all non-major dependencies
+- Updated dependencies [69c111e]
+  - @firestore-emulator/proto@0.2.11
+
 ## 0.2.10
 
 ### Patch Changes
