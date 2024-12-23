@@ -11,7 +11,7 @@ jobs:
     # commit author should be renovate[bot]
     if: startsWith(github.head_ref, 'renovate/') && github.event.pull_request.user.login == 'renovate[bot]' && github.actor == 'renovate[bot]'
     steps:
-      - uses: actions/create-github-app-token@5d869da34e18e7287c1daad50e0b8ea0f506ce69 # v1.11.0
+      - uses: actions/create-github-app-token@c1a285145b9d317df6ced56c09f525b5c2b6f755 # v1.11.1
         id: app-token
         with:
           app-id: ${{ secrets.BOT_APP_ID }}
@@ -23,7 +23,7 @@ jobs:
         with:
           token: ${{ steps.app-token.outputs.token }}
           bot-app-slug: ${{ steps.app-token.outputs.app-slug }}
-      - uses: YutaUra/actions/renovate-changeset@b884d31466e3368b99642e6cf18b482e9be4ce50 # v0.0.17
+      - uses: YutaUra/actions/renovate-changeset@85de671f0f1e1148899ac907649e94cecebd7bd7 # v0.0.19
         with:
           token: ${{ steps.app-token.outputs.token }}
           setup-git-user: false

@@ -38,8 +38,8 @@
   },
   "dependencies": {
     "@firestore-emulator/proto": "workspace:*",
-    "@grpc/grpc-js": "1.12.4",
-    "assert-never": "1.3.0",
+    "@grpc/grpc-js": "1.12.5",
+    "assert-never": "1.4.0",
     "google-protobuf": "3.21.4",
     "immer": "10.1.1",
     "typesafe-event-emitter": "1.1.0"
