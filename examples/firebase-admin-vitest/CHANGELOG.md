@@ -1,5 +1,11 @@
 # @example/firebase-vitest
 
+## 0.0.33
+
+### Patch Changes
+
+- vitest-environment-firestore-emulator@0.2.12
+
 ## 0.0.32
 
 ### Patch Changes
