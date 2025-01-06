@@ -56,7 +56,7 @@
   "devDependencies": {
     "@shared/biome-config": "workspace:^",
     "@shared/typescript-config": "workspace:^",
-    "@types/node": "20.17.10",
+    "@types/node": "20.17.11",
     "tsup": "8.3.5",
     "typescript": "5.7.2",
     "vitest": "2.1.8"
