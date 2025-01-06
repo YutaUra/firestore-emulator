@@ -1,5 +1,11 @@
 # @firestore-emulator/proto
 
+## 0.2.13
+
+### Patch Changes
+
+- 9323d15: chore(deps): update all non-major dependencies
+
 ## 0.2.12
 
 ### Patch Changes
