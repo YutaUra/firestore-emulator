@@ -40,7 +40,7 @@ jobs:
       - if: failure()
         run: |
           find . -name "*.log" -not -path "*/node_modules/*" -exec sh -c 'echo "\n==================== $0 ===================="; cat $0; echo "\n"' {} \;
-      - uses: int128/update-generated-files-action@7eb71af1ae8e30d970ea5512d23fd2f4b0eae44c # v2.56.0
+      - uses: int128/update-generated-files-action@65b9a7ae3ededc5679d78343f58fbebcf1ebd785 # v2.57.0
         if: always()
         with:
           token: ${{ steps.app-token.outputs.token }}
