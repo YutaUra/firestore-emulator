@@ -1,5 +1,11 @@
 # @shared/typescript-config
 
+## 0.0.18
+
+### Patch Changes
+
+- ade9df4: chore(deps): update all non-major dependencies
+
 ## 0.0.17
 
 ### Patch Changes
