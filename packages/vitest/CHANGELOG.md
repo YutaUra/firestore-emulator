@@ -1,5 +1,13 @@
 # vitest-environment-firestore-emulator
 
+## 0.2.15
+
+### Patch Changes
+
+- 7acefda: chore(deps): update all non-major dependencies
+- Updated dependencies [7acefda]
+  - @firestore-emulator/server@0.2.15
+
 ## 0.2.14
 
 ### Patch Changes
