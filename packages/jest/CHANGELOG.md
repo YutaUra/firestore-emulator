@@ -1,5 +1,13 @@
 # @firestore-emulator/jest
 
+## 0.2.16
+
+### Patch Changes
+
+- 3e5446b: chore(deps): update node.js to v22
+- Updated dependencies [3e5446b]
+  - @firestore-emulator/server@0.2.16
+
 ## 0.2.15
 
 ### Patch Changes
