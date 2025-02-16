@@ -1,5 +1,14 @@
 # vitest-environment-firestore-emulator
 
+## 0.2.16
+
+### Patch Changes
+
+- a36a0f1: chore(deps): update dependency vitest to v3
+- 3e5446b: chore(deps): update node.js to v22
+- Updated dependencies [3e5446b]
+  - @firestore-emulator/server@0.2.16
+
 ## 0.2.15
 
 ### Patch Changes
