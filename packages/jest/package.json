@@ -21,10 +21,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "files": [
-    "dist",
-    "src"
-  ],
+  "files": ["dist", "src"],
   "repository": {
     "type": "git",
     "url": "https://github.com/YutaUra/firestore-emulator.git",
