@@ -179,6 +179,11 @@ export class FirestoreServiceV1Impl extends UnimplementedFirestoreService {
       call.request.structured_query,
     );
 
+    let transaction: Uint8Array | undefined = call.request.transaction;
+    if (call.request.consistency_selector === "new_transaction") {
+      transaction = crypto.getRandomValues(new Uint8Array(12));
+    }
+
     if (results.length > 0) {
       results.forEach((result, i, arr) => {
         call.write(
@@ -187,7 +192,7 @@ export class FirestoreServiceV1Impl extends UnimplementedFirestoreService {
             done: i === arr.length - 1,
             read_time: TimestampFromDate(date),
             skipped_results: 0,
-            transaction: call.request.transaction,
+            transaction,
           }),
         );
       });
@@ -197,7 +202,7 @@ export class FirestoreServiceV1Impl extends UnimplementedFirestoreService {
           done: true,
           read_time: TimestampFromDate(date),
           skipped_results: 0,
-          transaction: call.request.transaction,
+          transaction,
         }),
       );
     }
