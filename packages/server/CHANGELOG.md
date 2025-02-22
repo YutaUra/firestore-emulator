@@ -1,5 +1,12 @@
 # @firestore-emulator/server
 
+## 0.2.17
+
+### Patch Changes
+
+- f43d020: Handle RunQuery request with new_transaction behaviour. Clients now can use RunQuery as the first request within a transaction.
+  - @firestore-emulator/proto@0.2.17
+
 ## 0.2.16
 
 ### Patch Changes
