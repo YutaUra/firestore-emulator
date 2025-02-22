@@ -956,6 +956,42 @@ exports[`transaction get and set in transaction 1`] = `
 }
 `;
 
+exports[`transaction query in transaction 1`] = `
+{
+  "projects": {
+    "test-project": {
+      "databases": {
+        "(default)": {
+          "collections": {
+            "users": {
+              "documents": {
+                "alice": {
+                  "collections": {},
+                  "fields": {
+                    "age": {
+                      "type": "integer_value",
+                      "value": 20,
+                    },
+                    "name": {
+                      "type": "string_value",
+                      "value": "Alice",
+                    },
+                  },
+                  "path": "projects/test-project/databases/(default)/documents/users/alice",
+                },
+              },
+              "path": "projects/test-project/databases/(default)/documents/users",
+            },
+          },
+          "path": "projects/test-project/databases/(default)/documents",
+        },
+      },
+      "path": "projects/test-project",
+    },
+  },
+}
+`;
+
 exports[`transaction set in transaction 1`] = `
 {
   "projects": {

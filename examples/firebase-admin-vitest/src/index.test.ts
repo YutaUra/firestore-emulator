@@ -531,6 +531,25 @@ describe("transaction", () => {
     expect(emulatorResult.value.data()).toEqual(realResult.value.data());
     expect(emulator.state.toJSON()).toMatchSnapshot();
   });
+  it("query in transaction", async () => {
+    const [realResult, emulatorResult] = await testCase(async (db) => {
+      await db.collection("users").doc("alice").set({
+        age: 20,
+        name: "Alice",
+      });
+      return await db.runTransaction(async (transaction) => {
+        return await transaction.get(
+          db.collection("users").where("age", "==", 20).limit(1),
+        );
+      });
+    });
+    assert(realResult.status === "fulfilled");
+    assert(emulatorResult.status === "fulfilled");
+    expect(emulatorResult.value.docs.map((doc) => doc.data())).toEqual(
+      realResult.value.docs.map((doc) => doc.data()),
+    );
+    expect(emulator.state.toJSON()).toMatchSnapshot();
+  });
 });
 
 describe("FieldValue", () => {
