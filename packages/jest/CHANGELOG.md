@@ -1,5 +1,13 @@
 # @firestore-emulator/jest
 
+## 0.2.18
+
+### Patch Changes
+
+- a7298a4: fix(deps): update all non-major dependencies
+- Updated dependencies [a7298a4]
+  - @firestore-emulator/server@0.2.18
+
 ## 0.2.17
 
 ### Patch Changes
