@@ -34,7 +34,8 @@
     "build": "tsup ./src/ --sourcemap --clean --format esm,cjs --no-splitting && tsc --emitDeclarationOnly",
     "check": "biome check .",
     "check:fix": "biome check --write .",
-    "type:check": "tsc --noEmit"
+    "type:check": "tsc --noEmit",
+    "test": "vitest run"
   },
   "dependencies": {
     "@firestore-emulator/proto": "workspace:*",
@@ -53,6 +54,7 @@
     "grpc-tools": "1.13.0",
     "protoc-gen-ts": "0.8.7",
     "tsup": "8.3.6",
-    "typescript": "5.7.3"
+    "typescript": "5.7.3",
+    "vitest": "3.0.6"
   }
 }
