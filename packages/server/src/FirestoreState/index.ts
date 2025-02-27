@@ -41,6 +41,7 @@ import {
   convertV1DocumentField,
   convertV1Value,
 } from "./field";
+import { updateFields } from "./mask";
 
 interface Events {
   "add-collection": { collection: FirestoreStateCollection };
@@ -205,7 +206,11 @@ export class FirestoreStateDocument implements HasCollections {
     this.emitter.emit("create-document", { document: this });
   }
 
-  update(date: Date, fields: Record<string, FirestoreStateDocumentFields>) {
+  update(
+    date: Date,
+    fields: Record<string, FirestoreStateDocumentFields>,
+    updateMask: string[] = [],
+  ) {
     if (!this.metadata.hasExist) {
       throw new Error("Document does not exist.");
     }
@@ -215,15 +220,15 @@ export class FirestoreStateDocument implements HasCollections {
     >(this.metadata, (draft) => {
       draft.updatedAt = date;
     });
-    this.fields = produce(this.fields, (draft) => {
-      for (const [key, field] of Object.entries(fields)) {
-        draft[key] = field;
-      }
-    });
+    this.fields = updateFields(this.fields, fields, updateMask);
     this.emitter.emit("update-document", { document: this });
   }
 
-  set(date: Date, fields: Record<string, FirestoreStateDocumentFields>) {
+  set(
+    date: Date,
+    fields: Record<string, FirestoreStateDocumentFields>,
+    updateMask: string[] = [],
+  ) {
     const isCreate = !this.metadata.hasExist;
     if (!this.metadata.hasExist) {
       this.metadata = produce<
@@ -243,11 +248,7 @@ export class FirestoreStateDocument implements HasCollections {
       });
     }
 
-    this.fields = produce(this.fields, (draft) => {
-      for (const [key, field] of Object.entries(fields)) {
-        draft[key] = field;
-      }
-    });
+    this.fields = updateFields(this.fields, fields, updateMask);
     if (isCreate) {
       this.emitter.emit("create-document", { document: this });
     } else {
@@ -835,29 +836,26 @@ ${document
           document.update(
             date,
             Object.fromEntries(
-              Array.from(fields.entries())
-                .filter(([key]) =>
-                  write.update_mask.field_paths.length > 0
-                    ? write.update_mask.field_paths.includes(key)
-                    : true,
-                )
-                .map(([key, field]) => [key, convertV1DocumentField(field)]),
+              Array.from(fields.entries()).map(([key, field]) => [
+                key,
+                convertV1DocumentField(field),
+              ]),
             ),
+            write.update_mask?.field_paths,
           );
           document.v1Transform(date, write.update_transforms);
         }
       } else {
-        document.set(date, {
-          ...Object.fromEntries(
-            Array.from(fields.entries())
-              .filter(([key]) =>
-                write.has_update_mask
-                  ? write.update_mask.field_paths.includes(key)
-                  : true,
-              )
-              .map(([key, field]) => [key, convertV1DocumentField(field)]),
+        document.set(
+          date,
+          Object.fromEntries(
+            Array.from(fields.entries()).map(([key, field]) => [
+              key,
+              convertV1DocumentField(field),
+            ]),
           ),
-        });
+          write.update_mask?.field_paths,
+        );
         document.v1Transform(date, write.update_transforms);
       }
 

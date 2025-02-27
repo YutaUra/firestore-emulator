@@ -266,6 +266,88 @@ exports[`can set document 1`] = `
 }
 `;
 
+exports[`can set document with merge 1`] = `
+{
+  "projects": {
+    "test-project": {
+      "databases": {
+        "(default)": {
+          "collections": {
+            "users": {
+              "documents": {
+                "alice": {
+                  "collections": {},
+                  "fields": {
+                    "favorites": {
+                      "type": "map_value",
+                      "value": {
+                        "animal": {
+                          "type": "string_value",
+                          "value": "cat",
+                        },
+                        "cake": {
+                          "type": "string_value",
+                          "value": "chocolate",
+                        },
+                        "color": {
+                          "type": "string_value",
+                          "value": "blue",
+                        },
+                      },
+                    },
+                  },
+                  "path": "projects/test-project/databases/(default)/documents/users/alice",
+                },
+              },
+              "path": "projects/test-project/databases/(default)/documents/users",
+            },
+          },
+          "path": "projects/test-project/databases/(default)/documents",
+        },
+      },
+      "path": "projects/test-project",
+    },
+  },
+}
+`;
+
+exports[`can set document without merge 1`] = `
+{
+  "projects": {
+    "test-project": {
+      "databases": {
+        "(default)": {
+          "collections": {
+            "users": {
+              "documents": {
+                "alice": {
+                  "collections": {},
+                  "fields": {
+                    "favorites": {
+                      "type": "map_value",
+                      "value": {
+                        "cake": {
+                          "type": "string_value",
+                          "value": "chocolate",
+                        },
+                      },
+                    },
+                  },
+                  "path": "projects/test-project/databases/(default)/documents/users/alice",
+                },
+              },
+              "path": "projects/test-project/databases/(default)/documents/users",
+            },
+          },
+          "path": "projects/test-project/databases/(default)/documents",
+        },
+      },
+      "path": "projects/test-project",
+    },
+  },
+}
+`;
+
 exports[`can update document 1`] = `
 {
   "projects": {
