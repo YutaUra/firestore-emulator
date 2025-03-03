@@ -1,5 +1,13 @@
 # @firestore-emulator/jest
 
+## 0.2.19
+
+### Patch Changes
+
+- aa0b055: chore(deps): update all non-major dependencies
+- Updated dependencies [aa0b055]
+  - @firestore-emulator/server@0.2.19
+
 ## 0.2.18
 
 ### Patch Changes
