@@ -1,7 +1,7 @@
 name: check_PR
 
 on:
-  pull_request:
+  pull_request_target:
     branches:
       - main
   push:
@@ -34,10 +34,20 @@ jobs:
           distribution: "temurin"
           java-version: "17"
 
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.ref }}
+          path: check-target
+
       - run: pnpm install
+        working-directory: check-target
       - run: pnpm firebase setup:emulators:firestore
+        working-directory: check-target
       - run: pnpm exec turbo run check:fix test
+        working-directory: check-target
       - if: failure()
+        working-directory: check-target
         run: |
           find . -name "*.log" -not -path "*/node_modules/*" -exec sh -c 'echo "\n==================== $0 ===================="; cat $0; echo "\n"' {} \;
       - uses: int128/update-generated-files-action@65b9a7ae3ededc5679d78343f58fbebcf1ebd785 # v2.57.0
