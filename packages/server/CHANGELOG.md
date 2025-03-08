@@ -1,5 +1,12 @@
 # @firestore-emulator/server
 
+## 0.2.20
+
+### Patch Changes
+
+- 551e810: Add support for merging nested map fields (`set({ merge: true })`).
+  - @firestore-emulator/proto@0.2.20
+
 ## 0.2.19
 
 ### Patch Changes
