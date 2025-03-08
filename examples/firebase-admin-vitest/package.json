@@ -1,6 +1,6 @@
 {
   "name": "@example/firebase-vitest",
-  "version": "0.0.39",
+  "version": "0.0.40",
   "license": "MIT",
   "private": true,
   "scripts": {
@@ -21,6 +21,6 @@
     "@shared/typescript-config": "workspace:^",
     "@types/node": "20.16.5",
     "typescript": "5.6.2",
-    "vitest": "3.0.6"
+    "vitest": "3.0.7"
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@firestore-emulator/jest",
-  "version": "0.2.18",
+  "version": "0.2.19",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -57,10 +57,10 @@
     "@quramy/jest-prisma": "1.8.1",
     "@shared/biome-config": "workspace:^",
     "@shared/typescript-config": "workspace:^",
-    "@types/node": "22.13.4",
+    "@types/node": "22.13.5",
     "jest": "29.7.0",
     "jest-environment-node": "29.7.0",
-    "tsup": "8.3.6",
+    "tsup": "8.4.0",
     "typescript": "5.7.3"
   },
   "peerDependencies": {
