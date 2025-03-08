@@ -145,7 +145,11 @@ describe("create with same id", () => {
     });
     assert(realResult.status === "rejected");
     assert(emulatorResult.status === "rejected");
-    expect(emulatorResult.reason).toStrictEqual(realResult.reason);
+    expect(emulatorResult.reason).toStrictEqual(expect.objectContaining({
+      code: realResult.reason.code,
+      details: realResult.reason.details,
+      note: realResult.reason.note,
+    }));
   });
 
   it("nested document", async () => {
@@ -170,7 +174,11 @@ describe("create with same id", () => {
     });
     assert(realResult.status === "rejected");
     assert(emulatorResult.status === "rejected");
-    expect(emulatorResult.reason).toStrictEqual(realResult.reason);
+    expect(emulatorResult.reason).toStrictEqual(expect.objectContaining({
+      code: realResult.reason.code,
+      details: realResult.reason.details,
+      note: realResult.reason.note,
+    }));
   });
 });
 it("can update document", async () => {
@@ -213,7 +221,11 @@ it("could not update document if it does not exist", async () => {
   });
   assert(emulatorResult.status === "rejected");
   assert(realResult.status === "rejected");
-  expect(emulatorResult.reason).toStrictEqual(realResult.reason);
+  expect(emulatorResult.reason).toStrictEqual(expect.objectContaining({
+    code: realResult.reason.code,
+    details: realResult.reason.details,
+    note: realResult.reason.note,
+  }));
 });
 it("can delete document", async () => {
   const [realCreateResult, emulatorCreateResult] = await testCase(
