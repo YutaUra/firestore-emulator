@@ -5,14 +5,23 @@ import {
   FirestoreStateDocumentMapField,
 } from "./field";
 
+/**
+ * If the key contains a ".", it will be wrapped with "\`" characters.
+ * For example, if the key is `user.name`, it will be transformed into `` `user.name` ``.
+ */
+function escapeKey(key: string): string {
+  return key.includes(".") ? `\`${key}\`` : key;
+}
+
 function getNestedUpdateMask(updateMask: string[], key: string): string[] {
+  const escapedKey = escapeKey(key);
   return updateMask
-    .filter((m) => m.startsWith(`${key}.`))
-    .map((m) => m.substring(key.length + 1));
+    .filter((m) => m.startsWith(`${escapedKey}.`))
+    .map((m) => m.substring(escapedKey.length + 1));
 }
 
 function isUpdatable(updateMask: string[], key: string): boolean {
-  return updateMask.length === 0 || updateMask.includes(key);
+  return updateMask.length === 0 || updateMask.includes(escapeKey(key));
 }
 
 export function updateFields(

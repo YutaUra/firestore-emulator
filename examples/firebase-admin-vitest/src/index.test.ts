@@ -54,7 +54,7 @@ beforeAll(() => {
     { projectId: process.env.GCLOUD_PROJECT },
     "firestore-emulator",
   );
-  process.env.FIRESTORE_EMULATOR_HOST = "localhost:8081";
+  process.env.FIRESTORE_EMULATOR_HOST = "localhost:8082";
   realFirestore = initializeFirestore(realEmulator);
   process.env.FIRESTORE_EMULATOR_HOST = emulator.host;
   firestore = initializeFirestore(firestoreEmulator);
@@ -347,6 +347,48 @@ it("can set document with merge", async () => {
         },
         { merge: true },
       );
+    return result;
+  });
+  if (realResult.status === "rejected") throw realResult.reason;
+  if (emulatorResult.status === "rejected") throw emulatorResult.reason;
+  expect(emulatorResult.value.writeTime).toBeCloseToTimestamp(
+    realResult.value.writeTime,
+  );
+  expect(emulator.state.toJSON()).toMatchSnapshot();
+  const [realDoc, emulatorDoc] = await testCase(async (db) => {
+    const doc = await db.collection("users").doc("alice").get();
+    return doc;
+  });
+  if (realDoc.status === "rejected") throw realDoc.reason;
+  if (emulatorDoc.status === "rejected") throw emulatorDoc.reason;
+  expect(emulatorDoc.value.data()).toEqual(realDoc.value.data());
+  expect(emulatorDoc.value.exists).toEqual(realDoc.value.exists);
+  expect(emulatorDoc.value.createTime).toBeCloseToTimestamp(
+    realDoc.value.createTime,
+  );
+  expect(emulatorDoc.value.updateTime).toBeCloseToTimestamp(
+    realDoc.value.updateTime,
+  );
+});
+it("can set document with merge complex key", async () => {
+  const [realResult, emulatorResult] = await testCase(async (db) => {
+    await db
+      .collection("users")
+      .doc("alice")
+      .create({
+        favorites: {
+          animal: "cat",
+          cake: "cheese",
+          color: "blue",
+        },
+        "favorites.color": "key_with_dot",
+      });
+    const result = await db.collection("users").doc("alice").set(
+      {
+        "favorites.color": "red",
+      },
+      { merge: true },
+    );
     return result;
   });
   if (realResult.status === "rejected") throw realResult.reason;

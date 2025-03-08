@@ -311,6 +311,55 @@ exports[`can set document with merge 1`] = `
 }
 `;
 
+exports[`can set document with merge complex key 1`] = `
+{
+  "projects": {
+    "test-project": {
+      "databases": {
+        "(default)": {
+          "collections": {
+            "users": {
+              "documents": {
+                "alice": {
+                  "collections": {},
+                  "fields": {
+                    "favorites": {
+                      "type": "map_value",
+                      "value": {
+                        "animal": {
+                          "type": "string_value",
+                          "value": "cat",
+                        },
+                        "cake": {
+                          "type": "string_value",
+                          "value": "cheese",
+                        },
+                        "color": {
+                          "type": "string_value",
+                          "value": "blue",
+                        },
+                      },
+                    },
+                    "favorites.color": {
+                      "type": "string_value",
+                      "value": "red",
+                    },
+                  },
+                  "path": "projects/test-project/databases/(default)/documents/users/alice",
+                },
+              },
+              "path": "projects/test-project/databases/(default)/documents/users",
+            },
+          },
+          "path": "projects/test-project/databases/(default)/documents",
+        },
+      },
+      "path": "projects/test-project",
+    },
+  },
+}
+`;
+
 exports[`can set document without merge 1`] = `
 {
   "projects": {

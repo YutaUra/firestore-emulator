@@ -176,5 +176,48 @@ describe("updateFields", () => {
         },
       });
     });
+
+    it("merges map field contains dot", () => {
+      const currentValue: Record<string, FirestoreStateDocumentFields> = {
+        favorites: new FirestoreStateDocumentMapField({
+          animal: new FirestoreStateDocumentStringField("cat"),
+          cake: new FirestoreStateDocumentStringField("cheese"),
+          color: new FirestoreStateDocumentStringField("blue"),
+        }),
+        "favorites.color": new FirestoreStateDocumentStringField("red"),
+      };
+
+      const fields: Record<string, FirestoreStateDocumentFields> = {
+        "favorites.color": new FirestoreStateDocumentStringField("white"),
+      };
+
+      const newValue = updateFields(currentValue, fields, [
+        "`favorites.color`",
+      ]);
+
+      expect(toJSON(newValue)).toEqual({
+        favorites: {
+          type: "map_value",
+          value: {
+            animal: {
+              type: "string_value",
+              value: "cat",
+            },
+            cake: {
+              type: "string_value",
+              value: "cheese",
+            },
+            color: {
+              type: "string_value",
+              value: "blue",
+            },
+          },
+        },
+        "favorites.color": {
+          type: "string_value",
+          value: "white",
+        },
+      });
+    });
   });
 });
