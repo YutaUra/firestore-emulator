@@ -1,5 +1,14 @@
 # @firestore-emulator/server
 
+## 0.2.21
+
+### Patch Changes
+
+- 1d96d32: chore(deps): update all non-major dependencies
+- 24b8f0c: chore(deps): update dependency vitest to v3
+- Updated dependencies [1d96d32]
+  - @firestore-emulator/proto@0.2.21
+
 ## 0.2.20
 
 ### Patch Changes
