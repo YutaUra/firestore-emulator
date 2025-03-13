@@ -1,8 +1,13 @@
 {
   "$schema": "https://unpkg.com/@changesets/config@2.3.1/schema.json",
-  "changelog": "@changesets/cli/changelog",
+  "changelog": "@changesets/changelog-github",
   "commit": false,
-  "fixed": [["@firestore-emulator/*", "vitest-environment-firestore-emulator"]],
+  "fixed": [
+    [
+      "@firestore-emulator/*",
+      "vitest-environment-firestore-emulator"
+    ]
+  ],
   "linked": [],
   "access": "restricted",
   "baseBranch": "main",
