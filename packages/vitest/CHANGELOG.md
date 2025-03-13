@@ -1,5 +1,16 @@
 # vitest-environment-firestore-emulator
 
+## 0.3.0
+
+### Minor Changes
+
+- f9054ad: support aggregate query
+
+### Patch Changes
+
+- Updated dependencies [f9054ad]
+  - @firestore-emulator/server@0.3.0
+
 ## 0.2.21
 
 ### Patch Changes

@@ -1,5 +1,15 @@
 # @firestore-emulator/server
 
+## 0.3.0
+
+### Minor Changes
+
+- f9054ad: support aggregate query
+
+### Patch Changes
+
+- @firestore-emulator/proto@0.3.0
+
 ## 0.2.21
 
 ### Patch Changes
