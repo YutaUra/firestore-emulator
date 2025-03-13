@@ -186,6 +186,26 @@ export class FirestoreStateDocumentIntegerField
       this.value >= other.value
     );
   }
+
+  add(
+    other: FirestoreStateDocumentIntegerField,
+  ): FirestoreStateDocumentIntegerField;
+  add(
+    other: FirestoreStateDocumentDoubleField,
+  ): FirestoreStateDocumentDoubleField;
+  add(
+    other:
+      | FirestoreStateDocumentIntegerField
+      | FirestoreStateDocumentDoubleField,
+  ): FirestoreStateDocumentIntegerField | FirestoreStateDocumentDoubleField {
+    if (other instanceof FirestoreStateDocumentIntegerField) {
+      return new FirestoreStateDocumentIntegerField(this.value + other.value);
+    }
+    if (other instanceof FirestoreStateDocumentDoubleField) {
+      return new FirestoreStateDocumentDoubleField(this.value + other.value);
+    }
+    throw new Error(`unsupported type. other=${other}`);
+  }
 }
 
 export class FirestoreStateDocumentDoubleField
@@ -235,6 +255,20 @@ export class FirestoreStateDocumentDoubleField
       other instanceof FirestoreStateDocumentDoubleField &&
       this.value >= other.value
     );
+  }
+
+  add(
+    other:
+      | FirestoreStateDocumentIntegerField
+      | FirestoreStateDocumentDoubleField,
+  ): FirestoreStateDocumentDoubleField {
+    if (other instanceof FirestoreStateDocumentIntegerField) {
+      return new FirestoreStateDocumentDoubleField(this.value + other.value);
+    }
+    if (other instanceof FirestoreStateDocumentDoubleField) {
+      return new FirestoreStateDocumentDoubleField(this.value + other.value);
+    }
+    throw new Error(`unsupported type. other=${other}`);
   }
 }
 
