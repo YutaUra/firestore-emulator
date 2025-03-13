@@ -9,6 +9,7 @@ import type {
   WhereFilterOp,
 } from "firebase-admin/firestore";
 import {
+  AggregateField,
   FieldValue,
   GeoPoint,
   initializeFirestore,
@@ -1457,3 +1458,268 @@ const resolveLater = () => {
   });
   return { getIsResolved: () => isResolved, promise, resolve };
 };
+
+describe("aggregate query", () => {
+  describe("count", () => {
+    it("3 documents", async () => {
+      const [realResult, emulatorResult] = await testCase(async (db) => {
+        await db.collection("users").doc("alice").set({ name: "Alice" });
+        await db.collection("users").doc("bob").set({ name: "Bob" });
+        await db.collection("users").doc("charlie").set({ name: "Charlie" });
+
+        const result = await db.collection("users").count().get();
+        return result.data();
+      });
+      assert(realResult.status === "fulfilled");
+      assert(emulatorResult.status === "fulfilled");
+      expect(emulatorResult.value).toEqual(realResult.value);
+    });
+
+    it("5 documents", async () => {
+      const [realResult, emulatorResult] = await testCase(async (db) => {
+        await db.collection("users").doc("alice").set({ name: "Alice" });
+        await db.collection("users").doc("bob").set({ name: "Bob" });
+        await db.collection("users").doc("charlie").set({ name: "Charlie" });
+        await db.collection("users").doc("dennis").set({ name: "Dennis" });
+        await db.collection("users").doc("edward").set({ name: "Edward" });
+
+        const result = await db.collection("users").count().get();
+        return result.data();
+      });
+      assert(realResult.status === "fulfilled");
+      assert(emulatorResult.status === "fulfilled");
+      expect(emulatorResult.value).toEqual(realResult.value);
+    });
+
+    it("count with where query", async () => {
+      const [realResult, emulatorResult] = await testCase(async (db) => {
+        await db
+          .collection("users")
+          .doc("alice")
+          .set({ name: "Alice", age: 20 });
+        await db.collection("users").doc("bob").set({ name: "Bob", age: 21 });
+        await db
+          .collection("users")
+          .doc("charlie")
+          .set({ name: "Charlie", age: 21 });
+
+        const result = await db
+          .collection("users")
+          .where("age", "==", 21)
+          .count()
+          .get();
+        return result.data();
+      });
+      assert(realResult.status === "fulfilled");
+      assert(emulatorResult.status === "fulfilled");
+      expect(emulatorResult.value).toEqual(realResult.value);
+    });
+  });
+
+  describe("sum", () => {
+    it("3 documents", async () => {
+      const [realResult, emulatorResult] = await testCase(async (db) => {
+        await db
+          .collection("users")
+          .doc("alice")
+          .set({ name: "Alice", age: 20 });
+        await db.collection("users").doc("bob").set({ name: "Bob", age: 21 });
+        await db
+          .collection("users")
+          .doc("charlie")
+          .set({ name: "Charlie", age: 22 });
+
+        const result = await db
+          .collection("users")
+          .aggregate({
+            sumAge: AggregateField.sum("age"),
+          })
+          .get();
+        return result.data();
+      });
+      assert(realResult.status === "fulfilled");
+      assert(emulatorResult.status === "fulfilled");
+      expect(emulatorResult.value).toEqual(realResult.value);
+    });
+
+    it("5 documents with where query", async () => {
+      const [realResult, emulatorResult] = await testCase(async (db) => {
+        await db
+          .collection("users")
+          .doc("alice")
+          .set({ name: "Alice", age: 20 });
+        await db.collection("users").doc("bob").set({ name: "Bob", age: 21 });
+        await db
+          .collection("users")
+          .doc("charlie")
+          .set({ name: "Charlie", age: 22 });
+        await db
+          .collection("users")
+          .doc("dennis")
+          .set({ name: "Dennis", age: 23 });
+        await db
+          .collection("users")
+          .doc("edward")
+          .set({ name: "Edward", age: 24 });
+
+        const result = await db
+          .collection("users")
+          .where("age", ">=", 21)
+          .aggregate({
+            sumAge: AggregateField.sum("age"),
+          })
+          .get();
+        return result.data();
+      });
+      assert(realResult.status === "fulfilled");
+      assert(emulatorResult.status === "fulfilled");
+      expect(emulatorResult.value).toEqual(realResult.value);
+    });
+
+    it("4 documents, integer,double,string and null", async () => {
+      const [realResult, emulatorResult] = await testCase(async (db) => {
+        await db
+          .collection("users")
+          .doc("alice")
+          .set({ name: "Alice", height: 170 });
+        await db
+          .collection("users")
+          .doc("bob")
+          .set({ name: "Bob", height: 180.5 });
+        await db
+          .collection("users")
+          .doc("charlie")
+          .set({ name: "Charlie", height: "non number" });
+        await db
+          .collection("users")
+          .doc("dennis")
+          .set({ name: "Dennis", height: null });
+
+        const result = await db
+          .collection("users")
+          .aggregate({
+            sumHeight: AggregateField.sum("height"),
+          })
+          .get();
+        return result.data();
+      });
+      assert(realResult.status === "fulfilled");
+      assert(emulatorResult.status === "fulfilled");
+      expect(emulatorResult.value).toEqual(realResult.value);
+    });
+  });
+
+  describe("avg", () => {
+    it("3 documents", async () => {
+      const [realResult, emulatorResult] = await testCase(async (db) => {
+        await db
+          .collection("users")
+          .doc("alice")
+          .set({ name: "Alice", age: 20 });
+        await db.collection("users").doc("bob").set({ name: "Bob", age: 21 });
+        await db
+          .collection("users")
+          .doc("charlie")
+          .set({ name: "Charlie", age: 22 });
+
+        const result = await db
+          .collection("users")
+          .aggregate({
+            avgAge: AggregateField.average("age"),
+          })
+          .get();
+        return result.data();
+      });
+      assert(realResult.status === "fulfilled");
+      assert(emulatorResult.status === "fulfilled");
+      expect(emulatorResult.value).toEqual(realResult.value);
+    });
+
+    it("5 documents with where query", async () => {
+      const [realResult, emulatorResult] = await testCase(async (db) => {
+        await db
+          .collection("users")
+          .doc("alice")
+          .set({ name: "Alice", age: 20 });
+        await db.collection("users").doc("bob").set({ name: "Bob", age: 21 });
+        await db
+          .collection("users")
+          .doc("charlie")
+          .set({ name: "Charlie", age: 22 });
+        await db
+          .collection("users")
+          .doc("dennis")
+          .set({ name: "Dennis", age: 23 });
+        await db
+          .collection("users")
+          .doc("edward")
+          .set({ name: "Edward", age: 24 });
+
+        const result = await db
+          .collection("users")
+          .where("age", ">=", 21)
+          .aggregate({
+            avgAge: AggregateField.average("age"),
+          })
+          .get();
+        return result.data();
+      });
+      assert(realResult.status === "fulfilled");
+      assert(emulatorResult.status === "fulfilled");
+      expect(emulatorResult.value).toEqual(realResult.value);
+    });
+
+    it("3 documents, which can't divide by 3", async () => {
+      const [realResult, emulatorResult] = await testCase(async (db) => {
+        await db
+          .collection("users")
+          .doc("alice")
+          .set({ name: "Alice", age: 20 });
+        await db.collection("users").doc("bob").set({ name: "Bob", age: 20 });
+        await db
+          .collection("users")
+          .doc("charlie")
+          .set({ name: "Charlie", age: 22 });
+
+        const result = await db
+          .collection("users")
+          .aggregate({
+            avgAge: AggregateField.average("age"),
+          })
+          .get();
+        return result.data();
+      });
+      assert(realResult.status === "fulfilled");
+      assert(emulatorResult.status === "fulfilled");
+      expect(emulatorResult.value).toEqual(realResult.value);
+    });
+  });
+
+  describe("multiple aggregate", () => {
+    it("sum and avg", async () => {
+      const [realResult, emulatorResult] = await testCase(async (db) => {
+        await db
+          .collection("users")
+          .doc("alice")
+          .set({ name: "Alice", age: 20 });
+        await db.collection("users").doc("bob").set({ name: "Bob", age: 21 });
+        await db
+          .collection("users")
+          .doc("charlie")
+          .set({ name: "Charlie", age: 22 });
+
+        const result = await db
+          .collection("users")
+          .aggregate({
+            sumAge: AggregateField.sum("age"),
+            avgAge: AggregateField.average("age"),
+          })
+          .get();
+        return result.data();
+      });
+      assert(realResult.status === "fulfilled");
+      assert(emulatorResult.status === "fulfilled");
+      expect(emulatorResult.value).toEqual(realResult.value);
+    });
+  });
+});

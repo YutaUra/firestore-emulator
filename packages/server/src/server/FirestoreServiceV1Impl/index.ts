@@ -17,7 +17,6 @@ import type {
   PartitionQueryResponse,
   RollbackRequest,
   RunAggregationQueryRequest,
-  RunAggregationQueryResponse,
   RunQueryRequest,
   UpdateDocumentRequest,
   WriteRequest,
@@ -28,6 +27,7 @@ import {
   BeginTransactionResponse,
   CommitResponse,
   ListenRequest,
+  RunAggregationQueryResponse,
   RunQueryResponse,
   UnimplementedFirestoreService,
 } from "@firestore-emulator/proto/dist/google/firestore/v1/firestore";
@@ -42,6 +42,12 @@ import type {
 
 import type { FirestoreState } from "../../FirestoreState";
 import { TimestampFromDate, TimestampFromNow } from "../../FirestoreState";
+import {
+  FirestoreStateDocumentDoubleField,
+  FirestoreStateDocumentIntegerField,
+  FirestoreStateDocumentNullField,
+  type ValueObjectType,
+} from "../../FirestoreState/field";
 import { FirestoreEmulatorError } from "../../error/error";
 
 export class FirestoreServiceV1Impl extends UnimplementedFirestoreService {
@@ -210,13 +216,81 @@ export class FirestoreServiceV1Impl extends UnimplementedFirestoreService {
     call.end();
   }
   override RunAggregationQuery(
-    _call: ServerWritableStream<
+    call: ServerWritableStream<
       RunAggregationQueryRequest,
       RunAggregationQueryResponse
     >,
   ): void {
-    console.error("Method<RunAggregationQuery> not implemented.");
-    throw new Error("Method<RunAggregationQuery> not implemented.");
+    const date = TimestampFromNow();
+    const results = this.#state.v1Query(
+      call.request.parent,
+      call.request.structured_aggregation_query.structured_query,
+    );
+    let transaction: Uint8Array | undefined = call.request.transaction;
+    if (call.request.consistency_selector === "new_transaction") {
+      transaction = crypto.getRandomValues(new Uint8Array(12));
+    }
+    if (call.request.has_explain_options) {
+      const error = new Error(
+        "Explain for aggregation query is not supported.",
+      );
+      console.error(error);
+      call.emit("error");
+      throw error;
+    }
+
+    const aggregateResult = Object.fromEntries(
+      call.request.structured_aggregation_query.aggregations.map<
+        [string, ValueObjectType]
+      >((agg) => {
+        if (agg.has_count)
+          return [agg.alias, { integer_value: results.length }];
+        if (agg.has_sum) {
+          const sum = results.reduce<
+            | FirestoreStateDocumentIntegerField
+            | FirestoreStateDocumentDoubleField
+          >((acc, cur) => {
+            const field = cur.getField(agg.sum.field.field_path);
+            if (!field) return acc;
+            if (field.type === "integer_value") return acc.add(field);
+            if (field.type === "double_value") return field.add(acc);
+            return acc;
+          }, new FirestoreStateDocumentIntegerField(0));
+          return [agg.alias, sum.toV1ValueObject()];
+        }
+        if (agg.has_avg) {
+          const sum = results.reduce<
+            | FirestoreStateDocumentIntegerField
+            | FirestoreStateDocumentDoubleField
+          >((acc, cur) => {
+            const field = cur.getField(agg.avg.field.field_path);
+            if (!field) return acc;
+            if (field.type === "integer_value") return acc.add(field);
+            if (field.type === "double_value") return field.add(acc);
+            return acc;
+          }, new FirestoreStateDocumentIntegerField(0));
+          return [
+            agg.alias,
+            new FirestoreStateDocumentDoubleField(
+              sum.value / results.length,
+            ).toV1ValueObject(),
+          ];
+        }
+        return [
+          agg.alias,
+          new FirestoreStateDocumentNullField().toV1ValueObject(),
+        ];
+      }),
+    );
+    const res = RunAggregationQueryResponse.fromObject({
+      result: {
+        aggregate_fields: aggregateResult,
+      },
+      read_time: date,
+      transaction,
+    });
+    call.write(res);
+    call.end();
   }
   override PartitionQuery(
     _call: ServerUnaryCall<PartitionQueryRequest, PartitionQueryResponse>,
