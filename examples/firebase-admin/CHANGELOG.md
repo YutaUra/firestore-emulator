@@ -1,5 +1,12 @@
 # example-jest
 
+## 0.0.44
+
+### Patch Changes
+
+- Updated dependencies [[`f204996`](https://github.com/YutaUra/firestore-emulator/commit/f204996ec9074ab860241f2940b154c10baa7f48)]:
+  - @firestore-emulator/jest@0.3.1
+
 ## 0.0.43
 
 ### Patch Changes
