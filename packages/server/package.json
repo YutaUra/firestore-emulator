@@ -53,7 +53,7 @@
     "@shared/biome-config": "workspace:^",
     "@shared/typescript-config": "workspace:^",
     "@types/google-protobuf": "3.15.12",
-    "@types/node": "22.14.0",
+    "@types/node": "22.14.1",
     "grpc-tools": "1.13.0",
     "protoc-gen-ts": "0.8.7",
     "tsup": "8.4.0",

@@ -13,6 +13,6 @@ jobs:
         with:
           app-id: ${{ secrets.BOT_APP_ID }}
           private-key: ${{ secrets.BOT_PRIVATE_KEY }}
-      - uses: int128/wait-for-workflows-action@6181376e739e479284209a70a7c16103040c1e9b # v1.38.0
+      - uses: int128/wait-for-workflows-action@c13f331b021f144c3cf55867ecfa063a0f1cd7db # v1.39.0
         with:
           token: ${{ steps.app-token.outputs.token }}
