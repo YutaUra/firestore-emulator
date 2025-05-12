@@ -42,7 +42,7 @@
   "devDependencies": {
     "@google-cloud/firestore": "7.11.0",
     "@types/google-protobuf": "3.15.12",
-    "@types/node": "22.15.3",
+    "@types/node": "22.15.17",
     "grpc-tools": "1.13.0",
     "protoc-gen-ts": "0.8.7",
     "tsup": "8.4.0",
