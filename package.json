@@ -11,7 +11,7 @@
     "@changesets/changelog-github": "0.5.1",
     "@changesets/cli": "2.29.3",
     "@turbo/gen": "2.5.3",
-    "firebase-tools": "13.35.1",
+    "firebase-tools": "14.4.0",
     "turbo": "2.5.3"
   },
   "packageManager": "pnpm@10.10.0",
