@@ -32,14 +32,14 @@ import {
   UnimplementedFirestoreService,
 } from "@firestore-emulator/proto/dist/google/firestore/v1/firestore";
 import { Empty } from "@firestore-emulator/proto/dist/google/protobuf/empty";
-import type { UntypedHandleCall } from "@grpc/grpc-js";
 import type {
   ServerDuplexStream,
   ServerUnaryCall,
   ServerWritableStream,
   sendUnaryData,
+  UntypedHandleCall,
 } from "@grpc/grpc-js";
-
+import { FirestoreEmulatorError } from "../../error/error";
 import type { FirestoreState } from "../../FirestoreState";
 import { TimestampFromDate, TimestampFromNow } from "../../FirestoreState";
 import {
@@ -48,7 +48,6 @@ import {
   FirestoreStateDocumentNullField,
   type ValueObjectType,
 } from "../../FirestoreState/field";
-import { FirestoreEmulatorError } from "../../error/error";
 
 export class FirestoreServiceV1Impl extends UnimplementedFirestoreService {
   #state: FirestoreState;

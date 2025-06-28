@@ -34,12 +34,12 @@ import { isNotNull } from "../utils";
 
 import type { FirestoreStateDocumentFields } from "./field";
 import {
+  convertV1DocumentField,
+  convertV1Value,
   FirestoreStateDocumentArrayField,
   FirestoreStateDocumentDoubleField,
   FirestoreStateDocumentIntegerField,
   FirestoreStateDocumentTimestampField,
-  convertV1DocumentField,
-  convertV1Value,
 } from "./field";
 import { updateFields } from "./mask";
 
