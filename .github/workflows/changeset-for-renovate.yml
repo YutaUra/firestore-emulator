@@ -23,7 +23,7 @@ jobs:
         with:
           token: ${{ steps.app-token.outputs.token }}
           bot-app-slug: ${{ steps.app-token.outputs.app-slug }}
-      - uses: YutaUra/actions/renovate-changeset@17bd7900a06f18a9ed1be5f72a62ae33774d9f91 # v0.0.46
+      - uses: YutaUra/actions/renovate-changeset@ac49d48ae466b9eac410792a0f7c0d88adc49358 # v0.0.47
         with:
           token: ${{ steps.app-token.outputs.token }}
           setup-git-user: false
