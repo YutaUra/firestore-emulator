@@ -1,5 +1,14 @@
 # @firestore-emulator/jest
 
+## 0.3.3
+
+### Patch Changes
+
+- [#189](https://github.com/YutaUra/firestore-emulator/pull/189) [`5f40c48`](https://github.com/YutaUra/firestore-emulator/commit/5f40c48f7a7fe5ca561c3d58ba836340bd68e70f) Thanks [@renovate](https://github.com/apps/renovate)! - chore(deps): update jest monorepo to v30 (major)
+
+- Updated dependencies []:
+  - @firestore-emulator/server@0.3.3
+
 ## 0.3.2
 
 ### Patch Changes
