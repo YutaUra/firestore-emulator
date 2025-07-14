@@ -11,6 +11,6 @@
     "check:fix": "biome check --write ."
   },
   "dependencies": {
-    "@biomejs/biome": "2.0.6"
+    "@biomejs/biome": "2.1.1"
   }
 }
