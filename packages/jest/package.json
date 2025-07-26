@@ -56,21 +56,21 @@
     "find-free-ports": "3.1.1"
   },
   "devDependencies": {
-    "@jest/environment": "30.0.4",
+    "@jest/environment": "30.0.5",
     "@quramy/jest-prisma": "1.8.1",
     "@shared/biome-config": "workspace:^",
     "@shared/typescript-config": "workspace:^",
-    "@types/node": "22.16.3",
-    "jest": "30.0.4",
-    "jest-environment-node": "30.0.4",
+    "@types/node": "22.16.5",
+    "jest": "30.0.5",
+    "jest-environment-node": "30.0.5",
     "tsup": "8.5.0",
     "typescript": "5.8.3"
   },
   "peerDependencies": {
-    "@jest/environment": "30.0.4",
+    "@jest/environment": "30.0.5",
     "@quramy/jest-prisma-node": "1.8.1",
-    "jest": "30.0.4",
-    "jest-environment-node": "30.0.4"
+    "jest": "30.0.5",
+    "jest-environment-node": "30.0.5"
   },
   "peerDependenciesMeta": {
     "@quramy/jest-prisma-node": {
