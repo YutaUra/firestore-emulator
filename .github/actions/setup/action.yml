@@ -34,7 +34,7 @@ runs:
       shell: bash
       run: |
         echo "TURBO_CACHE_DIR=${{ runner.temp }}/turbo" >> $GITHUB_ENV
-    - uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809 # v4
+    - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
       with:
         path: ${{ runner.temp }}/turbo
         key: ${{ runner.os }}-turbo-${{ github.workflow }}-${{ github.sha }}
