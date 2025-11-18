@@ -138,8 +138,8 @@ importers:
         specifier: 1.13.4
         version: 1.13.4
       google-protobuf:
-        specifier: 3.21.4
-        version: 3.21.4
+        specifier: 4.0.0
+        version: 4.0.0
     devDependencies:
       '@google-cloud/firestore':
         specifier: 7.11.2
@@ -175,8 +175,8 @@ importers:
         specifier: 1.4.0
         version: 1.4.0
       google-protobuf:
-        specifier: 3.21.4
-        version: 3.21.4
+        specifier: 4.0.0
+        version: 4.0.0
       immer:
         specifier: 10.1.1
         version: 10.1.1
@@ -3385,8 +3385,8 @@ packages:
     resolution: {integrity: sha512-tcjQr7sXVGMdlvcG25wSv98ap1dtF4Z6mcV0rztGIddOcezw4YMb/uTXg72JPrLep+kXcVjaJjg6oo3KLf4itQ==}
     engines: {node: '>=14'}
 
-  google-protobuf@3.21.4:
-    resolution: {integrity: sha512-MnG7N936zcKTco4Jd2PX2U96Kf9PxygAPKBug+74LHzmHXmceN16MmRcdgZv+DGef/S9YvQAfRsNCn4cjf9yyQ==}
+  google-protobuf@4.0.0:
+    resolution: {integrity: sha512-b8wmenhUMf2WNL+xIJ/slvD/hEE6V3nRnG86O2bzkBrMweM9gnqZE1dfXlDjibY3aXJXDNbAHepevYyQ7qWKsQ==}
 
   googleapis-common@7.2.0:
     resolution: {integrity: sha512-/fhDZEJZvOV3X5jmD+fKxMqma5q2Q9nZNSF3kn1F18tpxmA86BcTxAGBQdM0N89Z3bEaIs+HVznSmFJEAmMTjA==}
@@ -5330,6 +5330,7 @@ packages:
   source-map@0.8.0-beta.0:
     resolution: {integrity: sha512-2ymg6oRBpebeZi9UUNsgQ89bhx01TcTkmNTGnNO88imTmbSgy4nfujrgVEFKWpMTEGA11EDkTt7mqObTPdigIA==}
     engines: {node: '>= 8'}
+    deprecated: The work that was done in this beta branch won't be included in future versions
 
   spawndamnit@3.0.1:
     resolution: {integrity: sha512-MmnduQUuHCoFckZoWnXsTg7JaiLBJrKFj9UI2MbRPGaJeVpsLcVBu6P/IGZovziM/YBsellCmsprgNA+w0CzVg==}
@@ -10079,7 +10080,7 @@ snapshots:
       - encoding
       - supports-color
 
-  google-protobuf@3.21.4: {}
+  google-protobuf@4.0.0: {}
 
   googleapis-common@7.2.0(encoding@0.1.13):
     dependencies:
