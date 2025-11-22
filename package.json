@@ -9,12 +9,12 @@
   },
   "devDependencies": {
     "@changesets/changelog-github": "0.5.1",
-    "@changesets/cli": "2.29.5",
-    "@turbo/gen": "2.5.4",
-    "firebase-tools": "14.10.1",
-    "turbo": "2.5.4"
+    "@changesets/cli": "2.29.7",
+    "@turbo/gen": "2.6.1",
+    "firebase-tools": "14.25.1",
+    "turbo": "2.6.1"
   },
-  "packageManager": "pnpm@10.13.1",
+  "packageManager": "pnpm@10.22.0",
   "name": "firestore-emulator",
   "pnpm": {
     "onlyBuiltDependencies": [

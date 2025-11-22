@@ -8,11 +8,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/create-github-app-token@df432ceedc7162793a195dd1713ff69aefc7379e # v2.0.6
+      - uses: actions/create-github-app-token@7e473efe3cb98aa54f8d4bac15400b15fad77d94 # v2.2.0
         id: app-token
         with:
           app-id: ${{ secrets.BOT_APP_ID }}
           private-key: ${{ secrets.BOT_PRIVATE_KEY }}
-      - uses: int128/wait-for-workflows-action@3e8e1a104454ab845d7cdc5601dd7c0c6c38bed1 # v1.45.0
+      - uses: int128/wait-for-workflows-action@8c55b880738d84f28c4382fffe165895a01fed0e # v1.53.0
         with:
           token: ${{ steps.app-token.outputs.token }}
