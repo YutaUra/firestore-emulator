@@ -1,5 +1,14 @@
 # @firestore-emulator/server
 
+## 0.3.5
+
+### Patch Changes
+
+- [#206](https://github.com/YutaUra/firestore-emulator/pull/206) [`90e07b1`](https://github.com/YutaUra/firestore-emulator/commit/90e07b190cc0007b739e3806312dbb779f8c874e) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency google-protobuf to v4
+
+- Updated dependencies [[`90e07b1`](https://github.com/YutaUra/firestore-emulator/commit/90e07b190cc0007b739e3806312dbb779f8c874e)]:
+  - @firestore-emulator/proto@0.3.5
+
 ## 0.3.4
 
 ### Patch Changes
