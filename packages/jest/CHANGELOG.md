@@ -1,5 +1,14 @@
 # @firestore-emulator/jest
 
+## 0.3.7
+
+### Patch Changes
+
+- [#211](https://github.com/YutaUra/firestore-emulator/pull/211) [`136de1c`](https://github.com/YutaUra/firestore-emulator/commit/136de1c77c2cdb7610ef7c48be7f2d937cc70100) Thanks [@renovate](https://github.com/apps/renovate)! - chore(deps): update node.js to v24
+
+- Updated dependencies [[`136de1c`](https://github.com/YutaUra/firestore-emulator/commit/136de1c77c2cdb7610ef7c48be7f2d937cc70100)]:
+  - @firestore-emulator/server@0.3.7
+
 ## 0.3.6
 
 ### Patch Changes
