@@ -1,5 +1,14 @@
 # vitest-environment-firestore-emulator
 
+## 0.3.9
+
+### Patch Changes
+
+- [#200](https://github.com/YutaUra/firestore-emulator/pull/200) [`6c68098`](https://github.com/YutaUra/firestore-emulator/commit/6c6809848e8934ee1c4657b1dd9aeda2759887eb) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update all non-major dependencies
+
+- Updated dependencies [[`6c68098`](https://github.com/YutaUra/firestore-emulator/commit/6c6809848e8934ee1c4657b1dd9aeda2759887eb)]:
+  - @firestore-emulator/server@0.3.9
+
 ## 0.3.8
 
 ### Patch Changes
