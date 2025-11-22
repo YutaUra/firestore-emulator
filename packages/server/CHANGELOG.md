@@ -1,5 +1,14 @@
 # @firestore-emulator/server
 
+## 0.3.8
+
+### Patch Changes
+
+- [#210](https://github.com/YutaUra/firestore-emulator/pull/210) [`f9c11c8`](https://github.com/YutaUra/firestore-emulator/commit/f9c11c8eb640592e49c43ac73ad5fe5ad25d06e1) Thanks [@renovate](https://github.com/apps/renovate)! - chore(deps): update dependency @google-cloud/firestore to v8
+
+- Updated dependencies [[`f9c11c8`](https://github.com/YutaUra/firestore-emulator/commit/f9c11c8eb640592e49c43ac73ad5fe5ad25d06e1)]:
+  - @firestore-emulator/proto@0.3.8
+
 ## 0.3.7
 
 ### Patch Changes
