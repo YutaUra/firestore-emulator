@@ -49,7 +49,7 @@
     "typesafe-event-emitter": "1.1.0"
   },
   "devDependencies": {
-    "@google-cloud/firestore": "7.11.2",
+    "@google-cloud/firestore": "8.0.0",
     "@shared/biome-config": "workspace:^",
     "@shared/typescript-config": "workspace:^",
     "@types/google-protobuf": "3.15.12",
