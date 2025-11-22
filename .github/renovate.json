@@ -1,9 +1,20 @@
 {
-  "extends": ["github>yutaura/renovate-oss-base"],
+  "extends": [
+    "github>yutaura/renovate-oss-base"
+  ],
   "gitIgnoredAuthors": [
     "github-actions[bot]@users.noreply.github.com",
     "41898282+github-actions[bot]@users.noreply.github.com",
     "yutaura-bot[bot]@users.noreply.github.com",
     "179370226+yutaura-bot[bot]@users.noreply.github.com"
+  ],
+  "packageRules": [
+    {
+      "matchPackageNames": [
+        "biome",
+        "@biomejs/*"
+      ],
+      "forceSeparateMinorPatch": true
+    }
   ]
 }
