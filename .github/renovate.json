@@ -14,7 +14,7 @@
         "biome",
         "@biomejs/*"
       ],
-      "forceSeparateMinorPatch": true
+      "groupName": null
     }
   ]
 }
