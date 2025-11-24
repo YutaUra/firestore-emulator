@@ -1,6 +1,6 @@
 {
   "name": "vitest-environment-firestore-emulator",
-  "version": "0.3.9",
+  "version": "0.3.10",
   "license": "MIT",
   "type": "module",
   "main": "dist/index.cjs",
