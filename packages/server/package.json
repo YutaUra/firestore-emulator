@@ -44,7 +44,7 @@
     "@firestore-emulator/proto": "workspace:*",
     "@grpc/grpc-js": "1.14.1",
     "assert-never": "1.4.0",
-    "google-protobuf": "4.0.0",
+    "google-protobuf": "4.0.1",
     "immer": "10.2.0",
     "typesafe-event-emitter": "1.1.0"
   },
@@ -58,6 +58,6 @@
     "protoc-gen-ts": "0.8.7",
     "tsup": "8.5.1",
     "typescript": "5.9.3",
-    "vitest": "4.0.10"
+    "vitest": "4.0.12"
   }
 }

@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "@grpc/grpc-js": "1.14.1",
-    "google-protobuf": "4.0.0"
+    "google-protobuf": "4.0.1"
   },
   "devDependencies": {
     "@google-cloud/firestore": "8.0.0",

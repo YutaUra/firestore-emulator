@@ -11,10 +11,10 @@
     "@changesets/changelog-github": "0.5.1",
     "@changesets/cli": "2.29.7",
     "@turbo/gen": "2.6.1",
-    "firebase-tools": "14.25.1",
+    "firebase-tools": "14.26.0",
     "turbo": "2.6.1"
   },
-  "packageManager": "pnpm@10.22.0",
+  "packageManager": "pnpm@10.23.0",
   "name": "firestore-emulator",
   "pnpm": {
     "onlyBuiltDependencies": [
