@@ -1,5 +1,12 @@
 # @example/firebase-vitest
 
+## 0.0.54
+
+### Patch Changes
+
+- Updated dependencies [[`0ac3b68`](https://github.com/YutaUra/firestore-emulator/commit/0ac3b68da643018fdbea4c0143a00c16bc4a57e3)]:
+  - vitest-environment-firestore-emulator@0.3.11
+
 ## 0.0.53
 
 ### Patch Changes
