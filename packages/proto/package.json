@@ -1,6 +1,6 @@
 {
   "name": "@firestore-emulator/proto",
-  "version": "0.3.12",
+  "version": "0.3.13",
   "license": "MIT",
   "description": "Generated Firestore Protobufs For Firestore Emulator",
   "private": false,
