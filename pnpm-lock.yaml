@@ -18,8 +18,8 @@ importers:
         specifier: 2.7.2
         version: 2.7.2(@types/node@24.10.4)(typescript@5.9.3)
       firebase-tools:
-        specifier: 14.27.0
-        version: 14.27.0(@types/node@24.10.4)(encoding@0.1.13)(typescript@5.9.3)
+        specifier: 15.1.0
+        version: 15.1.0(@types/node@24.10.4)(encoding@0.1.13)(typescript@5.9.3)
       turbo:
         specifier: 2.7.2
         version: 2.7.2
@@ -3466,8 +3466,8 @@ packages:
     engines: {node: '>=18.0.0 || >=20.0.0'}
     hasBin: true
 
-  firebase-tools@14.27.0:
-    resolution: {integrity: sha512-HrucHJ69mLM9pQhZFO1rb0N/QMpZD4iznoOtKd2lctEELPtbSMN5JHgdgzLlf+EXn5aQy87u5zlPd/0xwwyYTQ==}
+  firebase-tools@15.1.0:
+    resolution: {integrity: sha512-sVDiFTXiRd2tszJzttb6e5yzhJdljIVm8Q0Atg6MyHMirJrvrOJzxPis9MAg/R6RrfLo/+oYgx83suZfAAimPw==}
     engines: {node: '>=20.0.0 || >=22.0.0 || >=24.0.0'}
     hasBin: true
 
@@ -10370,7 +10370,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  firebase-tools@14.27.0(@types/node@24.10.4)(encoding@0.1.13)(typescript@5.9.3):
+  firebase-tools@15.1.0(@types/node@24.10.4)(encoding@0.1.13)(typescript@5.9.3):
     dependencies:
       '@apphosting/build': 0.1.7(@types/node@24.10.4)(typescript@5.9.3)
       '@apphosting/common': 0.0.8
@@ -10435,7 +10435,6 @@ snapshots:
       stream-chain: 2.2.5
       stream-json: 1.8.0
       superstatic: 10.0.0(encoding@0.1.13)
-      tar: 6.2.1
       tcp-port-used: 1.0.2
       tmp: 0.2.3
       triple-beam: 1.4.1
