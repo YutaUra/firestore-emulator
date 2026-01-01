@@ -1,5 +1,14 @@
 # @firestore-emulator/server
 
+## 0.3.15
+
+### Patch Changes
+
+- [#236](https://github.com/YutaUra/firestore-emulator/pull/236) [`e426302`](https://github.com/YutaUra/firestore-emulator/commit/e426302dcc40a9c60f61832d69b5ac989ac02ace) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency immer to v11
+
+- Updated dependencies []:
+  - @firestore-emulator/proto@0.3.15
+
 ## 0.3.14
 
 ### Patch Changes
