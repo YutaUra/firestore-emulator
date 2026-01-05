@@ -14,7 +14,7 @@
     "firebase-tools": "15.1.0",
     "turbo": "2.7.2"
   },
-  "packageManager": "pnpm@10.26.2",
+  "packageManager": "pnpm@10.27.0",
   "name": "firestore-emulator",
   "pnpm": {
     "onlyBuiltDependencies": [
