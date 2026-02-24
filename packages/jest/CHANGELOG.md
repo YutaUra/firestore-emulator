@@ -1,5 +1,14 @@
 # @firestore-emulator/jest
 
+## 0.3.16
+
+### Patch Changes
+
+- [#239](https://github.com/YutaUra/firestore-emulator/pull/239) [`180b49c`](https://github.com/YutaUra/firestore-emulator/commit/180b49c55dddb0e55b76bd84434a81dad9d352c8) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update all non-major dependencies
+
+- Updated dependencies [[`180b49c`](https://github.com/YutaUra/firestore-emulator/commit/180b49c55dddb0e55b76bd84434a81dad9d352c8)]:
+  - @firestore-emulator/server@0.3.16
+
 ## 0.3.15
 
 ### Patch Changes
