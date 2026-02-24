@@ -38,8 +38,11 @@ jobs:
 
       - run: pnpm install
         working-directory: check-target
+      # examples の firebase-tools バージョンが期待するエミュレータをダウンロードする。
+      # ルートの firebase-tools とバージョンが異なる場合、
+      # 並列テスト時にキャッシュの競合でクラッシュするため。
       - run: pnpm firebase setup:emulators:firestore
-        working-directory: check-target
+        working-directory: check-target/examples/firebase-admin
       - run: pnpm exec turbo run check:fix test
         working-directory: check-target
       - if: failure()
