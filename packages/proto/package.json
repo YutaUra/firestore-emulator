@@ -40,9 +40,9 @@
     "google-protobuf": "4.0.1"
   },
   "devDependencies": {
-    "@google-cloud/firestore": "8.0.0",
+    "@google-cloud/firestore": "8.3.0",
     "@types/google-protobuf": "3.15.12",
-    "@types/node": "24.10.4",
+    "@types/node": "24.10.13",
     "grpc-tools": "1.13.1",
     "protoc-gen-ts": "0.8.7",
     "tsup": "8.5.1",
