@@ -7,6 +7,8 @@ import type {
   CommitRequest,
   CreateDocumentRequest,
   DeleteDocumentRequest,
+  ExecutePipelineRequest,
+  ExecutePipelineResponse,
   GetDocumentRequest,
   ListCollectionIdsRequest,
   ListCollectionIdsResponse,
@@ -213,6 +215,15 @@ export class FirestoreServiceV1Impl extends UnimplementedFirestoreService {
     }
 
     call.end();
+  }
+  override ExecutePipeline(
+    _call: ServerWritableStream<
+      ExecutePipelineRequest,
+      ExecutePipelineResponse
+    >,
+  ): void {
+    console.error("Method<ExecutePipeline> not implemented.");
+    throw new Error("Method<ExecutePipeline> not implemented.");
   }
   override RunAggregationQuery(
     call: ServerWritableStream<
