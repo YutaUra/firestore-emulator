@@ -37,12 +37,12 @@
   },
   "dependencies": {
     "@grpc/grpc-js": "1.14.3",
-    "google-protobuf": "4.0.1"
+    "google-protobuf": "4.0.2"
   },
   "devDependencies": {
     "@google-cloud/firestore": "8.3.0",
     "@types/google-protobuf": "3.15.12",
-    "@types/node": "24.10.13",
+    "@types/node": "24.10.15",
     "grpc-tools": "1.13.1",
     "protoc-gen-ts": "0.8.7",
     "tsup": "8.5.1",
