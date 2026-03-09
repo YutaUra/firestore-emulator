@@ -1,6 +1,6 @@
 {
   "name": "@shared/biome-config",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "license": "MIT",
   "private": true,
   "bin": {
