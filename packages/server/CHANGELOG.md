@@ -1,5 +1,14 @@
 # @firestore-emulator/server
 
+## 0.3.20
+
+### Patch Changes
+
+- [#258](https://github.com/YutaUra/firestore-emulator/pull/258) [`75ddbf8`](https://github.com/YutaUra/firestore-emulator/commit/75ddbf88d5a95ac9717d2f1f213c7e88268ecc64) Thanks [@renovate](https://github.com/apps/renovate)! - chore(deps): update all non-major dependencies
+
+- Updated dependencies []:
+  - @firestore-emulator/proto@0.3.20
+
 ## 0.3.19
 
 ### Patch Changes
