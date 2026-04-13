@@ -12,9 +12,9 @@
 	},
 	"devDependencies": {
 		"@shared/biome-config": "workspace:^",
-		"typescript": "5.9.3"
+		"typescript": "6.0.2"
 	},
 	"peerDependencies": {
-		"typescript": "5.9.3"
+		"typescript": "6.0.2"
 	}
 }

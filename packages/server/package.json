@@ -57,7 +57,7 @@
     "grpc-tools": "1.13.1",
     "protoc-gen-ts": "0.8.7",
     "tsup": "8.5.1",
-    "typescript": "5.9.3",
+    "typescript": "6.0.2",
     "vitest": "4.1.4"
   }
 }
