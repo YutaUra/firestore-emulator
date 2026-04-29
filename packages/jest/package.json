@@ -64,7 +64,7 @@
     "jest": "30.3.0",
     "jest-environment-node": "30.3.0",
     "tsup": "8.5.1",
-    "typescript": "5.9.3"
+    "typescript": "6.0.3"
   },
   "peerDependencies": {
     "@jest/environment": "30.3.0",
