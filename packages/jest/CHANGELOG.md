@@ -1,5 +1,12 @@
 # @firestore-emulator/jest
 
+## 0.3.22
+
+### Patch Changes
+
+- Updated dependencies [[`d5a82b6`](https://github.com/YutaUra/firestore-emulator/commit/d5a82b6b10522231189440f8dcf1e695652e6f5b)]:
+  - @firestore-emulator/server@0.3.22
+
 ## 0.3.21
 
 ### Patch Changes
