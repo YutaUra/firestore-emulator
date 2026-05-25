@@ -42,7 +42,7 @@
   },
   "dependencies": {
     "@firestore-emulator/proto": "workspace:*",
-    "@grpc/grpc-js": "1.14.3",
+    "@grpc/grpc-js": "1.14.4",
     "assert-never": "1.4.0",
     "google-protobuf": "4.0.2",
     "immer": "11.1.8",
@@ -58,6 +58,6 @@
     "protoc-gen-ts": "0.8.7",
     "tsup": "8.5.1",
     "typescript": "5.9.3",
-    "vitest": "4.1.6"
+    "vitest": "4.1.7"
   }
 }
