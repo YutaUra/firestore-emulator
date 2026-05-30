@@ -1,5 +1,14 @@
 # vitest-environment-firestore-emulator
 
+## 0.3.26
+
+### Patch Changes
+
+- [#265](https://github.com/YutaUra/firestore-emulator/pull/265) [`47be42e`](https://github.com/YutaUra/firestore-emulator/commit/47be42ede84f73d3ee96ad37248e91183a2412c5) Thanks [@renovate](https://github.com/apps/renovate)! - chore(deps): update dependency typescript to v6
+
+- Updated dependencies [[`47be42e`](https://github.com/YutaUra/firestore-emulator/commit/47be42ede84f73d3ee96ad37248e91183a2412c5)]:
+  - @firestore-emulator/server@0.3.26
+
 ## 0.3.25
 
 ### Patch Changes
