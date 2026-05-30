@@ -14,11 +14,6 @@
     "firebase-tools": "15.18.0",
     "turbo": "2.9.14"
   },
-  "packageManager": "pnpm@10.33.4",
-  "name": "firestore-emulator",
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "grpc-tools"
-    ]
-  }
+  "packageManager": "pnpm@11.4.0",
+  "name": "firestore-emulator"
 }

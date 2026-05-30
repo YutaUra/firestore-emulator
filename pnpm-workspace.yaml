@@ -2,3 +2,10 @@ packages:
   - "packages/*"
   - "examples/*"
   - "shared/*"
+allowBuilds:
+  grpc-tools: true
+  '@firebase/util': false
+  esbuild: false
+  protobufjs: false
+  re2: false
+  unrs-resolver: false
