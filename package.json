@@ -15,10 +15,5 @@
     "turbo": "2.9.14"
   },
   "packageManager": "pnpm@11.4.0",
-  "name": "firestore-emulator",
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "grpc-tools"
-    ]
-  }
+  "name": "firestore-emulator"
 }
