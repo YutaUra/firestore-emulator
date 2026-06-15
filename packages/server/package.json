@@ -53,11 +53,11 @@
     "@shared/biome-config": "workspace:^",
     "@shared/typescript-config": "workspace:^",
     "@types/google-protobuf": "3.15.12",
-    "@types/node": "24.12.4",
+    "@types/node": "24.13.2",
     "grpc-tools": "1.13.1",
     "protoc-gen-ts": "0.8.7",
     "tsup": "8.5.1",
     "typescript": "6.0.3",
-    "vitest": "4.1.7"
+    "vitest": "4.1.8"
   }
 }
