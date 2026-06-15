@@ -60,7 +60,7 @@
     "@quramy/jest-prisma": "1.8.2",
     "@shared/biome-config": "workspace:^",
     "@shared/typescript-config": "workspace:^",
-    "@types/node": "24.12.4",
+    "@types/node": "24.13.2",
     "jest": "30.4.2",
     "jest-environment-node": "30.4.1",
     "tsup": "8.5.1",
