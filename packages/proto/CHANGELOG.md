@@ -1,5 +1,7 @@
 # @firestore-emulator/proto
 
+## 0.3.28
+
 ## 0.3.27
 
 ### Patch Changes
