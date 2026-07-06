@@ -45,7 +45,7 @@
     "@grpc/grpc-js": "1.14.4",
     "assert-never": "1.4.0",
     "google-protobuf": "4.0.2",
-    "immer": "11.1.8",
+    "immer": "11.1.9",
     "typesafe-event-emitter": "1.1.0"
   },
   "devDependencies": {
