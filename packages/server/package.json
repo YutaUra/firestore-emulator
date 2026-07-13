@@ -1,6 +1,6 @@
 {
   "name": "@firestore-emulator/server",
-  "version": "0.3.29",
+  "version": "0.3.30",
   "license": "MIT",
   "private": false,
   "publishConfig": {
