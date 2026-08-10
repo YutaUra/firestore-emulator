@@ -1,5 +1,11 @@
 # @shared/biome-config
 
+## 0.0.33
+
+### Patch Changes
+
+- [#315](https://github.com/YutaUra/firestore-emulator/pull/315) [`876ae8a`](https://github.com/YutaUra/firestore-emulator/commit/876ae8a305f2a081777cc8026283ca425975c840) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency @biomejs/biome to v2.5.7
+
 ## 0.0.32
 
 ### Patch Changes
