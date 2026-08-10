@@ -45,11 +45,11 @@
     "@grpc/grpc-js": "1.14.4",
     "assert-never": "1.4.0",
     "google-protobuf": "4.0.2",
-    "immer": "11.1.15",
+    "immer": "11.1.16",
     "typesafe-event-emitter": "1.1.0"
   },
   "devDependencies": {
-    "@google-cloud/firestore": "8.7.0",
+    "@google-cloud/firestore": "8.7.1",
     "@shared/biome-config": "workspace:^",
     "@shared/typescript-config": "workspace:^",
     "@types/google-protobuf": "3.15.12",

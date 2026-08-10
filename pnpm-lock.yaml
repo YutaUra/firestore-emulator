@@ -15,14 +15,14 @@ importers:
         specifier: 2.31.1
         version: 2.31.1(@types/node@24.13.3)
       '@turbo/gen':
-        specifier: 2.10.7
-        version: 2.10.7(@types/node@24.13.3)
+        specifier: 2.10.8
+        version: 2.10.8(@types/node@24.13.3)
       firebase-tools:
-        specifier: 15.25.1
-        version: 15.25.1(@types/node@24.13.3)(supports-color@8.1.1)
+        specifier: 15.26.0
+        version: 15.26.0(@types/node@24.13.3)(supports-color@8.1.1)
       turbo:
-        specifier: 2.10.7
-        version: 2.10.7
+        specifier: 2.10.8
+        version: 2.10.8
 
   examples/firebase-admin:
     dependencies:
@@ -145,8 +145,8 @@ importers:
         version: 4.0.2
     devDependencies:
       '@google-cloud/firestore':
-        specifier: 8.7.0
-        version: 8.7.0(supports-color@8.1.1)
+        specifier: 8.7.1
+        version: 8.7.1(supports-color@8.1.1)
       '@types/google-protobuf':
         specifier: 3.15.12
         version: 3.15.12
@@ -181,15 +181,15 @@ importers:
         specifier: 4.0.2
         version: 4.0.2
       immer:
-        specifier: 11.1.15
-        version: 11.1.15
+        specifier: 11.1.16
+        version: 11.1.16
       typesafe-event-emitter:
         specifier: 1.1.0
         version: 1.1.0
     devDependencies:
       '@google-cloud/firestore':
-        specifier: 8.7.0
-        version: 8.7.0(supports-color@8.1.1)
+        specifier: 8.7.1
+        version: 8.7.1(supports-color@8.1.1)
       '@shared/biome-config':
         specifier: workspace:^
         version: link:../../shared/biome-config
@@ -994,8 +994,8 @@ packages:
     resolution: {integrity: sha512-EW/O8ktzwLfyWBOsNuhRoMi8lrC3clHM5LVFhGvO1HCsLozCOOXRAlHrYBoE6HL42Sc8yYMuCb2XqcnJ4OOEpw==}
     engines: {node: '>=14.0.0'}
 
-  '@google-cloud/firestore@8.7.0':
-    resolution: {integrity: sha512-EvMpZQUXkTRdweSvOu6VL6EEQwHjHAgWz2UYZR+Mj6Ao52S+TWieHbSn15jiNnEw8F8RhbZj7IGXZ1PFB1eA+A==}
+  '@google-cloud/firestore@8.7.1':
+    resolution: {integrity: sha512-Hp/WI8sH569ANitsko6RNvCUkzTCYudHoINOkQjiJq2FBG6kKnofBAW7PtS823cu6RMxHqK2RxRcspdjrRpUFA==}
     engines: {node: '>=18'}
 
   '@google-cloud/paginator@5.0.2':
@@ -1816,37 +1816,37 @@ packages:
   '@tsconfig/strictest@2.0.8':
     resolution: {integrity: sha512-XnQ7vNz5HRN0r88GYf1J9JJjqtZPiHt2woGJOo2dYqyHGGcd6OLGqSlBB6p1j9mpzja6Oe5BoPqWmeDx6X9rLw==}
 
-  '@turbo/darwin-64@2.10.7':
-    resolution: {integrity: sha512-/c9cSBRermWDv85oufLhoH6XRLOVbvzJLRd+WLyfJCP+i0HFLQj4PVNDrHcY17/ve5l8X0Oua4bJBqJUgJPnZA==}
+  '@turbo/darwin-64@2.10.8':
+    resolution: {integrity: sha512-po+7rfJfUnFXjWlcoN2RwhErgzCdRtBc1T26vYPcywHlggmCQiQe1uWaE4j+BibI2uY9/2pDoFzMN0rmSaPFOw==}
     cpu: [x64]
     os: [darwin]
 
-  '@turbo/darwin-arm64@2.10.7':
-    resolution: {integrity: sha512-8lpCCGWZBl9PIF8w8f2iEWrLMbHBWIfJeV6l2UEGqysD6HRIM4ySj/8R7HGEzbECJ4r/gnJcHmxEoG8yjFe64A==}
+  '@turbo/darwin-arm64@2.10.8':
+    resolution: {integrity: sha512-+zB2btDJ00lnPRuqOvpVvgl4x34k/djZQGZTTCfjn7JgNCl8QFY5Njo5+dqkY1g/+9gbbsnAvWm9CmJg9ebcXA==}
     cpu: [arm64]
     os: [darwin]
 
-  '@turbo/gen@2.10.7':
-    resolution: {integrity: sha512-kxLa//A+Q8oe10Pz2MdLKFwS5QUi1uVIp1oqbFraF1OSgSHyNKRWjpn5ITn2c91CzaVEBY4pGFM9ZlKvtnkcGw==}
+  '@turbo/gen@2.10.8':
+    resolution: {integrity: sha512-w89Hj4tDnZoBL47mQulcjH0S1Za5q8zHyjIbR0v72Y11z4lPUhcoq48jaPTjVBSji0Nh+GAAr9kcDUDMytT/9w==}
     hasBin: true
 
-  '@turbo/linux-64@2.10.7':
-    resolution: {integrity: sha512-Midw9Ed00yw9rqkWN82fY3LmLNFQ6yiL1GXB56DJKUEjWaEd27zh7ohCxzzrjfjQVrEeVWd3UPytTAV16XDQlA==}
+  '@turbo/linux-64@2.10.8':
+    resolution: {integrity: sha512-K1dxqiVisyN7cViVsfQLs6xscQbYuI8aO2nbUhFURDACgEDfZRdP/b4CCxeosBJpcMfhYyiibWqJorCnvz9kKg==}
     cpu: [x64]
-    os: [linux]
+    os: [android, linux]
 
-  '@turbo/linux-arm64@2.10.7':
-    resolution: {integrity: sha512-UVEy+MW/xn4BcsiV3v3uv0/oObyaQgVtRT+Jj4WE53rNH05VEYEc1Z13q3zV6276wCZR4Yxc4hiTTcjw7PjSpg==}
+  '@turbo/linux-arm64@2.10.8':
+    resolution: {integrity: sha512-Gi77ibVnrE1fEmvr+/wBD/yvRqhwp/RQuCp2+//lv1U1wNFFyVg0V7Wj8FG9FXPFAw5QHReo8rxc9+wBSDZjzA==}
     cpu: [arm64]
-    os: [linux]
+    os: [android, linux]
 
-  '@turbo/windows-64@2.10.7':
-    resolution: {integrity: sha512-l2nH9KGLV46SWjcXvyc2+xo5gdf5J0NVADknQk9OCJhzJBpiNl/byd26yIfwZBjLupdqT6UOdPhPxcpUPxRykQ==}
+  '@turbo/windows-64@2.10.8':
+    resolution: {integrity: sha512-znnLO1haJPYTHoKMKwlAvlkjRiYbbhBzME6wIGaMd+fwir23U6jVd1ecaTWWi1fbnRVqxMfgDBKseQ/hLKb83g==}
     cpu: [x64]
     os: [win32]
 
-  '@turbo/windows-arm64@2.10.7':
-    resolution: {integrity: sha512-qjE1apG6RThuX49vUJd5ks2dV2ndXC2qktDChQonFMvUzrMrEnZMQzO+IgxBiYq1j+NbXQcRwj84nGnk1TBw1g==}
+  '@turbo/windows-arm64@2.10.8':
+    resolution: {integrity: sha512-VN30vh3b3Czh2WzYHNTfF1FE0YMZ5aHsLO8dBMGHJewA6792wX6iJR8ZxlzFW6WdOu0gEAKIvlYhfyT81Wkm4Q==}
     cpu: [arm64]
     os: [win32]
 
@@ -3216,8 +3216,8 @@ packages:
     engines: {node: '>=18.0.0 || >=20.0.0'}
     hasBin: true
 
-  firebase-tools@15.25.1:
-    resolution: {integrity: sha512-TcKCgmlHducC3XrzS+FPgGXe2DlDl1Fh2GSN2Vkh71eGGvP7jE/JuEOFcE3osI0TBb1Os6MNTSsGL8mjdZ1IKA==}
+  firebase-tools@15.26.0:
+    resolution: {integrity: sha512-5GlK9O7/FffndJ3XFk6fBPTBJH4lNWCxQDP9YoKFWDO85YiGOOpmYyr4lqSyCTkTeQpj1KI1vhPnd9aO6E73ww==}
     engines: {node: '>=20.0.0 || >=22.0.0 || >=24.0.0'}
     hasBin: true
 
@@ -3524,8 +3524,8 @@ packages:
     resolution: {integrity: sha512-Hs59xBNfUIunMFgWAbGX5cq6893IbWg4KnrjbYwX3tx0ztorVgTDA6B2sxf8ejHJ4wz8BqGUMYlnzNBer5NvGg==}
     engines: {node: '>= 4'}
 
-  immer@11.1.15:
-    resolution: {integrity: sha512-VrNANlmnWQnh5COXIIOQXM9oOJw7naGKlBT74ZOOR6lpVXc3gFEu9FJLDFcpCJ2j+NWr8TIwtWD//T6ZX6TKiQ==}
+  immer@11.1.16:
+    resolution: {integrity: sha512-Xs7H9rBc+kti1J6RueUvbEBkmOz7jqj11XYgf+YMXAYzu8EeE7hwZ9poLXdVfVnGmJu7QAf41T7H2KuF6QoK6Q==}
 
   import-lazy@2.1.0:
     resolution: {integrity: sha512-m7ZEHgtw69qOGw+jwxXkHlrlIPdTGkyh66zXZ1ajZbxkDBNjSY/LGbmjc7h0s2ELsUDTAhFr55TrPSSqJGPG0A==}
@@ -5501,8 +5501,8 @@ packages:
       typescript:
         optional: true
 
-  turbo@2.10.7:
-    resolution: {integrity: sha512-GHx6WExIFSKNJ5qMlzDpXBXlu9ApxaMjqxAVrCNcW94xf/+uqgIz41SAuRUMbXva2ExNAaY/h8V0q90SWSzmRw==}
+  turbo@2.10.8:
+    resolution: {integrity: sha512-9+8YX5QOkGXzZxcIykTHgaooRHGMWO+jfdyRK0o+rN0U7hBIig2MrJ8r/aNzIPDPhdA73SGb0O+tIztaModTMg==}
     hasBin: true
 
   type-detect@4.0.8:
@@ -5882,18 +5882,6 @@ packages:
     peerDependencies:
       bufferutil: ^4.0.1
       utf-8-validate: ^5.0.2
-    peerDependenciesMeta:
-      bufferutil:
-        optional: true
-      utf-8-validate:
-        optional: true
-
-  ws@8.21.0:
-    resolution: {integrity: sha512-Vsp28b7DRcimFQvrqu2Wek3z1iYxDCWqHYB8Qsnk/S4RfaCQzPGPyBNuVjJV3cd6UiKtUtp6sNM77gWvzcCH+g==}
-    engines: {node: '>=10.0.0'}
-    peerDependencies:
-      bufferutil: ^4.0.1
-      utf-8-validate: '>=5.0.2'
     peerDependenciesMeta:
       bufferutil:
         optional: true
@@ -6691,7 +6679,7 @@ snapshots:
       - supports-color
     optional: true
 
-  '@google-cloud/firestore@8.7.0(supports-color@8.1.1)':
+  '@google-cloud/firestore@8.7.1(supports-color@8.1.1)':
     dependencies:
       '@opentelemetry/api': 1.9.1
       fast-deep-equal: 3.1.3
@@ -7662,29 +7650,29 @@ snapshots:
 
   '@tsconfig/strictest@2.0.8': {}
 
-  '@turbo/darwin-64@2.10.7':
+  '@turbo/darwin-64@2.10.8':
     optional: true
 
-  '@turbo/darwin-arm64@2.10.7':
+  '@turbo/darwin-arm64@2.10.8':
     optional: true
 
-  '@turbo/gen@2.10.7(@types/node@24.13.3)':
+  '@turbo/gen@2.10.8(@types/node@24.13.3)':
     dependencies:
       '@inquirer/prompts': 7.10.1(@types/node@24.13.3)
       esbuild: 0.28.1
     transitivePeerDependencies:
       - '@types/node'
 
-  '@turbo/linux-64@2.10.7':
+  '@turbo/linux-64@2.10.8':
     optional: true
 
-  '@turbo/linux-arm64@2.10.7':
+  '@turbo/linux-arm64@2.10.8':
     optional: true
 
-  '@turbo/windows-64@2.10.7':
+  '@turbo/windows-64@2.10.8':
     optional: true
 
-  '@turbo/windows-arm64@2.10.7':
+  '@turbo/windows-arm64@2.10.8':
     optional: true
 
   '@tybys/wasm-util@0.10.2':
@@ -9339,7 +9327,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  firebase-tools@15.25.1(@types/node@24.13.3)(supports-color@8.1.1):
+  firebase-tools@15.26.0(@types/node@24.13.3)(supports-color@8.1.1):
     dependencies:
       '@apphosting/common': 0.0.8
       '@electric-sql/pglite': 0.3.16
@@ -9832,7 +9820,7 @@ snapshots:
 
   ignore@7.0.5: {}
 
-  immer@11.1.15: {}
+  immer@11.1.16: {}
 
   import-lazy@2.1.0: {}
 
@@ -10777,7 +10765,7 @@ snapshots:
       whatwg-encoding: 3.1.1
       whatwg-mimetype: 4.0.0
       whatwg-url: 14.2.0
-      ws: 8.21.0
+      ws: 8.21.1
       xml-name-validator: 5.0.0
     transitivePeerDependencies:
       - bufferutil
@@ -12336,14 +12324,14 @@ snapshots:
       - tsx
       - yaml
 
-  turbo@2.10.7:
+  turbo@2.10.8:
     optionalDependencies:
-      '@turbo/darwin-64': 2.10.7
-      '@turbo/darwin-arm64': 2.10.7
-      '@turbo/linux-64': 2.10.7
-      '@turbo/linux-arm64': 2.10.7
-      '@turbo/windows-64': 2.10.7
-      '@turbo/windows-arm64': 2.10.7
+      '@turbo/darwin-64': 2.10.8
+      '@turbo/darwin-arm64': 2.10.8
+      '@turbo/linux-64': 2.10.8
+      '@turbo/linux-arm64': 2.10.8
+      '@turbo/windows-64': 2.10.8
+      '@turbo/windows-arm64': 2.10.8
 
   type-detect@4.0.8: {}
 
@@ -12697,8 +12685,6 @@ snapshots:
       signal-exit: 4.1.0
 
   ws@7.5.11: {}
-
-  ws@8.21.0: {}
 
   ws@8.21.1: {}
 
