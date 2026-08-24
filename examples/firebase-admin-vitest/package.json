@@ -1,6 +1,6 @@
 {
   "name": "@example/firebase-vitest",
-  "version": "0.0.75",
+  "version": "0.0.76",
   "license": "MIT",
   "private": true,
   "scripts": {
