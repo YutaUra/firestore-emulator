@@ -8,7 +8,7 @@
 		"check:fix": "biome check --write ."
 	},
 	"dependencies": {
-		"@tsconfig/strictest": "2.0.8"
+		"@tsconfig/strictest": "2.0.9"
 	},
 	"devDependencies": {
 		"@shared/biome-config": "workspace:^",
